@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: web-software-engineer-task-backend
+  security:
+   oauth2:
+     client:
+       registration:
+         github:
+           clientId: Ov23liLzj5nagN4rrivz
+           clientSecret: 9a17f35de7c41c2df4a78fc379568c4a61c7f8ad
