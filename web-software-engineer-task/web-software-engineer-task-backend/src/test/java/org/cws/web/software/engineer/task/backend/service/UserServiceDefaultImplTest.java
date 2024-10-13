@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort.Direction;
 		"spring.datasource.password=password",
 		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
 		"spring.jpa.defer-datasource-initialization=true",
-		"cws.web.software.engineer.task.backend.users.page.size=10"
+		"spring.data.web.pageable.default-page-size=10"
 })
 @ComponentScan({ "org.cws.web.software.engineer.task.backend.service",
 		"org.cws.web.software.engineer.task.backend.mapper" })
