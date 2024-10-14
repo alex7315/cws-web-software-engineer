@@ -14,6 +14,9 @@
 	<url/>
 	
 	<properties>
+		<java.version>17</java.version>
+		<spring.boot.version>3.3.4</spring.boot.version>
+
 		<org.projectlombok.version>1.18.34</org.projectlombok.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 	</properties>
@@ -23,8 +26,7 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>3.3.4</version>
-<!--				<version>${spring.boot.version}</version>-->
+				<version>${spring.boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -65,6 +67,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -73,7 +81,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
     		<artifactId>h2</artifactId>
-    		<scope>test</scope>
+<!--    		<scope>test</scope>-->
 		</dependency>
 		
 		<dependency>
@@ -95,6 +103,39 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<apiDocsUrl>http://localhost:8080/web-software-engineer-task-backend/v3/api-docs.yaml</apiDocsUrl>
+					<outputFileName>openapi-web-software-engineer-task-backend.yaml</outputFileName>
+					<outputDir>${project.build.directory}</outputDir>
 				</configuration>
 			</plugin>
 			

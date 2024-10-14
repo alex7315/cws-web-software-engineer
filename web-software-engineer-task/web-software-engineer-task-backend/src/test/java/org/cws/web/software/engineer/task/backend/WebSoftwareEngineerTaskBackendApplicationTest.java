@@ -76,7 +76,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	@Test
 	void shouldReturnASortedPageOfUsersWithWrongSortParameterValues() throws Exception {
 		ResponseEntity<String> response = restTemplate.getForEntity("/users?page=0&size=1&sort=unknown", String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
 	}
 

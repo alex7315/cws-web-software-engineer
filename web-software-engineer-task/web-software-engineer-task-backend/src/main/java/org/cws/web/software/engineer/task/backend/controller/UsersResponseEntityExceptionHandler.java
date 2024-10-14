@@ -15,6 +15,6 @@ public class UsersResponseEntityExceptionHandler extends ResponseEntityException
 	@ExceptionHandler(value = { PropertyReferenceException.class })
 	protected ResponseEntity<Object> handleErrorSorting(RuntimeException ex, WebRequest request) {
 		String bodyOfResponse = "Error sorting parameters";
-		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 }

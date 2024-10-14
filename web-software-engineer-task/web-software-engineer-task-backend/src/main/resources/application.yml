@@ -1,10 +1,26 @@
 spring:
+  config:
+    activate:
+      on-profile: local
   application:
     name: web-software-engineer-task-backend
-  security:
-   oauth2:
-     client:
-       registration:
-         github:
-           clientId: Ov23liLzj5nagN4rrivz
-           clientSecret: 9a17f35de7c41c2df4a78fc379568c4a61c7f8ad
+  datasource:
+    url: ${cws.datasource.url}
+    username: ${cws.datasource.username}
+    password: ${cws.datasource.password}
+  jpa:
+    hibernate:
+      ddl-auto: ${cws.jpa.ddl.auto}
+    open-in-view: false
+---
+  spring:
+    config:
+      activate:
+        on-profile: test
+    security:
+      oauth2:
+        client:
+          registration:
+            github:
+              clientId: Ov23liLzj5nagN4rrivz
+              clientSecret: 9a17f35de7c41c2df4a78fc379568c4a61c7f8ad
