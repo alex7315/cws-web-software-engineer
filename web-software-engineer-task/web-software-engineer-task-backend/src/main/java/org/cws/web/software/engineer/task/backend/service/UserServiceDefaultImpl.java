@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceDefaultImpl implements UsersService {
@@ -23,6 +24,7 @@ public class UserServiceDefaultImpl implements UsersService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<GithubUserDto> getUsers(Pageable pageable) {
 		//@formatter:off
 		return githubUserRepository

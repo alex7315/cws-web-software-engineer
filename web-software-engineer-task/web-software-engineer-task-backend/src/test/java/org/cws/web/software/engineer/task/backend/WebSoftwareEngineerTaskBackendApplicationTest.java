@@ -20,11 +20,12 @@ import net.minidev.json.JSONArray;
 		"spring.datasource.driverClassName=org.h2.Driver",
 		"spring.datasource.username=sa",
 		"spring.datasource.password=password",
-		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
 		"spring.jpa.defer-datasource-initialization=true",
+		"spring.jpa.open-in-view=false",
 		"spring.data.web.pageable.default-page-size=5"
 })
 //@formatter:on
+//@DirtiesContext
 class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	@Autowired
@@ -46,7 +47,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-	void shouldReturnASortedPageOfUsers() throws Exception {
+	void shouldReturnDescSortedPageOfUsers() throws Exception {
 		ResponseEntity<String> response = restTemplate.getForEntity("/api/users?page=0&size=1&sort=login,desc",
 				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -60,7 +61,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-	void shouldReturnASortedPageOfUsersWithWrongPageParameterValues() throws Exception {
+	void shouldReturnDefaultSortedPageOfUsersWithWrongPageParameterValues() throws Exception {
 		ResponseEntity<String> response = restTemplate.getForEntity("/api/users?page=-1&size=-1", String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -74,7 +75,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-	void shouldReturnASortedPageOfUsersWithWrongSortParameterValues() throws Exception {
+	void shouldReturnRequestErrorByWrongSortParameterValue() throws Exception {
 		ResponseEntity<String> response = restTemplate.getForEntity("/api/users?page=0&size=1&sort=unknown",
 				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

@@ -129,12 +129,6 @@
                 	<from>
                 		<image>openjdk:17</image>
                 	</from>
-                	<container>
-                		<ports>
-                			<port>8080</port>
-                		</ports>
-                		<format>OCI</format>
-                	</container>
                 </configuration>
                 <executions>
                 	<execution>

@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: local 
+  application:
+    name: web-software-engineer-task-backend
+  datasource:
+    url: ${cws.datasource.url}
+    username: ${cws.datasource.username}
+    password: ${cws.datasource.password}
+  sql:
+    init:
+      data-locations: classpath:data.sql
+  jpa:
+    open-in-view: false

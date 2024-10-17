@@ -19,8 +19,8 @@ import org.springframework.data.domain.Sort.Direction;
 		"spring.datasource.driverClassName=org.h2.Driver",
 		"spring.datasource.username=sa",
 		"spring.datasource.password=password",
-		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
 		"spring.jpa.defer-datasource-initialization=true",
+		"spring.jpa.open-in-view=false",
 		"spring.data.web.pageable.default-page-size=10"
 })
 @ComponentScan({ "org.cws.web.software.engineer.task.backend.service",
