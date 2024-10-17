@@ -32,7 +32,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	@Test
 	void shouldReturnUsersPageUsesDefaultParameters() throws Exception {
-		ResponseEntity<String> response = restTemplate.getForEntity("/users", String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity("/api/users", String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -47,7 +47,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	@Test
 	void shouldReturnASortedPageOfUsers() throws Exception {
-		ResponseEntity<String> response = restTemplate.getForEntity("/users?page=0&size=1&sort=login,desc",
+		ResponseEntity<String> response = restTemplate.getForEntity("/api/users?page=0&size=1&sort=login,desc",
 				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -61,7 +61,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	@Test
 	void shouldReturnASortedPageOfUsersWithWrongPageParameterValues() throws Exception {
-		ResponseEntity<String> response = restTemplate.getForEntity("/users?page=-1&size=-1", String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity("/api/users?page=-1&size=-1", String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -75,7 +75,8 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	@Test
 	void shouldReturnASortedPageOfUsersWithWrongSortParameterValues() throws Exception {
-		ResponseEntity<String> response = restTemplate.getForEntity("/users?page=0&size=1&sort=unknown", String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity("/api/users?page=0&size=1&sort=unknown",
+				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
 	}

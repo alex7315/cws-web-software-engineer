@@ -5,7 +5,7 @@
 		<groupId>org.cws</groupId>
 		<artifactId>web-software-engineer-task</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<!-- <relativePath/> lookup parent from repository -->
+		<relativePath>../../web-software-engineer-task</relativePath>  <!-- lookup parent from repository -->
 	</parent>
 	
 	<artifactId>web-software-engineer-task-backend</artifactId>
@@ -15,10 +15,19 @@
 	
 	<properties>
 		<java.version>17</java.version>
-		<spring.boot.version>3.3.4</spring.boot.version>
-
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<cws.backend.image.tag>0.0.1</cws.backend.image.tag>
+		
 		<org.projectlombok.version>1.18.34</org.projectlombok.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+		<springdoc.openapi.starter.webmvc.ui.version>2.5.0</springdoc.openapi.starter.webmvc.ui.version>
+		
+		<spring.boot.version>3.3.4</spring.boot.version>
+		<springdoc.openapi.maven.plugin.version>1.4</springdoc.openapi.maven.plugin.version>
+		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+		<jib.maven.plugin.version>3.4.3</jib.maven.plugin.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -69,7 +78,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.5.0</version>
+			<version>${springdoc.openapi.starter.webmvc.ui.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -81,7 +90,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
     		<artifactId>h2</artifactId>
-<!--    		<scope>test</scope>-->
+    		<scope>test</scope>
 		</dependency>
 		
 		<dependency>
@@ -90,12 +99,27 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>local</id>
+			<properties>
+				<cws.datasource.url>${cws.datasource.url}</cws.datasource.url>
+    			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
+    			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
+    			<cws.datasource.schema>${cws.datasource.schema}</cws.datasource.schema>
+    			<cws.backend.image.name>cws/web-software-engineer-task-backend:${cws.backend.image.tag}</cws.backend.image.name>
+			</properties>
+		</profile>
+	</profiles>
+
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>
@@ -105,6 +129,11 @@
 					</excludes>
 				</configuration>
 				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
 					<execution>
 						<id>pre-integration-test</id>
 						<goals>
@@ -123,7 +152,7 @@
 			<plugin>
 				<groupId>org.springdoc</groupId>
 				<artifactId>springdoc-openapi-maven-plugin</artifactId>
-				<version>1.4</version>
+				<version>${springdoc.openapi.maven.plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>integration-test</phase>
@@ -142,7 +171,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
@@ -158,6 +187,31 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.maven.plugin.version}</version>
+                <configuration>
+                	<from>
+                		<image>openjdk:17</image>
+                	</from>
+                </configuration>
+                <executions>
+                	<execution>
+                		<id>local</id>
+                		<phase>package</phase>
+                		<configuration>
+                			<to>
+                        		<image>${cws.backend.image.name}</image>
+                    		</to>
+                		</configuration>
+                		<goals>
+                			<goal>dockerBuild</goal>
+                		</goals>
+                	</execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
