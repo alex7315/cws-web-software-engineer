@@ -1,8 +1,6 @@
-DROP TABLE IF EXISTS github_user;
-
-CREATE TABLE github_user (
-	id bigint(20) NOT NULL AUTO_INCREMENT,
-	github_id bigint(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS github_user (
+	id bigint NOT NULL AUTO_INCREMENT,
+	github_id bigint NOT NULL,
 	login varchar(100) NOT NULL,
 	modified_at timestamp NOT NULL,
 	PRIMARY KEY (id),

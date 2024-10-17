@@ -4,9 +4,9 @@ spring:
     username: ${cws.datasource.username}
     password: ${cws.datasource.password}
     hikari:
-      schema: cws_github
+      schema: ${cws.datasource.schema}
   flyway:
     enabled: true # enables flyway database migration
     locations: classpath:db/migration # migration scripts location
     validate-on-migrate: true
-    default-schema: cws_github
+    default-schema: ${cws.datasource.schema}
