@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  mysqldb:
+    image: "mysql:8.0"
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - springapimysql-net  
+    environment:
+      MYSQL_DATABASE: ${cws.datasource.schema}
+      MYSQL_USER: ${cws.datasource.username}
+      MYSQL_PASSWORD: ${cws.datasource.password}
+      MYSQL_ROOT_PASSWORD: ${cws.database.root.password}
+
+  database_service:
+    image: "cws/web-software-engineer-task-database:0.0.1"
+    networks:
+      - springapimysql-net 
+    depends_on:
+      - mysqldb
+
+  backend_service:
+    image: "cws/web-software-engineer-task-backend:0.0.1"
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - springapimysql-net 
+    depends_on:
+      - mysqldb
+
+networks:
+  springapimysql-net:
+    driver: bridge
