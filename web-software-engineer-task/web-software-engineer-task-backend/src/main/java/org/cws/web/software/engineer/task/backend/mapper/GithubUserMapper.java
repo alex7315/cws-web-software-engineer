@@ -1,7 +1,7 @@
 package org.cws.web.software.engineer.task.backend.mapper;
 
 import org.cws.web.software.engineer.task.backend.dto.GithubUserDto;
-import org.cws.web.software.engineer.task.backend.model.GithubUser;
+import org.cws.web.software.engineer.task.persistence.model.GithubUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

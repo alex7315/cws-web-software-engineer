@@ -23,7 +23,7 @@
   <modules>
     <module>web-software-engineer-task-backend</module>
     <module>web-software-engineer-task-database</module>
-		<!--	    <module>web-software-engineer-task-frontend</module>-->
+	<module>web-software-engineer-task-persistence</module>
     <module>web-software-engineer-task-sync</module>
   </modules>
   

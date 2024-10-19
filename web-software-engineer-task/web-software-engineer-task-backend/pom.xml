@@ -22,6 +22,7 @@
 		<org.projectlombok.version>1.18.34</org.projectlombok.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<springdoc.openapi.starter.webmvc.ui.version>2.5.0</springdoc.openapi.starter.webmvc.ui.version>
+		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
 		
 		<spring.boot.version>3.3.4</spring.boot.version>
 		<springdoc.openapi.maven.plugin.version>1.4</springdoc.openapi.maven.plugin.version>
@@ -88,6 +89,12 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${springdoc.openapi.starter.webmvc.ui.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.cws</groupId>
+			<artifactId>web-software-engineer-task-persistence</artifactId>
+			<version>${web.software.engineer.task.persistence.version}</version>
 		</dependency>
 		
 		<dependency>

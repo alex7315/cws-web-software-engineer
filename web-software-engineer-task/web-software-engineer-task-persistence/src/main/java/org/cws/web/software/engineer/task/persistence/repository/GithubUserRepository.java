@@ -1,6 +1,6 @@
-package org.cws.web.software.engineer.task.backend.repository;
+package org.cws.web.software.engineer.task.persistence.repository;
 
-import org.cws.web.software.engineer.task.backend.model.GithubUser;
+import org.cws.web.software.engineer.task.persistence.model.GithubUser;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

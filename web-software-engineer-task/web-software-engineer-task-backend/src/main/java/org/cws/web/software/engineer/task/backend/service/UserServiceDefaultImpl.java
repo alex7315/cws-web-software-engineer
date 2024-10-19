@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.cws.web.software.engineer.task.backend.dto.GithubUserDto;
 import org.cws.web.software.engineer.task.backend.mapper.GithubUserMapper;
-import org.cws.web.software.engineer.task.backend.repository.GithubUserRepository;
+import org.cws.web.software.engineer.task.persistence.repository.GithubUserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

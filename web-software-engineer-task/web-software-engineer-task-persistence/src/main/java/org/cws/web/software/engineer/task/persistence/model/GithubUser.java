@@ -1,4 +1,4 @@
-package org.cws.web.software.engineer.task.backend.model;
+package org.cws.web.software.engineer.task.persistence.model;
 
 import java.time.Instant;
 
