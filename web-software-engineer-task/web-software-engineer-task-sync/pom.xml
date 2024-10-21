@@ -19,11 +19,19 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
+		<cws.sync.image.tag>0.0.1</cws.sync.image.tag>
+		
 		<spring.boot.version>3.3.4</spring.boot.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+		<jib.maven.plugin.version>3.4.3</jib.maven.plugin.version>
+		
+		<main.resource.directory>src/main/resources</main.resource.directory>
+		<main.resource-filtered.directory>src/main/resources-filtered</main.resource-filtered.directory>
+		<test.resource.directory>src/test/resources</test.resource.directory>
 	</properties>
 	
 	<dependencyManagement>
@@ -92,6 +100,23 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>local</id>
+			<properties>
+				<cws.datasource.url>${cws.datasource.url}</cws.datasource.url>
+    			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
+    			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
+    			<cws.jpa.ddl.auto>${cws.jpa.ddl.auto}</cws.jpa.ddl.auto>
+    			<csw.github.authorization.token>${csw.github.authorization.token}</csw.github.authorization.token>
+    			<cws.github.sync.scheduled.rate>${cws.github.sync.scheduled.rate}</cws.github.sync.scheduled.rate>
+    			<cws.github.user.page.size>${cws.github.user.page.size}</cws.github.user.page.size>
+    			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
+    			<cws.sync.image.name>cws/web-software-engineer-task-sync:${cws.sync.image.tag}</cws.sync.image.name>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -131,7 +156,70 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-resources-plugin</artifactId>
+        		<version>${maven.resources.plugin.version}</version>
+        		<configuration>
+        			<encoding>${project.build.sourceEncoding}</encoding>
+        			<delimiters>
+        				<delimiter>${*}</delimiter>
+        			</delimiters>
+        			<useDefaultDelimiters>false</useDefaultDelimiters>
+        		</configuration>
+        	</plugin>
+        	
+			<plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.maven.plugin.version}</version>
+                <configuration>
+                	<from>
+                		<image>openjdk:17</image>
+                	</from>
+                    <container>
+                		<ports>
+                			<port>${cws.sync.port.exposed}</port>
+                		</ports>
+                		<format>OCI</format>
+                	</container>
+                </configuration>
+                <executions>
+                	<execution>
+                		<id>local</id>
+                		<phase>package</phase>
+                		<configuration>
+                			<to>
+                        		<image>${cws.sync.image.name}</image>
+                    		</to>
+                		</configuration>
+                		<goals>
+                			<goal>dockerBuild</goal>
+                		</goals>
+                	</execution>
+                </executions>
+            </plugin>			
 		</plugins>
+		
+		<resources>
+			<resource>
+				<directory>${main.resource.directory}</directory>
+				<filtering>false</filtering>
+			</resource>
+			
+			<resource>
+				<directory>${main.resource-filtered.directory}</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		
+		<testResources>
+			<testResource>
+				<directory>${test.resource.directory}</directory>
+				<filtering>false</filtering>
+			</testResource>
+		</testResources>
 	</build>
 
 </project>

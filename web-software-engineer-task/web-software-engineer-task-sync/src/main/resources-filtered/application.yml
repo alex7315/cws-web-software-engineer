@@ -15,7 +15,12 @@ spring:
 cws:
   github:
     authorization:
-      token: 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
+      token: ${csw.github.authorization.token}
     sync:
       scheduled:
-        cron: 0 0/1 * * * *
+        rate: ${cws.github.sync.scheduled.rate}
+    user:
+      page:
+        size: ${cws.github.user.page.size}
+      count:
+        max: ${cws.github.user.count.max}

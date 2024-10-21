@@ -21,7 +21,7 @@ public class CountStepExecutionListener implements StepExecutionListener {
         long readCount = stepExecution.getReadCount();
         long writeCount = stepExecution.getWriteCount();
 
-        LOG.info("{} items are read  {} items are written", readCount, writeCount);
+        LOG.info("{} items are processed by reader  {} items are processed by writer", readCount, writeCount);
         return stepExecution.getExitStatus();
     }
 

@@ -27,8 +27,8 @@ public class CountChunkListener implements ChunkListener {
         long readCount = context.getStepContext().getStepExecution().getReadCount();
         long writeCount = context.getStepContext().getStepExecution().getWriteCount();
 
-        logCounter(readCount, "read");
-        logCounter(writeCount, "written");
+        logCounter(readCount, "processed by reader");
+        logCounter(writeCount, "processed by writer");
     }
 
     private void logCounter(long counterValue, String action) {
