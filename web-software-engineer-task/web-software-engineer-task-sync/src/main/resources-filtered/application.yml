@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: web-software-engineer-task-sync
+  datasource:
+    url: ${cws.datasource.url}
+    username: ${cws.datasource.username}
+    password: ${cws.datasource.password}
+  jpa:
+    open-in-view: false
+  main:
+    allow-bean-definition-overriding: true
+  batch:
+    job:
+      enabled: false
+cws:
+  github:
+    authorization:
+      token: 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
+    sync:
+      scheduled:
+        cron: 0 0/1 * * * *

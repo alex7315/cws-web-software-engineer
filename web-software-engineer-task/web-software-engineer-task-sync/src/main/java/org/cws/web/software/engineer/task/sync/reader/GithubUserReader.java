@@ -5,20 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.cws.web.software.engineer.task.persistence.model.GithubUser;
 import org.cws.web.software.engineer.task.sync.dto.GithubUserDTO;
 import org.cws.web.software.engineer.task.sync.exception.GithubSynchJobReaderException;
-import org.cws.web.software.engineer.task.sync.mapper.GithubUserMapper;
 import org.cws.web.software.engineer.task.sync.service.GithubUsersService;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
-public class GithubUserReader implements ItemStreamReader<GithubUser> {
+public class GithubUserReader implements ItemStreamReader<GithubUserDTO> {
 
     private int                     maxUserCount;
 
@@ -26,18 +22,16 @@ public class GithubUserReader implements ItemStreamReader<GithubUser> {
 
     private int                     userCounter = 1;
 
-    private long                    currentUserId;
+    private long                    currentUserId = 0;
 
     private Iterator<GithubUserDTO> userIterator;
 
     private GithubUsersService      githubUsersService;
-    private GithubUserMapper        githubUserMapper;
 
 
-    public GithubUserReader(GithubUsersService githubUsersService, GithubUserMapper githubUserMapper,
+    public GithubUserReader(GithubUsersService githubUsersService,
             @Value("${cws.github.user.page.size:100}") int userPageSize, @Value("${cws.github.user.count.max:1000}") int maxUserCount) {
         this.githubUsersService = githubUsersService;
-        this.githubUserMapper = githubUserMapper;
         this.maxUserCount = maxUserCount;
         this.userPageSize = userPageSize;
 
@@ -46,7 +40,7 @@ public class GithubUserReader implements ItemStreamReader<GithubUser> {
     }
 
     @Override
-    public GithubUser read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public GithubUserDTO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
         if (userIterator.hasNext()) {
             return getNextUser();
         } else {
@@ -55,8 +49,10 @@ public class GithubUserReader implements ItemStreamReader<GithubUser> {
         }
     }
 
-    private GithubUser getNextUser() {
+    private GithubUserDTO getNextUser() {
         if (maxUserCount < userCounter) {
+            userCounter = 1;
+            currentUserId = 0;
             return null;
         }
 
@@ -64,7 +60,7 @@ public class GithubUserReader implements ItemStreamReader<GithubUser> {
             GithubUserDTO githubUserDto = userIterator.next();
             userCounter += 1;
             currentUserId = Long.valueOf(githubUserDto.getId());
-            return githubUserMapper.toModel(githubUserDto);
+            return githubUserDto;
         } catch (NumberFormatException e) {
             throw new GithubSynchJobReaderException("Error to parse github user id value", e);
         } catch (NoSuchElementException e) {

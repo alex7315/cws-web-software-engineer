@@ -18,8 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class GithubUsersServiceImpl implements GithubUsersService {
 
-    //    public static final String GITHUB_USERS_BASE_URI = "https://api.github.com/users";
-
     private String              githubApiVersion;
 
     private String              githubAuthorizationToken;
@@ -41,6 +39,7 @@ public class GithubUsersServiceImpl implements GithubUsersService {
         return builder.build()
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                                    .path("https:///")
                                     .pathSegment("api.github.com", "users")
                                     .queryParam("since", fromId)
                                     .queryParam("per_page", pageSize)

@@ -6,4 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface GithubUserRepository extends CrudRepository<GithubUser, Long>, PagingAndSortingRepository<GithubUser, Long> {
 
+    GithubUser getByGithubId(Long githubId);
 }

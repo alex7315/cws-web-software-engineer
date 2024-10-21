@@ -41,7 +41,7 @@ class GithubUsersServiceImplTest {
     @Test
     void shouldReturnUserList() throws Exception {
         String usersString = objectMapper.writeValueAsString(Arrays.asList(new GithubUserDTO("user_1", "1"), new GithubUserDTO("user_2", "2")));
-        server.expect(requestTo("/api.github.com/users?since=0&per_page=2"))
+        server.expect(requestTo("https://api.github.com/users?since=0&per_page=2"))
                 .andRespond(withSuccess(usersString, new MediaType("application", "vnd.github+json")));
         List<GithubUserDTO> actualUsers = client.getUsers(0L, 2);
 
@@ -50,7 +50,7 @@ class GithubUsersServiceImplTest {
 
     @Test
     void shouldThrowResponseException() {
-        this.server.expect(requestTo("/api.github.com/users?since=0&per_page=2")).andRespond(withStatus(HttpStatusCode.valueOf(304)));
+        this.server.expect(requestTo("https://api.github.com/users?since=0&per_page=2")).andRespond(withStatus(HttpStatusCode.valueOf(304)));
         InvalidGithubResponseException exception = catchThrowableOfType(() -> client.getUsers(0L, 2), InvalidGithubResponseException.class);
 
         assertThat(exception.getMessage()).contains("since: 0", "per_page: 2", "Status code: 304");
