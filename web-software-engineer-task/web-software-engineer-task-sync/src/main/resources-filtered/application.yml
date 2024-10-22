@@ -1,3 +1,6 @@
+server:
+  servlet:
+    contextPath: /cws-sync
 spring:
   application:
     name: web-software-engineer-task-sync
@@ -10,6 +13,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   batch:
+    jdbc:
+      initialize-schema: always
     job:
       enabled: false
 cws:

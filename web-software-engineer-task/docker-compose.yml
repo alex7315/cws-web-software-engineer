@@ -5,13 +5,13 @@ services:
     restart: always
     ports:
       - 3306:3306
-    networks:
-      - springapimysql-net  
     environment:
-      MYSQL_DATABASE: ${cws.datasource.schema}
-      MYSQL_USER: ${cws.datasource.username}
-      MYSQL_PASSWORD: ${cws.datasource.password}
-      MYSQL_ROOT_PASSWORD: ${cws.database.root.password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - springapimysql-net
 
   database_service:
     image: "cws/web-software-engineer-task-database:0.0.1"
@@ -27,6 +27,16 @@ services:
       - 8080:8080
     networks:
       - springapimysql-net 
+    depends_on:
+      - mysqldb
+      
+  sync_service:
+    image: "cws/web-software-engineer-task-sync:0.0.1"
+    restart: always
+    ports:
+      - 8090:8090
+    networks:
+      - springapimysql-net
     depends_on:
       - mysqldb
 

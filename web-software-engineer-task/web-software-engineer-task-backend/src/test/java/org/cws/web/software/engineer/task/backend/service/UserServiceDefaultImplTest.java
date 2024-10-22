@@ -7,13 +7,11 @@ import java.util.List;
 import org.cws.web.software.engineer.task.backend.dto.GithubUserDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 //@formatter:off
 @DataJpaTest(properties = {
@@ -25,8 +23,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"spring.jpa.open-in-view=false",
 		"spring.data.web.pageable.default-page-size=10"
 })
-@EnableJpaRepositories(basePackages = { "org.cws.web.software.engineer.task.persistence.repository" })
-@EntityScan("org.cws.web.software.engineer.task.persistence.model")
 @ComponentScan({ "org.cws.web.software.engineer.task.backend.service",
 		"org.cws.web.software.engineer.task.backend.mapper" })
 //@formatter:on

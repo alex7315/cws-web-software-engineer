@@ -8,10 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 //@formatter:off
@@ -27,8 +25,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "cws.github.user.page.size=4",
         "cws.github.user.count.max=8"
 })
-@EnableJpaRepositories(basePackages = { "org.cws.web.software.engineer.task.persistence.repository" })
-@EntityScan("org.cws.web.software.engineer.task.persistence.model")
 @EnableTransactionManagement
 //@formatter:on
 class GithubUsersSyncJobSchedulerTest {

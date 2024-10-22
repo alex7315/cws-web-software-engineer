@@ -14,45 +14,48 @@ import org.cws.web.software.engineer.task.sync.exception.InvalidGithubResponseEx
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RestClientTest(GithubUsersServiceImpl.class)
+@AutoConfigureMockRestServiceServer
 class GithubUsersServiceImplTest {
 
-    @Autowired
-    private GithubUsersServiceImpl client;
+	@Autowired
+	private MockRestServiceServer server;
 
-    @Autowired
-    private MockRestServiceServer server;
+	private GithubUsersServiceImpl client;
 
-    @Autowired
-    private ObjectMapper          objectMapper;
+	private ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeEach
-    void init() {
-        server = MockRestServiceServer.bindTo(client.getBuilder()).build();
-    }
+	@BeforeEach
+	void init() {
+		client = new GithubUsersServiceImpl("apiVersion", "authToken", RestClient.builder(), new ObjectMapper());
+		server = MockRestServiceServer.bindTo(client.getBuilder()).build();
+	}
 
-    @Test
-    void shouldReturnUserList() throws Exception {
-        String usersString = objectMapper.writeValueAsString(Arrays.asList(new GithubUserDTO("user_1", "1"), new GithubUserDTO("user_2", "2")));
-        server.expect(requestTo("https://api.github.com/users?since=0&per_page=2"))
-                .andRespond(withSuccess(usersString, new MediaType("application", "vnd.github+json")));
-        List<GithubUserDTO> actualUsers = client.getUsers(0L, 2);
+	@Test
+	void shouldReturnUserList() throws Exception {
+		String usersString = objectMapper
+				.writeValueAsString(Arrays.asList(new GithubUserDTO("user_1", "1"), new GithubUserDTO("user_2", "2")));
+		server.expect(requestTo("https://api.github.com/users?since=0&per_page=2"))
+				.andRespond(withSuccess(usersString, new MediaType("application", "vnd.github+json")));
+		List<GithubUserDTO> actualUsers = client.getUsers(0L, 2);
 
-        assertThat(actualUsers.stream().map(GithubUserDTO::getLogin)).containsExactlyInAnyOrder("user_1", "user_2");
-    }
+		assertThat(actualUsers.stream().map(GithubUserDTO::getLogin)).containsExactlyInAnyOrder("user_1", "user_2");
+	}
 
-    @Test
-    void shouldThrowResponseException() {
-        this.server.expect(requestTo("https://api.github.com/users?since=0&per_page=2")).andRespond(withStatus(HttpStatusCode.valueOf(304)));
-        InvalidGithubResponseException exception = catchThrowableOfType(() -> client.getUsers(0L, 2), InvalidGithubResponseException.class);
+	@Test
+	void shouldThrowResponseException() {
+		this.server.expect(requestTo("https://api.github.com/users?since=0&per_page=2"))
+				.andRespond(withStatus(HttpStatusCode.valueOf(304)));
+		InvalidGithubResponseException exception = catchThrowableOfType(() -> client.getUsers(0L, 2),
+				InvalidGithubResponseException.class);
 
-        assertThat(exception.getMessage()).contains("since: 0", "per_page: 2", "Status code: 304");
-    }
+		assertThat(exception.getMessage()).contains("since: 0", "per_page: 2", "Status code: 304");
+	}
 }
