@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -25,7 +27,8 @@ import net.minidev.json.JSONArray;
 		"spring.data.web.pageable.default-page-size=5"
 })
 //@formatter:on
-//@DirtiesContext
+@EnableJpaRepositories(basePackages = { "org.cws.web.software.engineer.task.persistence.repository" })
+@EntityScan("org.cws.web.software.engineer.task.persistence.model")
 class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	@Autowired

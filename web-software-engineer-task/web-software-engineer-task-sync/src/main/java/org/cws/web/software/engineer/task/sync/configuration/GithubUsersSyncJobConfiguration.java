@@ -31,9 +31,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Import({ Readers.class, Processors.class, Writers.class, Tasklets.class })
 public class GithubUsersSyncJobConfiguration {
 
-    @Bean
-    Job githubUsersSyncJob(JobRepository jobRepository, Step createModificationTilestampStep, Step createAndUpdateStep, Step deletionStep) {
-        //@formatter:off
+	@Bean
+	//@formatter:off
+    Job githubUsersSyncJob(JobRepository jobRepository, 
+    		@Qualifier("createModificationTilestampStep") Step createModificationTilestampStep, 
+    		@Qualifier("createAndUpdateStep") Step createAndUpdateStep, 
+    		@Qualifier("deletionStep") Step deletionStep) {    
         return new JobBuilder("githubUsersSyncJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(createModificationTilestampStep)
@@ -42,28 +45,28 @@ public class GithubUsersSyncJobConfiguration {
                 .end()
                 .build();
         //@formatter:on
-    }
+	}
 
-    @Bean
-    Step createModificationTilestampStep(JobRepository jobRepository,
-            @Qualifier("modificationTimestampCreationTasklet") Tasklet modificationTimestampCreationTasklet, PlatformTransactionManager transactionManager) {
-        //@formatter:off
+	@Bean
+	Step createModificationTilestampStep(JobRepository jobRepository,
+			@Qualifier("modificationTimestampCreationTasklet") Tasklet modificationTimestampCreationTasklet,
+			PlatformTransactionManager transactionManager) {
+		//@formatter:off
         return new StepBuilder("createModificationTilestampStep", jobRepository)
                 .tasklet(modificationTimestampCreationTasklet, transactionManager)
                 .allowStartIfComplete(true)
                 .build();
         //@formatter:on
-    }
+	}
 
-    @Bean
-    Step createAndUpdateStep(@Qualifier("userReader") ItemReader<GithubUserDTO> userReader,
-            @Qualifier("userProcessor") ItemProcessor<GithubUserDTO, GithubUser> userProcessor,
-            @Qualifier("userWriter")  ItemWriter<GithubUser> userWriter,
-            JobRepository jobRepository,
-            PlatformTransactionManager transactionManager,
-            @Qualifier("countChunkListener") ChunkListener countChunkListener,
-            @Qualifier("countStepExecutionListener") CountStepExecutionListener countStepExecutionListener) {
-        //@formatter:off
+	@Bean
+	Step createAndUpdateStep(@Qualifier("userReader") ItemReader<GithubUserDTO> userReader,
+			@Qualifier("userProcessor") ItemProcessor<GithubUserDTO, GithubUser> userProcessor,
+			@Qualifier("userWriter") ItemWriter<GithubUser> userWriter, JobRepository jobRepository,
+			PlatformTransactionManager transactionManager,
+			@Qualifier("countChunkListener") ChunkListener countChunkListener,
+			@Qualifier("countStepExecutionListener") CountStepExecutionListener countStepExecutionListener) {
+		//@formatter:off
         return new StepBuilder("createAndUpdateStep", jobRepository)
                 .<GithubUserDTO, GithubUser> chunk(100, transactionManager)
                 .reader(userReader)
@@ -74,15 +77,16 @@ public class GithubUsersSyncJobConfiguration {
                 .listener(countStepExecutionListener)
                 .build();
         //@formatter:on
-        
-    }
 
-    @Bean
-    Step deletionStep(@Qualifier("userToDeletionReader") ItemReader<Long> userToDeletionReader,
-            @Qualifier("deletionUserWriter") ItemWriter<Long> deletionUserWriter, JobRepository jobRepository, PlatformTransactionManager transactionManager,
-            @Qualifier("countChunkListener") ChunkListener countChunkListener,
-            @Qualifier("countStepExecutionListener") CountStepExecutionListener countStepExecutionListener) {
-        //@formatter:off
+	}
+
+	@Bean
+	Step deletionStep(@Qualifier("userToDeletionReader") ItemReader<Long> userToDeletionReader,
+			@Qualifier("deletionUserWriter") ItemWriter<Long> deletionUserWriter, JobRepository jobRepository,
+			PlatformTransactionManager transactionManager,
+			@Qualifier("countChunkListener") ChunkListener countChunkListener,
+			@Qualifier("countStepExecutionListener") CountStepExecutionListener countStepExecutionListener) {
+		//@formatter:off
         return new StepBuilder("deletionStep", jobRepository)
                 .<Long, Long> chunk(100, transactionManager)
                 .reader(userToDeletionReader)
@@ -92,16 +96,16 @@ public class GithubUsersSyncJobConfiguration {
                 .listener(countStepExecutionListener)
                 .build();
         //@formatter:on
-    }
+	}
 
-    @Bean
-    ChunkListener countChunkListener() {
-        return new CountChunkListener(10);
-    }
+	@Bean
+	ChunkListener countChunkListener() {
+		return new CountChunkListener(10);
+	}
 
-    @Bean
-    CountStepExecutionListener countStepExecutionListener() {
-        return new CountStepExecutionListener();
-    }
+	@Bean
+	CountStepExecutionListener countStepExecutionListener() {
+		return new CountStepExecutionListener();
+	}
 
 }

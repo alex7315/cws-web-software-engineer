@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "spring.jpa.defer-datasource-initialization=true",
         "spring.jpa.open-in-view=false",
         "spring.data.web.pageable.default-page-size=5",
-        "cws.github.sync.scheduled.rate=10",
+        "cws.github.sync.scheduled.rate=8",
         "cws.github.user.page.size=4",
         "cws.github.user.count.max=8"
 })
@@ -33,16 +33,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@formatter:on
 class GithubUsersSyncJobSchedulerTest {
 
-    @Autowired
-    private ApplicationContext context;
+	@Autowired
+	private ApplicationContext context;
 
-    @Test
-    void shouldStopJobWhenSchedulerDisabled() throws Exception {
-        GithubUsersSyncJobScheduler schedulerBean = context.getBean(GithubUsersSyncJobScheduler.class);
-        await().untilAsserted(() -> assertEquals(2, schedulerBean.getBatchRunCounter().get()));
-        schedulerBean.disable();
-        await().atLeast(10, TimeUnit.SECONDS);
+	@Test
+	void shouldStopJobWhenSchedulerDisabled() throws Exception {
+		GithubUsersSyncJobScheduler schedulerBean = context.getBean(GithubUsersSyncJobScheduler.class);
+		await().untilAsserted(() -> assertEquals(2, schedulerBean.getBatchRunCounter().get()));
+		schedulerBean.disable();
+		await().atLeast(20, TimeUnit.SECONDS);
 
-        assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(1);
-    }
+		assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(1);
+	}
 }
