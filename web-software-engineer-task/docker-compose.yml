@@ -1,4 +1,4 @@
-version: "3.7"
+version: "2.4"
 services:
   mysqldb:
     image: "mysql:8.0"
@@ -19,7 +19,8 @@ services:
     networks:
       - springapimysql-net 
     depends_on:
-      - mysqldb
+      mysqldb:
+        condition: service_started
 
   backend_service:
     image: "cws/web-software-engineer-task-backend:0.0.1"
@@ -29,7 +30,10 @@ services:
     networks:
       - springapimysql-net 
     depends_on:
-      - mysqldb
+      mysqldb:
+        condition: service_started
+      database_service:
+        condition: service_started
       
   sync_service:
     image: "cws/web-software-engineer-task-sync:0.0.1"
@@ -39,7 +43,10 @@ services:
     networks:
       - springapimysql-net
     depends_on:
-      - mysqldb
+      mysqldb:
+        condition: service_started
+      database_service:
+        condition: service_started
 
 networks:
   springapimysql-net:

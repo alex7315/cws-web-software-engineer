@@ -6,7 +6,6 @@ import org.cws.web.software.engineer.task.sync.listener.CountChunkListener;
 import org.cws.web.software.engineer.task.sync.listener.CountStepExecutionListener;
 import org.cws.web.software.engineer.task.sync.processor.Processors;
 import org.cws.web.software.engineer.task.sync.reader.Readers;
-import org.cws.web.software.engineer.task.sync.tasklet.Tasklets;
 import org.cws.web.software.engineer.task.sync.writer.Writers;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
@@ -15,7 +14,6 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -28,33 +26,19 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableScheduling
-@Import({ Readers.class, Processors.class, Writers.class, Tasklets.class })
+@Import({ Readers.class, Processors.class, Writers.class })
 public class GithubUsersSyncJobConfiguration {
 
 	@Bean
 	//@formatter:off
-    Job githubUsersSyncJob(JobRepository jobRepository, 
-    		@Qualifier("createModificationTilestampStep") Step createModificationTilestampStep, 
+    Job githubUsersSyncJob(JobRepository jobRepository,  
     		@Qualifier("createAndUpdateStep") Step createAndUpdateStep, 
     		@Qualifier("deletionStep") Step deletionStep) {    
         return new JobBuilder("githubUsersSyncJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .flow(createModificationTilestampStep)
-                .next(createAndUpdateStep)
+                .flow(createAndUpdateStep)
                 .next(deletionStep)
                 .end()
-                .build();
-        //@formatter:on
-	}
-
-	@Bean
-	Step createModificationTilestampStep(JobRepository jobRepository,
-			@Qualifier("modificationTimestampCreationTasklet") Tasklet modificationTimestampCreationTasklet,
-			PlatformTransactionManager transactionManager) {
-		//@formatter:off
-        return new StepBuilder("createModificationTilestampStep", jobRepository)
-                .tasklet(modificationTimestampCreationTasklet, transactionManager)
-                .allowStartIfComplete(true)
                 .build();
         //@formatter:on
 	}

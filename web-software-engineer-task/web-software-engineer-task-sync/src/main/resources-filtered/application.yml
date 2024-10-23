@@ -20,7 +20,7 @@ spring:
 cws:
   github:
     authorization:
-      token: ${csw.github.authorization.token}
+      token: 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
     sync:
       scheduled:
         rate: ${cws.github.sync.scheduled.rate}

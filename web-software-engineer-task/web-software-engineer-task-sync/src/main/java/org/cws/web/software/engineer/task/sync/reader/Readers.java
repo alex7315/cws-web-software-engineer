@@ -1,8 +1,5 @@
 package org.cws.web.software.engineer.task.sync.reader;
 
-import static org.cws.web.software.engineer.task.sync.constants.ContextParameterConstants.CONTEXT_PARAM_MODIFICATION_TIMESTAMP;
-
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,48 +21,49 @@ import jakarta.persistence.EntityManagerFactory;
 @Configuration
 public class Readers {
 
-    private EntityManagerFactory            entityManagerFactory;
+	private EntityManagerFactory entityManagerFactory;
 
-    private GithubUsersService   githubUsersService;
+	private GithubUsersService githubUsersService;
 
-    private int                  maxUserCount;
+	private int maxUserCount;
 
-    private int                  userPageSize;
+	private int userPageSize;
 
-    public Readers(GithubUsersService githubUsersService, @Value("${cws.github.user.page.size:100}") int userPageSize,
-            @Value("${cws.github.user.count.max:1000}") int maxUserCount, EntityManagerFactory entityManagerFactory) {
-        this.githubUsersService = githubUsersService;
-        this.userPageSize = userPageSize;
-        this.maxUserCount = maxUserCount;
-        this.entityManagerFactory = entityManagerFactory;
-    }
+	public Readers(GithubUsersService githubUsersService, @Value("${cws.github.user.page.size:100}") int userPageSize,
+			@Value("${cws.github.user.count.max:1000}") int maxUserCount, EntityManagerFactory entityManagerFactory) {
+		this.githubUsersService = githubUsersService;
+		this.userPageSize = userPageSize;
+		this.maxUserCount = maxUserCount;
+		this.entityManagerFactory = entityManagerFactory;
+	}
 
-    @Bean
-    @JobScope
-    ItemStreamReader<GithubUserDTO> userReader() {
-        SynchronizedItemStreamReader<GithubUserDTO> synchReader = new SynchronizedItemStreamReader<>();
+	@Bean
+	@JobScope
+	ItemStreamReader<GithubUserDTO> userReader() {
+		SynchronizedItemStreamReader<GithubUserDTO> synchReader = new SynchronizedItemStreamReader<>();
 
-        synchReader.setDelegate(new GithubUserReader(githubUsersService, userPageSize, maxUserCount));
+		synchReader.setDelegate(new GithubUserReader(githubUsersService, userPageSize, maxUserCount));
 
-        return synchReader;
-    }
+		return synchReader;
+	}
 
-    @Bean
-    @StepScope
-    ItemStreamReader<Long> userToDeletionReader(@Value("#{stepExecution.jobExecution}") JobExecution jobExecution) {
-        SynchronizedItemStreamReader<Long> syncReader = new SynchronizedItemStreamReader<>();
-        Instant modificationTimestamp = jobExecution.getExecutionContext().get(CONTEXT_PARAM_MODIFICATION_TIMESTAMP, Instant.class);
-        LoggerFactory.getLogger(ItemStreamReader.class).info("modification timestamp: {}", modificationTimestamp);
-        Map<String, Object> params = new HashMap<>();
-        params.put("modificationTimestamp", modificationTimestamp);
-        //@formatter:off
+	@Bean
+	@StepScope
+	ItemStreamReader<Long> userToDeletionReader(@Value("#{stepExecution.jobExecution}") JobExecution jobExecution) {
+		SynchronizedItemStreamReader<Long> syncReader = new SynchronizedItemStreamReader<>();
+
+		Long modificationId = jobExecution.getId();
+		LoggerFactory.getLogger(ItemStreamReader.class).info("modification id: {}", modificationId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("modificationId", modificationId);
+		//@formatter:off
         syncReader.setDelegate(new JpaPagingItemReaderBuilder<Long>()
                 .name("userToDeletionReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select distinct u.id from GithubUser u where u.modifiedAt < :modificationTimestamp")
+                .queryString("select distinct u.id from GithubUser u where u.modificationId < :modificationId")
                 .parameterValues(params)
                 .build());
         //@formatter:on
-        return syncReader;
-    }
+		return syncReader;
+	}
 }

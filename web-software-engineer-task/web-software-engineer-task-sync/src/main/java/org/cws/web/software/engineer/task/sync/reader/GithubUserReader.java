@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
 import org.cws.web.software.engineer.task.sync.dto.GithubUserDTO;
 import org.cws.web.software.engineer.task.sync.exception.GithubSynchJobReaderException;
 import org.cws.web.software.engineer.task.sync.service.GithubUsersService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -15,56 +17,62 @@ import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Value;
 
 public class GithubUserReader implements ItemStreamReader<GithubUserDTO> {
+	private final Logger logger = LoggerFactory.getLogger(GithubUserReader.class);
 
-    private int                     maxUserCount;
+	private int maxUserCount;
 
-    private int                     userPageSize;
+	private int userPageSize;
 
-    private int                     userCounter = 1;
+	private int userCounter = 1;
 
-    private long                    currentUserId = 0;
+	private long currentUserId = 0;
 
-    private Iterator<GithubUserDTO> userIterator;
+	private Iterator<GithubUserDTO> userIterator;
 
-    private GithubUsersService      githubUsersService;
+	private GithubUsersService githubUsersService;
 
+	public GithubUserReader(GithubUsersService githubUsersService,
+			@Value("${cws.github.user.page.size:100}") int userPageSize,
+			@Value("${cws.github.user.count.max:1000}") int maxUserCount) {
+		this.githubUsersService = githubUsersService;
+		this.maxUserCount = maxUserCount;
+		this.userPageSize = userPageSize;
 
-    public GithubUserReader(GithubUsersService githubUsersService,
-            @Value("${cws.github.user.page.size:100}") int userPageSize, @Value("${cws.github.user.count.max:1000}") int maxUserCount) {
-        this.githubUsersService = githubUsersService;
-        this.maxUserCount = maxUserCount;
-        this.userPageSize = userPageSize;
+		List<GithubUserDTO> userList = new ArrayList<>();
+		this.userIterator = userList.iterator();
+	}
 
-        List<GithubUserDTO> userList = new ArrayList<>();
-        this.userIterator = userList.iterator();
-    }
+	@Override
+	public GithubUserDTO read()
+			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+		if (userIterator.hasNext()) {
+			return getNextUser();
+		} else {
+			userIterator = githubUsersService.getUsers(currentUserId, userPageSize).iterator();
+			return getNextUser();
+		}
+	}
 
-    @Override
-    public GithubUserDTO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        if (userIterator.hasNext()) {
-            return getNextUser();
-        } else {
-            userIterator = githubUsersService.getUsers(currentUserId, userPageSize).iterator();
-            return getNextUser();
-        }
-    }
+	private GithubUserDTO getNextUser() {
+		if (maxUserCount < userCounter) {
+			logger.debug("max user count {} is reached. User counter value: {} current user id {}", maxUserCount,
+					userCounter, currentUserId);
+			userCounter = 1;
+			currentUserId = 0;
+			logger.debug("Counters are reinitialized. User counter value: {} current user id {}", userCounter,
+					currentUserId);
+			return null;
+		}
 
-    private GithubUserDTO getNextUser() {
-        if (maxUserCount < userCounter) {
-            userCounter = 1;
-            currentUserId = 0;
-            return null;
-        }
-
-        try {
-            GithubUserDTO githubUserDto = userIterator.next();
-            userCounter += 1;
-            currentUserId = Long.valueOf(githubUserDto.getId());
-            return githubUserDto;
-        } catch (NumberFormatException e) {
-            throw new GithubSynchJobReaderException("Error to parse github user id value", e);
-        } catch (NoSuchElementException e) {
-            return null;
-        }
-    }
+		try {
+			GithubUserDTO githubUserDto = userIterator.next();
+			userCounter += 1;
+			currentUserId = Long.valueOf(githubUserDto.getId());
+			return githubUserDto;
+		} catch (NumberFormatException e) {
+			throw new GithubSynchJobReaderException("Error to parse github user id value", e);
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+	}
 }

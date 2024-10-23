@@ -7,6 +7,8 @@ import java.util.List;
 import org.cws.web.software.engineer.task.sync.dto.GithubUserDTO;
 import org.cws.web.software.engineer.task.sync.exception.InvalidGithubResponseException;
 import org.cws.web.software.engineer.task.sync.exception.NotAuthorizedGithubRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,12 @@ import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleC
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * {@link GithubUsersService} gets github users using request to Github REST API
+ */
 @Service
 public class GithubUsersServiceImpl implements GithubUsersService {
+	private final Logger logger = LoggerFactory.getLogger(GithubUsersServiceImpl.class);
 
 	private String githubApiVersion;
 
@@ -35,7 +41,14 @@ public class GithubUsersServiceImpl implements GithubUsersService {
 		this.objectMapper = objectMapper;
 	}
 
+	/**
+	 * gets list of github users from {@code https://api.github.com/users}
+	 * 
+	 * @see GithubUsersService#getUsers(Long, Integer)
+	 */
 	public List<GithubUserDTO> getUsers(Long fromId, Integer pageSize) {
+		logger.debug("gets github users from user id {} page size {}", fromId, pageSize);
+
 		//@formatter:off
         return this.builder
 				.baseUrl("https://api.github.com/users")

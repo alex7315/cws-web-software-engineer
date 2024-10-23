@@ -30,8 +30,8 @@ public class GithubUser {
 
 	@Column(name = "login", nullable = false)
 	private String login;
-
-	@Column(name = "modified_at", nullable = false)
-	private Instant modifiedAt;
+	
+	@Column(name = "modification_id", nullable = false)
+	private Long modificationId;
 
 }
