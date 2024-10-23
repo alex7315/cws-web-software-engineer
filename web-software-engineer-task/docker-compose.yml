@@ -15,6 +15,7 @@ services:
 
   database_service:
     image: "cws/web-software-engineer-task-database:0.0.1"
+    restart: on-failure
     networks:
       - springapimysql-net 
     depends_on:
