@@ -107,7 +107,7 @@
     			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
     			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
     			<cws.jpa.ddl.auto>${cws.jpa.ddl.auto}</cws.jpa.ddl.auto>
-    			<csw.github.authorization.token>${csw.github.authorization.token}</csw.github.authorization.token>
+    			<cws.github.authorization.token>${csw.github.authorization.token}</cws.github.authorization.token>
     			<cws.github.sync.scheduled.rate>${cws.github.sync.scheduled.rate}</cws.github.sync.scheduled.rate>
     			<cws.github.user.page.size>${cws.github.user.page.size}</cws.github.user.page.size>
     			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
