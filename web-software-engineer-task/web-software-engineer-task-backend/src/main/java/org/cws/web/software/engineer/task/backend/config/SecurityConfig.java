@@ -1,10 +1,11 @@
 package org.cws.web.software.engineer.task.backend.config;
 
-/*
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-*/
+@EnableMethodSecurity /*(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)*/
+//by default
 public class SecurityConfig {
 	/*
 	 * @Bean SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
