@@ -228,6 +228,9 @@
                 		<image>openjdk:17</image>
                 	</from>
                     <container>
+                    	<volumes>
+               				<volume>${cws.log.base.path}</volume>
+           				</volumes>
                 		<ports>
                 			<port>${cws.backend.port.exposed}</port>
                 		</ports>

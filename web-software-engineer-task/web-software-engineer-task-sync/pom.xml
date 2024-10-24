@@ -113,6 +113,7 @@
     			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
     			<cws.sync.port.exposed>${cws.sync.port.exposed}</cws.sync.port.exposed>
     			<cws.sync.image.name>cws/web-software-engineer-task-sync:${cws.sync.image.tag}</cws.sync.image.name>
+    			<cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
 			</properties>
 		</profile>
 	</profiles>
@@ -179,6 +180,9 @@
                 		<image>openjdk:17</image>
                 	</from>
                     <container>
+                    	<volumes>
+               				<volume>${cws.log.base.path}</volume>
+           				</volumes>
                 		<ports>
                 			<port>${cws.sync.port.exposed}</port>
                 		</ports>
