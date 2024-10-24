@@ -10,6 +10,11 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: mysqladmin -h 127.0.0.1 ping -P 3306 -p${MYSQL_ROOT_PASSWORD}|grep 'mysqld is alive'
+      interval: 10s
+      timeout: 30s
+      retries: 5
     networks:
       - springapimysql-net
 
@@ -20,18 +25,20 @@ services:
       - springapimysql-net 
     depends_on:
       mysqldb:
-        condition: service_started
+        condition: service_healthy
 
   backend_service:
     image: "cws/web-software-engineer-task-backend:0.0.1"
     restart: always
     ports:
-      - 8080:8080
+      - ${CWS_BACKEND_PORT}:8080
+    volumes:
+      - ${CWS_LOG_BASEDIR}:${CWS_LOG_BASEDIR}
     networks:
       - springapimysql-net 
     depends_on:
       mysqldb:
-        condition: service_started
+        condition: service_healthy
       database_service:
         condition: service_started
       
@@ -39,11 +46,15 @@ services:
     image: "cws/web-software-engineer-task-sync:0.0.1"
     restart: always
     ports:
-      - 8090:8090
+      - ${CWS_SYNC_PORT}:8080
+    volumes:
+      - ${CWS_LOG_BASEDIR}:${CWS_LOG_BASEDIR}
     networks:
       - springapimysql-net
     depends_on:
       mysqldb:
+        condition: service_healthy
+      backend_service:
         condition: service_started
       database_service:
         condition: service_started
