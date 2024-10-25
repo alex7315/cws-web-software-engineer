@@ -58,7 +58,7 @@ _Maven_  configuration contains plugins to compile source code, to build executa
 
 __mvn -P<profile> clean package__
 
-##Deployment  
+## Deployment  
 Project contains  
 
  _docker-compose.yml_  
