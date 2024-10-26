@@ -94,6 +94,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.cws</groupId>
+			<artifactId>web-software-engineer-task-security</artifactId>
+			<version>${web.software.engineer.task.security.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
