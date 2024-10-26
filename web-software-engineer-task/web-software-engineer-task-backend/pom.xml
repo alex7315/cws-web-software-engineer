@@ -23,6 +23,7 @@
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<springdoc.openapi.starter.webmvc.ui.version>2.5.0</springdoc.openapi.starter.webmvc.ui.version>
 		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
+		<web.software.engineer.task.security.version>0.0.1-SNAPSHOT</web.software.engineer.task.security.version>
 		
 		<spring.boot.version>3.3.4</spring.boot.version>
 		<springdoc.openapi.maven.plugin.version>1.4</springdoc.openapi.maven.plugin.version>

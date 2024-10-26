@@ -1,8 +1,11 @@
 package org.cws.web.software.engineer.task.backend.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.cws.web.software.engineer.task.security.jwt.AuthTokenFilter;
+import org.cws.web.software.engineer.task.security.jwt.JwtAuthEntryPoint;
+import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,38 +21,46 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 //(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 //by default
-public class SecurityConfig {
+@ComponentScan({ "org.cws.web.software.engineer.task.security.jwt",
+		"org.cws.web.software.engineer.task.security.service" })
+public class WebSecurityConfig {
 
-    @Autowired
-    @Qualifier("userDetailsServiceImpl")
-    UserDetailsService        userDetailsService;
+	UserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtAuthEntryPoint unauthorizedHandler;
+	private JwtAuthEntryPoint unauthorizedHandler;
 
-    @Bean
-    AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
-    }
+	private JwtHandler jvtHandler;
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
+			JwtAuthEntryPoint unauthorizedHandler, JwtHandler jvtHandler) {
+		this.userDetailsService = userDetailsService;
+		this.unauthorizedHandler = unauthorizedHandler;
+		this.jvtHandler = jvtHandler;
+	}
 
-    @Bean
-    DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	@Bean
+	AuthTokenFilter authenticationJwtTokenFilter() {
+		return new AuthTokenFilter(jvtHandler, userDetailsService);
+	}
 
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-        return authProvider;
-    }
+	@Bean
+	DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //@formatter:off
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+
+		return authProvider;
+	}
+
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		//@formatter:off
         http.csrf(csrf -> csrf.disable())
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -65,5 +76,5 @@ public class SecurityConfig {
     
         return http.build();
         //@formatter:on
-    }
+	}
 }
