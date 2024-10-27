@@ -28,7 +28,7 @@ public class JwtHandler {
 
     private int    jwtExpirationMs;
 
-    public JwtHandler(@Value("${cws.security.jwtSecret}") String jwtSecret, @Value("${cws.security.jwtExpirationMs}") int jwtExpirationMs) {
+    public JwtHandler(@Value("${cws.security.jwt.secret}") String jwtSecret, @Value("${cws.security.jwt.expiration.ms}") int jwtExpirationMs) {
         super();
         this.jwtSecret = jwtSecret;
         this.jwtExpirationMs = jwtExpirationMs;

@@ -66,7 +66,7 @@ public class AuthController {
         if(CollectionUtils.isEmpty(strRoles)) {
             securityService.addRole(roles, RoleEnum.ROLE_USER);
         } else {
-            fillUserRoles(strRoles, roles);
+            strRoles.forEach(role -> fillRole(role, roles));
         }
         
         user.setRoles(roles);
@@ -76,14 +76,12 @@ public class AuthController {
 
     }
 
-    private void fillUserRoles(Set<String> strRoles, Set<Role> roles) {
-        strRoles.forEach(role -> {
-            if("admin".equals(role)) {
-                securityService.addRole(roles, RoleEnum.ROLE_ADMIN);
-            } else {
-                securityService.addRole(roles, RoleEnum.ROLE_USER);
-            }
-        });
+    private void fillRole(String role, Set<Role> roles) {
+        if ("admin".equals(role)) {
+            securityService.addRole(roles, RoleEnum.ROLE_ADMIN);
+        } else {
+            securityService.addRole(roles, RoleEnum.ROLE_USER);
+        }
     }
 
     @PostMapping("/signin")
