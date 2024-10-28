@@ -36,7 +36,11 @@ import net.minidev.json.JSONArray;
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationTest {
 
-	@Autowired
+    private static final String SIGNIN_URI = "/api/auth/signin";
+
+    private static final String SIGNUP_URI  = "/api/auth/signup";
+
+    @Autowired
 	TestRestTemplate restTemplate;
 
     private HttpHeaders headers;
@@ -59,7 +63,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
         HttpEntity<String> signUpRequest = new HttpEntity<>(
                 "{\"username\": \"new_user\",\"email\": \"new_user@cws.de\",\"password\": \"87654321\",\"role\": [\"user\"]}", headers);
-        ResponseEntity<String> signUpResponse = restTemplate.postForEntity("/api/auth/signup",
+        ResponseEntity<String> signUpResponse = restTemplate.postForEntity(SIGNUP_URI,
                 signUpRequest, String.class);
         assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -68,21 +72,70 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
         newAuthJsonObject.put("password", "87654321");
 
         HttpEntity<String> authRequest = new HttpEntity<>(newAuthJsonObject.toString(), headers);
-        ResponseEntity<String> authResponse = restTemplate.postForEntity("/api/auth/signin", authRequest, String.class);
+        ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
         assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
+    void shouldRejectCreationOfUsersWithSameUsername() {
+        HttpEntity<String> signUpRequest = new HttpEntity<>(
+                "{\"username\": \"new_user_1\",\"email\": \"new_user_1@cws.de\",\"password\": \"87654321\",\"role\": [\"user\"]}", headers);
+        ResponseEntity<String> signUpResponse = restTemplate.postForEntity(SIGNUP_URI, signUpRequest, String.class);
+        assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        HttpEntity<String> signUpRequestSameUser = new HttpEntity<>(
+                "{\"username\": \"new_user_1\",\"email\": \"another_new_user@cws.de\",\"password\": \"86754231\",\"role\": [\"user\"]}", headers);
+        ResponseEntity<String> signUpResponseSameUser = restTemplate.postForEntity(SIGNUP_URI, signUpRequestSameUser, String.class);
+        assertThat(signUpResponseSameUser.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void shouldRejectCreationOfUserWithSameEmail() {
+        HttpEntity<String> signUpRequest = new HttpEntity<>(
+                "{\"username\": \"new_user_2\",\"email\": \"new_user_2@cws.de\",\"password\": \"87654321\",\"role\": [\"user\"]}", headers);
+        ResponseEntity<String> signUpResponse = restTemplate.postForEntity(SIGNUP_URI, signUpRequest, String.class);
+        assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        HttpEntity<String> signUpRequestSameUser = new HttpEntity<>(
+                "{\"username\": \"another_2\",\"email\": \"new_user_2@cws.de\",\"password\": \"86754231\",\"role\": [\"user\"]}", headers);
+        ResponseEntity<String> signUpResponseSameUser = restTemplate.postForEntity(SIGNUP_URI, signUpRequestSameUser, String.class);
+        assertThat(signUpResponseSameUser.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @Test
     void shouldAuthenticateUser() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<String> authResponse = restTemplate.postForEntity("/api/auth/signin", request, String.class);
+        ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, String.class);
         assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldRejectUnknownUser() throws Exception {
+        JSONObject unknownUserAuthObject = new JSONObject();
+        unknownUserAuthObject.put("username", "unknown");
+        unknownUserAuthObject.put("password", authJsonObject.get("password"));
+
+        HttpEntity<String> authRequest = new HttpEntity<>(unknownUserAuthObject.toString(), headers);
+        ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
+        assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void shouldRejectUnknownPassword() throws Exception {
+        JSONObject unknownPasswordAuthObject = new JSONObject();
+        unknownPasswordAuthObject.put("username", authJsonObject.get("username"));
+        unknownPasswordAuthObject.put("password", "unknown");
+
+        HttpEntity<String> authRequest = new HttpEntity<>(unknownPasswordAuthObject.toString(), headers);
+        ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
+        assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
 	@Test
     void shouldReturnUsersPageUsesDefaultParameters() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity("/api/auth/signin", request, JwtResponse.class);
+        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
         String authToken = authResponse.getBody().getToken();
         headers.setBearerAuth(authToken);
 
@@ -104,7 +157,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	@Test
     void shouldReturnDescSortedPageOfUsers() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity("/api/auth/signin", request, JwtResponse.class);
+        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
         String authToken = authResponse.getBody().getToken();
         headers.setBearerAuth(authToken);
 
@@ -123,7 +176,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	@Test
     void shouldReturnDefaultSortedPageOfUsersWithWrongPageParameterValues() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity("/api/auth/signin", request, JwtResponse.class);
+        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
         String authToken = authResponse.getBody().getToken();
         headers.setBearerAuth(authToken);
 
@@ -144,7 +197,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	@Test
     void shouldReturnRequestErrorByWrongSortParameterValue() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity("/api/auth/signin", request, JwtResponse.class);
+        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
         String authToken = authResponse.getBody().getToken();
         headers.setBearerAuth(authToken);
 
