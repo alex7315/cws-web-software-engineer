@@ -27,6 +27,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
@@ -49,6 +54,11 @@ public class AuthController {
         this.securityService = securityService;
     }
 
+    @Operation(summary = "Registers new user with user name, email and authorization list (role names)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "New user is created and standard message is in response", content = {
+                    @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "401", description = "Error to register new user", content = @Content) })
     @PostMapping("/signup")
     public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         // Create new user's account
@@ -84,6 +94,11 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Authenticates user by name and password and creates web access token to request resources user is authorized for")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authenticates user successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class)) }),
+            @ApiResponse(responseCode = "401", description = "User authentication error", content = @Content) })
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager

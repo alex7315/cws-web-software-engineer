@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/job")
 public class JobSchedulerController {
@@ -21,6 +25,8 @@ public class JobSchedulerController {
 		this.applicationContext = applicationContext;
 	}
 
+    @Operation(summary = "Activated synch job")
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Synch job is activated") })
     @PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/scheduler/activate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -29,6 +35,8 @@ public class JobSchedulerController {
 		scheduler.enable();
 	}
 
+    @Operation(summary = "Deactivated synch job")
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Synch job is deactivated") })
     @PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/scheduler/deactivate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
