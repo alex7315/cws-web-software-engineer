@@ -26,7 +26,6 @@
 		<web.software.engineer.task.security.version>0.0.1-SNAPSHOT</web.software.engineer.task.security.version>
 		
 		<spring.boot.version>3.3.4</spring.boot.version>
-		<springdoc.openapi.maven.plugin.version>1.4</springdoc.openapi.maven.plugin.version>
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
 		<jib.maven.plugin.version>3.4.3</jib.maven.plugin.version>
@@ -158,38 +157,7 @@
 							<goal>repackage</goal>
 						</goals>
 					</execution>
-<!--					<execution>-->
-<!--						<id>pre-integration-test</id>-->
-<!--						<goals>-->
-<!--							<goal>start</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--					<execution>-->
-<!--						<id>post-integration-test</id>-->
-<!--						<goals>-->
-<!--							<goal>stop</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
 				</executions>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.springdoc</groupId>
-				<artifactId>springdoc-openapi-maven-plugin</artifactId>
-				<version>${springdoc.openapi.maven.plugin.version}</version>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<apiDocsUrl>http://localhost:8080/web-software-engineer-task-backend/v3/api-docs.yaml</apiDocsUrl>
-					<outputFileName>openapi-web-software-engineer-task-backend.yaml</outputFileName>
-					<outputDir>${project.build.directory}</outputDir>
-				</configuration>
 			</plugin>
 			
 			<plugin>

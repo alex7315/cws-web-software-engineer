@@ -20,6 +20,8 @@
 		
 		<io.jsonwebtoke.version>0.12.6</io.jsonwebtoke.version>
 		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
+		
+		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -99,6 +101,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+                	<target>${java.version}</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

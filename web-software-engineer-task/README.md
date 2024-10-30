@@ -123,6 +123,12 @@ popd
 ##Using  
 _backend_  Component provides endpoint to get paginated list of Github users.  
 
+__POST__ _<host>[:port]/cws-backend/api/auth/signup_ 
+
+
+__POST__ _<host>[:port]/cws-backend/api/auth/signin_ 
+
+
 __GET__  _<host>[:port]/cws-backend/api/users_  
 
 To see detailed documentation see _<host>[:port]/cws-backend/swagger-ui/index.html_  
