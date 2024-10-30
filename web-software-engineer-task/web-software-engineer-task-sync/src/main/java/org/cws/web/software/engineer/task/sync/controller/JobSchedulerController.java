@@ -4,6 +4,7 @@ import org.cws.web.software.engineer.task.sync.scheduler.GithubUsersSyncJobSched
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,6 +21,7 @@ public class JobSchedulerController {
 		this.applicationContext = applicationContext;
 	}
 
+    @PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/scheduler/activate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void activate() {
@@ -27,6 +29,7 @@ public class JobSchedulerController {
 		scheduler.enable();
 	}
 
+    @PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/scheduler/deactivate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deactivate() {

@@ -1,4 +1,4 @@
-package org.cws.web.software.engineer.task.backend.config;
+package org.cws.web.software.engineer.task.sync.configuration;
 
 import org.cws.web.software.engineer.task.security.jwt.AuthTokenFilter;
 import org.cws.web.software.engineer.task.security.jwt.JwtAuthEntryPoint;
@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 //by default
 @ComponentScan({ "org.cws.web.software.engineer.task.security.jwt",
 		"org.cws.web.software.engineer.task.security.service" })
-public class WebSecurityConfig {
+public class SyncWebSecurityConfig {
 
 	UserDetailsService userDetailsService;
 
@@ -33,7 +33,7 @@ public class WebSecurityConfig {
 
 	private JwtHandler jvtHandler;
 
-	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
+	SyncWebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
 			JwtAuthEntryPoint unauthorizedHandler, JwtHandler jvtHandler) {
 		this.userDetailsService = userDetailsService;
 		this.unauthorizedHandler = unauthorizedHandler;
@@ -72,8 +72,7 @@ public class WebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
-                        auth.requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
+                        auth.requestMatchers("/job/scheduler/**").permitAll()
                         .anyRequest().authenticated()
                     );
     
