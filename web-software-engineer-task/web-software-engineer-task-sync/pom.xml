@@ -132,7 +132,9 @@
     			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
     			<cws.sync.port.exposed>${cws.sync.port.exposed}</cws.sync.port.exposed>
     			<cws.sync.image.name>cws/web-software-engineer-task-sync:${cws.sync.image.tag}</cws.sync.image.name>
-    			<cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
+    			<cws.security.jwt.secret>${cws.security.jwt.secret}</cws.security.jwt.secret>
+                <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
+                <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
 			</properties>
 		</profile>
 	</profiles>

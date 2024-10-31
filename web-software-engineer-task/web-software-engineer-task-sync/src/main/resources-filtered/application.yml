@@ -29,3 +29,8 @@ cws:
         size: ${cws.github.user.page.size}
       count:
         max: ${cws.github.user.count.max}
+  security:
+    jwt:
+      secret: ${cws.security.jwt.secret}
+      expiration:
+        ms: ${cws.security.jwt.expiration.ms}

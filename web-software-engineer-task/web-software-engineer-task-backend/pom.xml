@@ -133,6 +133,9 @@
     			<cws.jpa.ddl.auto>${cws.jpa.ddl.auto}</cws.jpa.ddl.auto>
     			<cws.backend.port.exposed>${cws.backend.port.exposed}</cws.backend.port.exposed>
     			<cws.backend.image.name>cws/web-software-engineer-task-backend:${cws.backend.image.tag}</cws.backend.image.name>
+    			<cws.security.jwt.secret>${cws.security.jwt.secret}</cws.security.jwt.secret>
+                <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
+                <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
 			</properties>
 		</profile>
 	</profiles>
