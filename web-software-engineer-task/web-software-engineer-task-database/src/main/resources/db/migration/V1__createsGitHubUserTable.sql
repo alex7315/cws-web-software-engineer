@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS github_user (
 	PRIMARY KEY (id),
 	UNIQUE (github_id),
 	UNIQUE (login)
-) DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4 COMMENT='Guthub user table';

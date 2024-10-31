@@ -1,10 +1,9 @@
 package org.cws.web.software.engineer.task.persistence.repository;
 
 import org.cws.web.software.engineer.task.persistence.model.GithubUser;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GithubUserRepository extends CrudRepository<GithubUser, Long>, PagingAndSortingRepository<GithubUser, Long> {
+public interface GithubUserRepository extends JpaRepository<GithubUser, Long> {
 
     GithubUser getByGithubId(Long githubId);
 }

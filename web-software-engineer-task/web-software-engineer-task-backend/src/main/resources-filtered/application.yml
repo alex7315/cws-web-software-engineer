@@ -10,3 +10,9 @@ spring:
     password: ${cws.datasource.password}
   jpa:
     open-in-view: false
+cws:
+  security:
+    jwt:
+      secret: ${cws.security.jwt.secret}
+      expiration:
+        ms: ${cws.security.jwt.expiration.ms}

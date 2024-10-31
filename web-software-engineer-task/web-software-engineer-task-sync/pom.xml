@@ -22,7 +22,9 @@
 		
 		<spring.boot.version>3.3.4</spring.boot.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+		<springdoc.openapi.starter.webmvc.ui.version>2.5.0</springdoc.openapi.starter.webmvc.ui.version>
 		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
+		<web.software.engineer.task.security.version>0.0.1-SNAPSHOT</web.software.engineer.task.security.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
@@ -58,6 +60,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -77,9 +84,21 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.openapi.starter.webmvc.ui.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.cws</groupId>
 			<artifactId>web-software-engineer-task-persistence</artifactId>
 			<version>${web.software.engineer.task.persistence.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.cws</groupId>
+			<artifactId>web-software-engineer-task-security</artifactId>
+			<version>${web.software.engineer.task.security.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -113,7 +132,9 @@
     			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
     			<cws.sync.port.exposed>${cws.sync.port.exposed}</cws.sync.port.exposed>
     			<cws.sync.image.name>cws/web-software-engineer-task-sync:${cws.sync.image.tag}</cws.sync.image.name>
-    			<cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
+    			<cws.security.jwt.secret>${cws.security.jwt.secret}</cws.security.jwt.secret>
+                <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
+                <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
 			</properties>
 		</profile>
 	</profiles>

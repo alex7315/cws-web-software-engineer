@@ -32,8 +32,8 @@
         </rollingPolicy>
     </appender>
     
-    <!-- LOG everything at INFO level -->
-    <root level="info">
+    <!-- LOG everything at DEBUG level -->
+    <root level="DEBUG">
         <appender-ref ref="RollingFile" />
     </root>
 
@@ -43,12 +43,12 @@
     </logger>
     
     <!-- LOG hibernate SQL. Has to set to DEBUG level to show SQL statements -->
-    <logger name="org.hibernate.SQL" level="info" additivity="false">
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
     	<appender-ref ref="RollingFile" />
     </logger>
     
     <!-- LOG hibernate SQL parameters. Has to set to TRACE level to show prepared statement parameter values-->
-    <logger name="org.hibernate.type.descriptor.sql.BasisBuilder" level="info" additivity="false">
+    <logger name="org.hibernate.type.descriptor.sql.BasisBuilder" level="TRACE" additivity="false">
     	<appender-ref ref="RollingFile" />
     </logger>
 

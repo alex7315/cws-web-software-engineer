@@ -41,16 +41,20 @@ _cws.log.base.path_
 
 ###Sync Component  
 
-_cws.github.authorization.token_  
+_cws.github.authorization.token_  Authorization token can be getting from GitHub using GitHub account
 
-_cws.github.sync.scheduled.rate_  
+_cws.github.sync.scheduled.rate_  Time interval in sec. is used by scheduler to run sync job. Default value 60
 
-_cws.github.user.page.size_  
+_cws.github.user.page.size_   Size of page is used by paginated request to get GitHub users. Default value 100
 
-_cws.github.user.count.max_  
+_cws.github.user.count.max_   Max. number of GitHub users are requested to synchronize with internal content. Default value 1000
 
 _cws.sync.port.exposed_  
 
+###Security configuration (Backend and Sync)
+_cws.security.jwt.secret_     Plain text 64 character secret key is used by creating of authorization token (JWT)
+
+_cws.security.jwt.expiration.ms_  
 
 
 ## Build  
@@ -118,6 +122,12 @@ popd
 
 ## Using  
 _backend_  Component provides endpoint to get paginated list of Github users.  
+
+__POST__ _<host>[:port]/cws-backend/api/auth/signup_ 
+
+
+__POST__ _<host>[:port]/cws-backend/api/auth/signin_ 
+
 
 __GET__  _<host>[:port]/cws-backend/api/users_  
 

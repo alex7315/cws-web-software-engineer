@@ -1,7 +1,5 @@
 package org.cws.web.software.engineer.task.persistence.model;
 
-import java.time.Instant;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

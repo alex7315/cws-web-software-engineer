@@ -23,7 +23,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "spring.data.web.pageable.default-page-size=5",
         "cws.github.sync.scheduled.rate=8",
         "cws.github.user.page.size=4",
-        "cws.github.user.count.max=8"
+        "cws.github.user.count.max=8",
+        "cws.github.authorization.token=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65",
+        "cws.security.jwt.secret=secret",
+        "cws.security.jwt.expiration.ms=600"
+        
 })
 @EnableTransactionManagement
 //@formatter:on
