@@ -1,38 +1,39 @@
 import axios from "axios";
 
-const AUTH_API_BASE_URL = "http://localhost:8080";
+const API_URL = "http://localhost:8080/cws-service/api/auth/";
 
 class AuthService {
-    login(username, password) {
-      return axios
-        .post(AUTH_API_BASE_URL + "/api/auth/signin", {
-          username,
-          password
-        })
-        .then(response => {
-          if (response.data.accessToken) {
-            localStorage.setItem("user", JSON.stringify(response.data));
-          }
-  
-          return response.data;
-        });
-    }
-  
-    logout() {
-      localStorage.removeItem("user");
-    }
-  
-    register(username, email, password) {
-      return axios.post(AUTH_API_BASE_URL + "/api/auth/signup", {
+  login(username, password) {
+    return axios
+      .post(API_URL + "signin", {
         username,
-        email,
         password
+      })
+      .then(response => {
+        if (response.data.accessToken) {
+            console.log(response.data);
+            localStorage.setItem("user", JSON.stringify(response.data));
+        }
+
+        return response.data;
       });
-    }
-  
-    getCurrentUser() {
-      return JSON.parse(localStorage.getItem('user'));
-    }
+  }
+
+  logout() {
+    localStorage.removeItem("user");
+  }
+
+  register(username, email, password) {
+    return axios.post(API_URL + "signup", {
+      username,
+      email,
+      password
+    });
+  }
+
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem('user'));;
+  }
 }
 
 export default new AuthService();
