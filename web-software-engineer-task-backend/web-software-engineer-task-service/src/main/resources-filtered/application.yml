@@ -1,0 +1,18 @@
+server:
+  servlet:
+    contextPath: /cws-service
+spring:
+  application:
+    name: web-software-engineer-task-service
+  datasource:
+    url: ${cws.datasource.url}
+    username: ${cws.datasource.username}
+    password: ${cws.datasource.password}
+  jpa:
+    open-in-view: false
+cws:
+  security:
+    jwt:
+      secret: ${cws.security.jwt.secret}
+      expiration:
+        ms: ${cws.security.jwt.expiration.ms}

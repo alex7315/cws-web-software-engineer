@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cws</groupId>
+  <artifactId>web-software-engineer-task-backend</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>web-software-engineer-task-backend</name>
+  <description>Parent project of Web Software Engineer Test Task Backend</description>
+
+	<organization>
+		<name>CoreWillSoft GmbH</name>
+		<url>https://www.corewillsoft.com</url>
+	</organization>
+
+
+	<properties>
+		<java.version>17</java.version>
+		<spring.boot.version>3.3.4</spring.boot.version>
+	</properties>
+  
+  
+  <modules>
+    <module>web-software-engineer-task-service</module>
+    <module>web-software-engineer-task-database</module>
+	<module>web-software-engineer-task-persistence</module>
+    <module>web-software-engineer-task-sync</module>
+    <module>web-software-engineer-task-security</module>
+  </modules>
+  
+</project>
