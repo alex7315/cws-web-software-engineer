@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/cws-service/api/auth/";
+const API_URL = "http://localhost:8080/cws-backend/api/auth/";
 
 class AuthService {
   login(username, password) {
