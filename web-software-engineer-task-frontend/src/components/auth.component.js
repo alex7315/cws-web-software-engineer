@@ -1,142 +1,145 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import LoginIcon from '@mui/icons-material/Login';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
+import { useNavigate } from "react-router-dom";
+
 import AuthService from "../services/auth.service";
 
-class Auth extends Component {
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.resetState = this.resetState.bind(this);
+const Auth = () => {
+    const[isSignup, setIsSignup] = useState(false);
+    console.log(isSignup);
 
-        this.state = {
-            name: "",
-            email: "",
-            password: "",
-            loading: false,
-            message: "",
-            isSignup: false
-        };
-    }
+    const[inputs, setInputs] = useState({
+        username: "",
+        email: "",
+        password: "",
+        loading: false,
+        message: ""
+    });
 
-    
+    const handleChange = (e) => {
+        setInputs((prevState) => (
+            {
+                ...prevState, 
+                [e.target.name] : e.target.value
+            }
+        )
+        )
+    };
 
-    handleChange(e) {
-        this.setState({[e.target.name] : e.target.value});
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(inputs);
+        isSignup ? handleLogin() : handleLogin();
+    };
 
-    handleLogin(e) {
-        console.log(this.state);
-        AuthService.login(this.state.name, this.state.password).then(
+    const handleLogin = () => {
+        
+        AuthService.login(inputs.username, inputs.password).then(
             () => {
-              console.log(this.state);
-            //   window.location.reload();
+                console.log(inputs);
+                navigate("/users", { replace: true });
+                // window.location.reload();
             },
-            error => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
+            (error) => {
+                console.log(inputs);
+                const resMessage =
+                    (error.response &&
+                        error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
     
-              this.setState({
-                loading: false,
-                message: resMessage
-              });
+                setInputs({
+                    loading: false,
+                    message: resMessage
+                });
             }
           );
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        console.log(this.state);
-        this.state.isSignup ? this.handleLogin() : this.handleLogin();
+    const resetState = () => {
+        setIsSignup(!isSignup);
+        setInputs({username:"", password:"", email:""});
     }
 
-    resetState() {
-        console.log(this.state);
-        this.setState({name:"", password:"", email:"", isSignup:!this.state.isSignup});
-    }
+    const navigate = useNavigate();
 
-    render() {
-        return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <Box display={"flex"} 
-                        flexDirection={"column"} 
-                        maxWidth={400} 
-                        alignItems={"center"} 
-                        justifyContent={"center"}
-                        margin={"auth"}
-                        marginTop={5}
-                        padding={3}
-                        borderRadius={5}
-                        boxShadow={"5px 5px 10px #ccc"}
-                        sx={ 
-                            {":hover": {
-                                boxShadow:'10px 10px 20px #ccc'
-                                }
+    return (
+        <div>
+            <form onSubmit={handleSubmit}>
+                <Box display={"flex"} 
+                    flexDirection={"column"} 
+                    maxWidth={400} 
+                    alignItems={"center"} 
+                    justifyContent={"center"}
+                    margin={"auth"}
+                    marginTop={5}
+                    padding={3}
+                    borderRadius={5}
+                    boxShadow={"5px 5px 10px #ccc"}
+                    sx={ 
+                        {":hover": {
+                            boxShadow:'10px 10px 20px #ccc'
                             }
-                        }>
-                        <Typography 
-                            variant="h2" 
-                            padding={3} 
-                            textAlign={"center"}>
-                                {this.state.isSignup ? "Signup" : "Login"}
-                        </Typography>
+                        }
+                    }>
+                    <Typography 
+                        variant="h2" 
+                        padding={3} 
+                        textAlign={"center"}>
+                            {isSignup ? "Signup" : "Login"}
+                    </Typography>
 
+                    <TextField 
+                        onChange={handleChange}
+                        name="username"
+                        value={inputs.username}
+                        margin="normal" 
+                        type={"text"} 
+                        variant="outlined" 
+                        placeholder="Username">
+                    </TextField>
+                    {isSignup && (
                         <TextField 
-                            onChange={this.handleChange}
-                            name="name"
-                            value={this.state.name}
+                            onChange={handleChange}
+                            name="email"
+                            value={inputs.email}
                             margin="normal" 
-                            type={"text"} 
+                            type={"email"} 
                             variant="outlined" 
-                            placeholder="Username">
-                        </TextField>
-                        {this.state.isSignup && (
-                            <TextField 
-                                onChange={this.handleChange}
-                                name="email"
-                                value={this.state.email}
-                                margin="normal" 
-                                type={"email"} 
-                                variant="outlined" 
-                                placeholder="Email"
-                            />
-                        )}
-                        <TextField 
-                            onChange={this.handleChange}
-                            name="password"
-                            value={this.state.password}
-                            margin="normal" 
-                            type={"password"} 
-                            variant="outlined" 
-                            placeholder="Password">
-                        </TextField>
-                        <Button endIcon={this.state.isSignup ? <HowToRegIcon /> : <LoginIcon />}
-                            type="submit"
-                            sx={{marginTop:3, borderRadius: 3}} 
-                            variant="contained" >
-                            {this.state.isSignup ? "Signup" : "Login"}
-                        </Button>
+                            placeholder="Email"
+                        />
+                    )}
+                    <TextField 
+                        onChange={handleChange}
+                        name="password"
+                        value={inputs.password}
+                        margin="normal" 
+                        type={"password"} 
+                        variant="outlined" 
+                        placeholder="Password">
+                    </TextField>
+                    <Button endIcon={isSignup ? <HowToRegIcon /> : <LoginIcon />}
+                        type="submit"
+                        sx={{marginTop:3, borderRadius: 3}} 
+                        variant="contained" 
+                        color="warning">
+                        {isSignup ? "Signup" : "Login"}
+                    </Button>
 
-                        <Button 
-                            endIcon= {this.state.isSignup ? <LoginIcon /> : <HowToRegIcon />}
-                            onClick={this.resetState}
-                            sx={{marginTop:3, borderRadius: 3}} >
-                                Change {this.state.isSignup ? "Login" : "Signup"}
-                        </Button>
-                    </Box>
-                </form>
-            </div>
-        );
-    }
-}
+                    <Button 
+                        endIcon={isSignup ? <LoginIcon /> : <HowToRegIcon />}
+                        onClick={resetState}
+                        sx={{marginTop:3, borderRadius: 3}} >
+                            Change {isSignup ? "Login" : "Signup"}
+                    </Button>
+                </Box>
+            </form>
+        </div>
+    );
+};
 
 export default Auth;

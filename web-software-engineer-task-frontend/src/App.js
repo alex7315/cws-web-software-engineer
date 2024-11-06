@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import { Routes, Route } from "react-router-dom";
 
-import Auth from "./components/auth.component";
 import AuthService from "./services/auth.service";
+import Auth from "./components/auth.component";
+import Users from "./components/users.component";
 
 class App extends Component {
   constructor(props) {
@@ -16,12 +18,21 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <Auth />
-      </div>
+      // <div>
+      //    <Auth />
+      
+
+        <div className="container mt-3">
+          <Routes>
+            <Route path="/" element={<Auth />} />
+            <Route path="/users" element={<Users />} />
+          </Routes>
+        </div>
+      // </div>
     );
   }
 }
+
 
 
 export default App;
