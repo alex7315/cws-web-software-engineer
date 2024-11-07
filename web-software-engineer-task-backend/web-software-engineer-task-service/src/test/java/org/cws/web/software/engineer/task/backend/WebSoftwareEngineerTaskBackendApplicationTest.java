@@ -33,7 +33,8 @@ import net.minidev.json.JSONArray;
 		"spring.data.web.pageable.default-page-size=5",
 		"cws.security.jwt.secret=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 
 		"cws.security.jwt.expiration.ms=600000",
-		"cws.security.refresh.token.expiration.ms=6000000"
+		"cws.security.refresh.token.expiration.ms=6000000",
+	    "cws.security.session.timeout=60m"
 })
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationTest {

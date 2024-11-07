@@ -137,6 +137,7 @@
                 <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
                 <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
+                <cws.security.session.timeout>${cws.security.session.timeout}</cws.security.session.timeout>
 			</properties>
 		</profile>
 	</profiles>

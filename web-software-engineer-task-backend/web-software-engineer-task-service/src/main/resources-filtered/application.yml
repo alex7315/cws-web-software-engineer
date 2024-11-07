@@ -1,6 +1,8 @@
 server:
   servlet:
     contextPath: /cws-service
+    session: 
+      timeout: ${cws.security.session.timeout}
 spring:
   application:
     name: web-software-engineer-task-service

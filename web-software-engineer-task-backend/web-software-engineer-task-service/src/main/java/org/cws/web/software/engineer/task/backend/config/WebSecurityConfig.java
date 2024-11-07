@@ -1,5 +1,7 @@
 package org.cws.web.software.engineer.task.backend.config;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
+
 import org.cws.web.software.engineer.task.security.jwt.AuthTokenFilter;
 import org.cws.web.software.engineer.task.security.jwt.JwtAuthEntryPoint;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
@@ -80,6 +82,8 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        
+        http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(ALWAYS));
     
         return http.build();
         //@formatter:on
