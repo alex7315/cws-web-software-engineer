@@ -67,14 +67,12 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>${io.jsonwebtoke.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 	
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${io.jsonwebtoke.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>
