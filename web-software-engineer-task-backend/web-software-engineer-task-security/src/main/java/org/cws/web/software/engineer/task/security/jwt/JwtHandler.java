@@ -36,9 +36,14 @@ public class JwtHandler {
 
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+        return generateJwtToken(userPrincipal.getUsername());
+    }
+
+    public String generateJwtToken(String userName) {
         //@formatter:off
         return Jwts.builder()
-                    .subject((userPrincipal.getUsername()))
+                    .subject(userName)
                     .issuedAt(Date.from(Instant.now()))
                     .expiration(Date.from(Instant.now().plusMillis(jwtExpirationMs)))
                     .signWith(generateKey()) //since secret key was generated, MAC algorithm will be used

@@ -31,7 +31,8 @@ import net.minidev.json.JSONArray;
 		"spring.jpa.open-in-view=false",
 		"spring.data.web.pageable.default-page-size=5",
 		"cws.security.jwt.secret=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 
-		"cws.security.jwt.expiration.ms=600000"
+		"cws.security.jwt.expiration.ms=600000",
+		"cws.security.refresh.token.expiration.ms=600000"
 })
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationTest {
@@ -39,6 +40,8 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
     private static final String SIGNIN_URI = "/api/auth/signin";
 
     private static final String SIGNUP_URI  = "/api/auth/signup";
+
+    private static final String REFRESHTOKEN_URI = "/api/auth/refreshtoken";
 
     @Autowired
 	TestRestTemplate restTemplate;
@@ -56,6 +59,19 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
         authJsonObject = new JSONObject();
         authJsonObject.put("username", "user2");
         authJsonObject.put("password", "12345678");
+    }
+
+    @Test
+    void shouldCreateRefreshToken() {
+        HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"refreshToken-1\"}", headers);
+        ResponseEntity<String> refreshTokenResponse = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class);
+
+        assertThat(refreshTokenResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DocumentContext documentContext = JsonPath.parse(refreshTokenResponse.getBody());
+
+        String actualToken = documentContext.read("$.refreshToken");
+        assertThat(actualToken).isEqualTo("refreshToken-1");
+
     }
 
     @Test

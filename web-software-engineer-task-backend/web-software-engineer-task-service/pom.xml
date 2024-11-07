@@ -135,6 +135,7 @@
     			<cws.service.image.name>cws/web-software-engineer-task-service:${cws.service.image.tag}</cws.service.image.name>
     			<cws.security.jwt.secret>${cws.security.jwt.secret}</cws.security.jwt.secret>
                 <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
+                <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
 			</properties>
 		</profile>

@@ -135,6 +135,7 @@
     			<cws.security.jwt.secret>${cws.security.jwt.secret}</cws.security.jwt.secret>
                 <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
+                <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
 			</properties>
 		</profile>
 	</profiles>

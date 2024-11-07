@@ -34,3 +34,7 @@ cws:
       secret: ${cws.security.jwt.secret}
       expiration:
         ms: ${cws.security.jwt.expiration.ms}
+    refresh:
+      token:
+        expiration:
+          ms: ${cws.security.refresh.token.expiration.ms}

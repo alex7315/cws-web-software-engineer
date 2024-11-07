@@ -48,3 +48,8 @@ where users.username='user2' and roles.name = 'ROLE_USER';
 insert into user_roles(user_id, role_id)
 select users.id, roles.id from users, roles
 where users.username='user2' and roles.name = 'ROLE_ADMIN';
+
+insert into refresh_token(user_id, token, expiry_date)
+select users.id, 'refreshToken-1', '2100-01-01T10:10:10'
+from users
+where users.username='user1';
