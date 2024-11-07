@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import LoginIcon from '@mui/icons-material/Login';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 import { useNavigate } from "react-router-dom";
 
 import AuthService from "../services/auth.service";
 
 const Auth = () => {
-    const[isSignup, setIsSignup] = useState(false);
-    console.log(isSignup);
-
     const[inputs, setInputs] = useState({
         username: "",
         email: "",
@@ -32,7 +28,7 @@ const Auth = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(inputs);
-        isSignup ? handleLogin() : handleLogin();
+        handleLogin();
     };
 
     const handleLogin = () => {
@@ -60,11 +56,6 @@ const Auth = () => {
           );
     }
 
-    const resetState = () => {
-        setIsSignup(!isSignup);
-        setInputs({username:"", password:"", email:""});
-    }
-
     const navigate = useNavigate();
 
     return (
@@ -90,7 +81,7 @@ const Auth = () => {
                         variant="h2" 
                         padding={3} 
                         textAlign={"center"}>
-                            {isSignup ? "Signup" : "Login"}
+                            Login
                     </Typography>
 
                     <TextField 
@@ -102,17 +93,7 @@ const Auth = () => {
                         variant="outlined" 
                         placeholder="Username">
                     </TextField>
-                    {isSignup && (
-                        <TextField 
-                            onChange={handleChange}
-                            name="email"
-                            value={inputs.email}
-                            margin="normal" 
-                            type={"email"} 
-                            variant="outlined" 
-                            placeholder="Email"
-                        />
-                    )}
+
                     <TextField 
                         onChange={handleChange}
                         name="password"
@@ -122,19 +103,13 @@ const Auth = () => {
                         variant="outlined" 
                         placeholder="Password">
                     </TextField>
-                    <Button endIcon={isSignup ? <HowToRegIcon /> : <LoginIcon />}
+
+                    <Button endIcon={<LoginIcon />}
                         type="submit"
                         sx={{marginTop:3, borderRadius: 3}} 
                         variant="contained" 
-                        color="warning">
-                        {isSignup ? "Signup" : "Login"}
-                    </Button>
-
-                    <Button 
-                        endIcon={isSignup ? <LoginIcon /> : <HowToRegIcon />}
-                        onClick={resetState}
-                        sx={{marginTop:3, borderRadius: 3}} >
-                            Change {isSignup ? "Login" : "Signup"}
+                        color="primary">
+                        Login
                     </Button>
                 </Box>
             </form>
