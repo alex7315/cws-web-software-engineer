@@ -19,6 +19,7 @@ import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.RefreshTokenService;
 import org.cws.web.software.engineer.task.security.service.SecurityService;
 import org.cws.web.software.engineer.task.security.service.UserDetailsImpl;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -124,6 +125,7 @@ public class AuthController {
         
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
+        LoggerFactory.getLogger(this.getClass()).debug(String.format("User name: %s refresh token: %s", userDetails.getUsername(), refreshToken.getToken()));
             
         return ResponseEntity.ok(JwtResponse.builder()
                                         .token(jwt)

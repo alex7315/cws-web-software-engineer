@@ -33,7 +33,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
       "cws.github.user.count.max=8",
       "cws.security.jwt.secret=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 
       "cws.security.jwt.expiration.ms=600000",
-      "cws.github.authorization.token=token"
+      "cws.github.authorization.token=token",
+      "cws.security.refresh.token.expiration.ms=6000"
 })
 //@formatter:on
 class WebSoftwareEngineerTaskSyncApplicationTest {

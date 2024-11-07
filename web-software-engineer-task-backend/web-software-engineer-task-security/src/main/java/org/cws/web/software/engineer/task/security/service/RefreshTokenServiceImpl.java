@@ -12,6 +12,7 @@ import org.cws.web.software.engineer.task.security.exception.TokenRefreshExcepti
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
@@ -30,11 +31,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public RefreshToken createRefreshToken(Long userId) {
 
         //@formatter:off
@@ -53,6 +56,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
@@ -63,6 +67,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void deleteByUserId(Long userId) {
         //@formatter:off
         userRepository
