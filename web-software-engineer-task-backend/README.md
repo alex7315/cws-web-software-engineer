@@ -14,8 +14,8 @@ provides  _REST API_  allows request to get paginated list of  _GitHub_  users
 provides scheduled batch process to synchronize internal database with data from  _GitHub_
    
 ## Configuration  
-Projects contains  _application.yml_  files with configuration properties.  
-This files have place holders instead of property values. Place holders are resolved by  _maven_  resource filtering that consider  _maven_  profiles are defined in  _POM_ .  
+Projects contain  _application.yml_  files with configuration properties.  
+This files have place holders instead of property values. Place holders are resolved by  _maven_  resource filtering that considers  _maven_  profiles are defined in  _POM_ .  
 Property values are stored in  _maven_  settings file. Usually _~/.m2/settings.xml_ or  _$MAVEN_HOME/settings.xml_  _Maven_  setting file has to be secured since it contains confidant data like user password, access token etc.  
 Follow values have to be defined in  _maven_ settings file.  
 
@@ -39,6 +39,7 @@ _cws.service.port.exposed_
 
 _cws.log.base.path_  
 
+
 ###Sync Component  
 
 _cws.github.authorization.token_  Authorization token can be getting from GitHub using GitHub account
@@ -55,6 +56,11 @@ _cws.sync.port.exposed_
 _cws.security.jwt.secret_     Plain text 64 character secret key is used by creating of authorization token (JWT)
 
 _cws.security.jwt.expiration.ms_  
+
+_cws.security.session.timeout_  Security session timeout in sec.  
+
+_cws.security.refresh.token.expiration.ms_  Refresh token expiration time in ms.  
+
 
 
 ## Build  
@@ -121,15 +127,23 @@ popd
 
 
 ## Using  
-_backend_  Component provides endpoint to get paginated list of Github users.  
+_service_  Component provides endpoint to authenticate user and get paginated list of Github users.  
 
-__POST__ _<host>[:port]/cws-backend/api/auth/signup_ 
+__Security endpoints:__
+
+__POST__ _<host>[:port]/cws-service/api/auth/signup_ 
 
 
-__POST__ _<host>[:port]/cws-backend/api/auth/signin_ 
+__POST__ _<host>[:port]/cws-service/api/auth/signin_  
 
 
-__GET__  _<host>[:port]/cws-backend/api/users_  
+__POST__ _<host>[:port]/cws-service/api/auth/refreshtoken_
+
+
+__GitHub user list endpoint:__  
+
+
+__GET__  _<host>[:port]/cws-service/api/users_  
 
 To see detailed documentation see _<host>[:port]/cws-backend/swagger-ui/index.html_  
 
