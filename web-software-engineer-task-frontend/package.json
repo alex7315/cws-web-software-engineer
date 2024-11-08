@@ -40,5 +40,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "server.js",
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

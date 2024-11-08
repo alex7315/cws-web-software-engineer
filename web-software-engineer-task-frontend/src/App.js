@@ -18,21 +18,15 @@ class App extends Component {
 
   render() {
     return (
-      // <div>
-      //    <Auth />
-      
-
         <div className="container mt-3">
           <Routes>
-            <Route path="/" element={<Auth />} />
-            <Route path="/users" element={<Users />} />
+            {/* <Route path="/" element={<Auth />} />
+            <Route path="/users" element={<Users />} /> */}
+            <Route path="/" element={<Users />} />
           </Routes>
         </div>
-      // </div>
     );
   }
 }
-
-
 
 export default App;
