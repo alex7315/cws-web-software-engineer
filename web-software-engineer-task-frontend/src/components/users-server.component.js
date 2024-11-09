@@ -1,12 +1,15 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
     Card,
     Typography,
+    Button,
     TableContainer,
     TableHead,
     TableBody,
     TableRow,
     TableCell,
+    CardActions,
 } from '@mui/material';
 
 import TablePagination, {
@@ -14,14 +17,16 @@ import TablePagination, {
 } from "@mui/material/TablePagination";
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
 import axios from "axios";
+import AuthService from "../services/auth.service"
 
 const API_URL = process.env.REACT_APP_API_USERS_URL;
 
 
 const Users = () => {
     const columns = [
-        { id: 'icon', name: ''},
+        { id: 'icon', name: '' },
         { id: 'githubId', name: 'Id' },
         { id: 'login', name: 'Username' }
     ]
@@ -48,13 +53,23 @@ const Users = () => {
         });
     };
 
+    const navigate = useNavigate();
+
+    const handleLogout = (event) => {
+        console.log("logout");
+        AuthService.logout();
+        navigate("/", { replace: true });
+        window.location.reload();
+    }
+
     useEffect(() => {
         const getData = async () => {
             console.log(JSON.parse(localStorage.getItem('user')).token);
+            console.log(controller.page);
             await axios.get(API_URL, {
                 params: {
-                    page: controller.page, 
-                    size: controller.rowsPerPage, 
+                    page: controller.page,
+                    size: controller.rowsPerPage,
                     sort: "login"
                 },
                 headers: {
@@ -77,7 +92,7 @@ const Users = () => {
         };
         getData();
     },
-    [controller]
+        [controller]
     );
 
 
@@ -86,6 +101,23 @@ const Users = () => {
             <Typography variant="h3" component="div" align='center'>
                 Users
             </Typography>
+            <CardActions disableSpacing
+                sx={{
+                    alignSelf: "stretch",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-start",
+                    p: 1,
+                }}>
+                <Button endIcon={<LogoutIcon />}
+                    sx={{ marginTop: 3, borderRadius: 3 }}
+                    variant="contained"
+                    style={{ backgroundColor: 'black', color: 'white' }}
+                    onClick={handleLogout}>
+                    Logout
+                </Button>
+            </CardActions>
+
             <TableContainer alignItems={""} >
                 <TableHead>
                     <TableRow>
