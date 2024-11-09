@@ -20,6 +20,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import axios from "axios";
 import AuthService from "../services/auth.service"
+import EventBus from "../common/EventBus";
 
 const API_URL = process.env.REACT_APP_API_USERS_URL;
 
@@ -38,7 +39,30 @@ const Users = () => {
         rowsPerPage: 10
     });
 
+    const [currentUser, setCurrentUser] = useState(undefined);
+
+    useEffect(() => {
+        const user = AuthService.getCurrentUser();
+
+        if (user) {
+            setCurrentUser(user);
+        }
+
+        EventBus.on("logout", () => {
+            AuthService.logout();
+            setCurrentUser(undefined);
+        });
+
+        return () => {
+            EventBus.remove("logout");
+        };
+    }, []);
+
     const handlePageChange = (event, newPage) => {
+        if(!currentUser) {
+            navigate("/", { replace: true });
+            window.location.reload();
+        }
         setController({
             ...controller,
             page: newPage
@@ -55,9 +79,9 @@ const Users = () => {
 
     const navigate = useNavigate();
 
-    const handleLogout = (event) => {
-        console.log("logout");
+    const handleLogout = () => {
         AuthService.logout();
+        setCurrentUser(undefined);
         navigate("/", { replace: true });
         window.location.reload();
     }
@@ -86,6 +110,9 @@ const Users = () => {
                 })
                 .catch(error => {
                     console.log(error);
+                    if (error.response && error.response.status === 401) {
+                        EventBus.dispatch("logout");
+                    }
                 });
 
 
@@ -118,7 +145,7 @@ const Users = () => {
                 </Button>
             </CardActions>
 
-            <TableContainer alignItems={""} >
+            <TableContainer>
                 <TableHead>
                     <TableRow>
                         {columns.map(
