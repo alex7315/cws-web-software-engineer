@@ -27,17 +27,18 @@ const Auth = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(inputs);
         handleLogin();
     };
 
     const handleLogin = () => {
         
         AuthService.login(inputs.username, inputs.password).then(
-            () => {
-                console.log(inputs);
-                navigate("/users", { replace: true });
-                // window.location.reload();
+            (data) => {
+                console.log(data);
+                if(data.roles.includes("ROLE_USER")) {
+                    navigate("/users", { replace: true });
+                    window.location.reload();
+                }
             },
             (error) => {
                 console.log(inputs);
@@ -108,7 +109,7 @@ const Auth = () => {
                         type="submit"
                         sx={{marginTop:3, borderRadius: 3}} 
                         variant="contained" 
-                        color="primary">
+                        style={{ backgroundColor: 'black', color: 'white' }}>
                         Login
                     </Button>
                 </Box>

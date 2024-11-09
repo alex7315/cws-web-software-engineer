@@ -1,5 +1,9 @@
-import { Box, Paper, TableContainer, TableHead, TableRow, TableCell, TableBody, TablePagination } from "@mui/material"
-import { useEffect, useState } from "react"
+import { Box, Paper, TableContainer, TableHead, TableRow, TableCell, TableBody, TablePagination } from "@mui/material";
+import { useEffect, useState } from "react";
+import UsersService from "../services/users.service";
+// import axios from "axios";
+
+const API_URL = process.env.REACT_APP_API_USERS_URL;
 
 const Users = () => {
     const columns = [
@@ -20,11 +24,15 @@ const Users = () => {
         pageChange(0);
     }
 
+    // useEffect(() => {
+    //     axios.get(API_URL).then((response) => {
+    //         rowChange(response.data);
+    //     });
+    //   }, []);
+
+
     useEffect(() => {
-        fetch("http://localhost:8000/users").then(resp => {
-            return resp.json();
-        }
-        ).then(
+        UsersService.getUsers().then(
             resp => {
                 rowChange(resp);
             }
@@ -103,4 +111,4 @@ const Users = () => {
     )
 }
 
-export default Users
+export default Users;

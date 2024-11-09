@@ -9,8 +9,7 @@ const login = (username, password) => {
     password
   })
   .then(response => {
-    if (response.data.accessToken) {
-        console.log(response.data);
+    if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));
     }
 
@@ -31,7 +30,7 @@ const register = (username, email, password)  => {
 }
 
 const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem('user'));;
+  return JSON.parse(localStorage.getItem('user'));
 }
 
 const AuthService = {

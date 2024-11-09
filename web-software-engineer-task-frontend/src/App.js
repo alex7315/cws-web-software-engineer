@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 import AuthService from "./services/auth.service";
 import Auth from "./components/auth.component";
-import Users from "./components/users.component";
+import Users from "./components/users-server.component";
 
 class App extends Component {
   constructor(props) {
@@ -20,9 +20,8 @@ class App extends Component {
     return (
         <div className="container mt-3">
           <Routes>
-            {/* <Route path="/" element={<Auth />} />
-            <Route path="/users" element={<Users />} /> */}
-            <Route path="/" element={<Users />} />
+            <Route path="/" element={<Auth />} />
+            <Route path="/users" element={<Users />} />
           </Routes>
         </div>
     );
