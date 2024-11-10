@@ -11,7 +11,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     healthcheck:
-      test: mysqladmin -h 127.0.0.1 ping -P ${CWS_DATABASE_PORT} -p${MYSQL_ROOT_PASSWORD}|grep 'mysqld is alive'
+      test: mysqladmin -h 127.0.0.1 ping -P 3306 -p${MYSQL_ROOT_PASSWORD}|grep 'mysqld is alive'
       interval: 10s
       timeout: 30s
       retries: 5
