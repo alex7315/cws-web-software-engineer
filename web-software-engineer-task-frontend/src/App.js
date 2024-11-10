@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 import AuthService from "./services/auth.service";
 import Auth from "./components/auth.component";
-import Users from "./components/users-server.component";
+import Users from "./components/users.component";
 
 class App extends Component {
   constructor(props) {

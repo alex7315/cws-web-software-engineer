@@ -1,114 +1,197 @@
-import { Box, Paper, TableContainer, TableHead, TableRow, TableCell, TableBody, TablePagination } from "@mui/material";
-import { useEffect, useState } from "react";
-import UsersService from "../services/users.service";
-// import axios from "axios";
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import {
+    Card,
+    Typography,
+    Button,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
+    CardActions,
+} from '@mui/material';
+
+import TablePagination, {
+    tablePaginationClasses
+} from "@mui/material/TablePagination";
+
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import axios from "axios";
+import AuthService from "../services/auth.service"
+import EventBus from "../common/EventBus";
 
 const API_URL = process.env.REACT_APP_API_USERS_URL;
 
+
 const Users = () => {
     const columns = [
+        { id: 'icon', name: '' },
         { id: 'githubId', name: 'Id' },
         { id: 'login', name: 'Username' }
     ]
 
     const [rows, rowChange] = useState([]);
-    const [page, pageChange] = useState([0]);
-    const [rowSize, rowSizeChange] = useState(5);
+    const [usersCount, setUsersCount] = useState(0);
+    const [controller, setController] = useState({
+        page: 0,
+        rowsPerPage: 10
+    });
 
-    const handleChangePage = (e, newPage) => {
-        pageChange(newPage);
-    }
-
-    const handleRowsPerPageChange = (e) => {
-        rowSizeChange(+e.target.value)
-        pageChange(0);
-    }
-
-    // useEffect(() => {
-    //     axios.get(API_URL).then((response) => {
-    //         rowChange(response.data);
-    //     });
-    //   }, []);
-
+    const [currentUser, setCurrentUser] = useState(undefined);
 
     useEffect(() => {
-        UsersService.getUsers().then(
-            resp => {
-                rowChange(resp);
-            }
-        ).catch(
-            e => {
-                console.log(e);
-            }
-        )
+        const user = AuthService.getCurrentUser();
+
+        if (user) {
+            setCurrentUser(user);
+        }
+
+        EventBus.on("logout", () => {
+            AuthService.logout();
+            setCurrentUser(undefined);
+        });
+
+        return () => {
+            EventBus.remove("logout");
+        };
+    }, []);
+
+    const handlePageChange = (event, newPage) => {
+        if(!currentUser) {
+            navigate("/", { replace: true });
+            window.location.reload();
+        }
+        setController({
+            ...controller,
+            page: newPage
+        });
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setController({
+            ...controller,
+            rowsPerPage: parseInt(event.target.value, 10),
+            page: 0
+        });
+    };
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        AuthService.logout();
+        setCurrentUser(undefined);
+        navigate("/", { replace: true });
+        window.location.reload();
     }
-        , []
-    )
+
+    useEffect(() => {
+        const getData = async () => {
+            console.log(JSON.parse(localStorage.getItem('user')).token);
+            console.log(controller.page);
+            await axios.get(API_URL, {
+                params: {
+                    page: controller.page,
+                    size: controller.rowsPerPage,
+                    sort: "login"
+                },
+                headers: {
+                    Authorization: "Bearer " + JSON.parse(localStorage.getItem('user')).token
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    console.log(response.data);
+                    const rowData = response.data;
+                    rowChange(rowData);
+                    setUsersCount(1000);
+                    return response;
+                })
+                .catch(error => {
+                    console.log(error);
+                    if (error.response && error.response.status === 401) {
+                        EventBus.dispatch("logout");
+                    }
+                });
+
+
+        };
+        getData();
+    },
+        [controller]
+    );
+
 
     return (
-        <div>
-            <Box display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                margin={"auth"}
-                marginTop={5}
-                padding={3}
-                borderRadius={5}
-                boxShadow={"5px 5px 10px #ccc"}
-                sx={
-                    {
-                        ":hover": {
-                            boxShadow: '10px 10px 20px #ccc'
-                        }
-                    }
-                }>
-                <Paper sx={{ with: '90%', marginLeft: '5%' }}>
-                    <TableContainer alignItems={""} >
-                        <TableHead>
-                            <TableRow>
-                                {columns.map(
-                                    (column) => (
-                                        <TableCell style={{ backgroundColor: 'black', color: 'white' }} key={column.id}>{column.name}</TableCell>
-                                    )
-                                )}
+        <Card>
+            <Typography variant="h3" component="div" align='center'>
+                Users
+            </Typography>
+            <CardActions disableSpacing
+                sx={{
+                    alignSelf: "stretch",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-start",
+                    p: 1,
+                }}>
+                <Button endIcon={<LogoutIcon />}
+                    sx={{ marginTop: 3, borderRadius: 3 }}
+                    variant="contained"
+                    style={{ backgroundColor: 'black', color: 'white' }}
+                    onClick={handleLogout}>
+                    Logout
+                </Button>
+            </CardActions>
+
+            <TableContainer>
+                <TableHead>
+                    <TableRow>
+                        {columns.map(
+                            (column) => (
+                                <TableCell style={{ backgroundColor: 'black', color: 'white' }} key={column.id}>{column.name}</TableCell>
+                            )
+                        )}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {rows.map((row) => {
+                        return (
+                            <TableRow key={row.id}>
+                                <TableCell>
+                                    <AccountCircleIcon />
+                                </TableCell>
+                                <TableCell>
+                                    {row.githubId}
+                                </TableCell>
+                                <TableCell>
+                                    {row.login}
+                                </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.length && rows
-                                .slice(page * rowSize, page * rowSize + rowSize)
-                                .map((row, i) => {
-                                    return (
-                                        <TableRow key={i}>
-                                            {columns && columns.map((column, i) => {
-                                                let value = row[column.id];
-                                                return (
-                                                    <TableCell key={value}>
-                                                        {value}
-                                                    </TableCell>
-                                                )
-                                            })}
-                                        </TableRow>
-                                    )
-                                })}
-                        </TableBody>
-                    </TableContainer>
-
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]} 
-                        page={page} 
-                        rowsPerPage={rowSize}
-                        count={rows.length}
-                        component="div" 
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleRowsPerPageChange}
-                    >
-
-                    </TablePagination>
-                </Paper>
-            </Box>
-        </div>
+                        )
+                    })}
+                </TableBody>
+            </TableContainer>
+            <TablePagination sx={{
+                [`& .${tablePaginationClasses.spacer}`]: {
+                    display: "none"
+                },
+                [`& .${tablePaginationClasses.toolbar}`]: {
+                    justifyContent: "left"
+                }
+            }}
+                component="div"
+                onPageChange={handlePageChange}
+                page={controller.page}
+                count={usersCount}
+                rowsPerPage={controller.rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[10, 20, 30]}
+            />
+        </Card>
     )
 }
 
 export default Users;
+
