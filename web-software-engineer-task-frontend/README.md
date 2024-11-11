@@ -1,5 +1,48 @@
-# Getting Started with Create React App
+# CoreWillSoft (CWS) Software Engineer Test Task Project. Frontend.  
+##Common
+This project implements required user interface ( _frontend_ ) to login to the service ( _backend_ ) and to show list of GitHub users provided by  _backend_  via REST API.  
+Implementation uses React and Node.js  
 
+## Configuration 
+__REACT_APP_API_AUTH_URL__  - url to authentication/authorization endpoints of _backend REST API_
+__REACT_APP_API_USERS_URL__  - url to resource endpoints of _backend REST API_
+__REACT_APP_USER_IDLE_TIMEOUT_S__  -  _user idle timeout_  in seconds. After  _user idle timeout_   is expired without any user activity, user will be logged out and user session will be closed.  
+
+Configuration properties has to be stored in  __.env__  file that is used by deployment
+
+## Deployment
+Project contains  
+
+_Dockerfile_  to define build process of  _docker image_  
+
+ _docker-compose.yml_  configuration file to build and run  _docker containers_  from  _docker image_  . 
+Configuration file expected environment variable have to be set:  
+
+__CWS_FRONTEND_PORT__   - port is exposed to access  _frontend_  application  
+
+One possibility to set environment variables and start  _docker compose_  is to write simple  _.sh_  command file.  
+
+e.g.  
+\#!/bin/bash  
+
+IMAGE_NAME=web-software-engineer-task-frontend:0.0.1  
+CONTAINER_NAME=web-software-engineer-task-frontend  
+CWS_WORKDIR=~/cws/cws-web-software-engineer/web-software-engineer-task-frontend  
+
+CWS_FRONTEND_PORT=55403; export CWS_FRONTEND_PORT  
+
+docker stop $CONTAINER_NAME  
+
+docker rm $CONTAINER_NAME  
+
+docker rmi $IMAGE_NAME  
+
+pushd $CWS_WORKDIR  
+docker-compose up  
+$IMAGE_NAME  
+popd  
+
+## original react project description started here
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

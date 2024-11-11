@@ -1,4 +1,4 @@
-# CoreWillSoft (CWS) Software Engineer Test Task Project
+# CoreWillSoft (CWS) Software Engineer Test Task Project. Backend.
 
 ## Project structure
 This project contains implementation of Backend Components provides REST API to get paginated list of  _GitHub_  users  
