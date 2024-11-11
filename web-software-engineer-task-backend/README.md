@@ -84,6 +84,8 @@ MYSQL_PASSWORD
 
 MYSQL_ROOT_PASSWORD  
 
+CWS_DATABASE_PORT
+
 CWS_LOG_BASEDIR  
 
 CWS_BACKEND_PORT  
@@ -102,6 +104,8 @@ MYSQL_USER=<data base user>; export MYSQL_USER
 MYSQL_PASSWORD=<data base user password>; export MYSQL_PASSWORD  
 
 MYSQL_ROOT_PASSWORD=<data base root password>; export MYSQL_ROOT_PASSWORD  
+
+CWS_DATABASE_PORT=3306; export CWS_DATABASE_PORT
 
 CWS_LOG_BASEDIR=/home/cws/logs; export CWS_LOG_BASEDIR  
 
