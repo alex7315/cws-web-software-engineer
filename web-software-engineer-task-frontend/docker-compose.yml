@@ -1,0 +1,13 @@
+version: "2.4"
+services:
+  frontend_service:
+    image: "cws/web-software-engineer-task-frontend:0.0.1"
+    container_name: web-software-engineer-task-frontend
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${CWS_FRONTEND_PORT}:3000
+    env_file:
+      - .env
