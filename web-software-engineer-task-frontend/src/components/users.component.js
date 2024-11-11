@@ -20,10 +20,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import axios from "axios";
 import AuthService from "../services/auth.service"
-import EventBus from "../common/EventBus";
+import EventBus from "../common/eventBus";
+import useIdleTimeout from "../common/idleTimer"
 
 const API_URL = process.env.REACT_APP_API_USERS_URL;
-
+const IDLE_TIMEOUT = process.env.REACT_APP_USER_IDLE_TIMEOUT_S;
 
 const Users = () => {
     const columns = [
@@ -48,40 +49,46 @@ const Users = () => {
             setCurrentUser(user);
         }
 
+        //attach logout event
         EventBus.on("logout", () => {
             AuthService.logout();
             setCurrentUser(undefined);
         });
 
         return () => {
+            //detach logout event
             EventBus.remove("logout");
         };
     }, []);
 
     const handlePageChange = (event, newPage) => {
-        if(!currentUser) {
-            navigate("/", { replace: true });
-            window.location.reload();
+        if (!currentUser) {
+            handleLogout();
         }
         setController({
             ...controller,
             page: newPage
         });
+        idleTimer.reset();
     };
 
     const handleChangeRowsPerPage = (event) => {
+        if (!currentUser) {
+            handleLogout();
+        }
         setController({
             ...controller,
             rowsPerPage: parseInt(event.target.value, 10),
             page: 0
         });
+        idleTimer.reset();
     };
 
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        AuthService.logout();
         setCurrentUser(undefined);
+        AuthService.logout();
         navigate("/", { replace: true });
         window.location.reload();
     }
@@ -111,6 +118,7 @@ const Users = () => {
                 .catch(error => {
                     console.log(error);
                     if (error.response && error.response.status === 401) {
+                        //fire "logout" event since response got status UNAUTHORIZES
                         EventBus.dispatch("logout");
                     }
                 });
@@ -121,6 +129,18 @@ const Users = () => {
     },
         [controller]
     );
+
+    const handleOnIdle = (event) => {
+        handleLogout();
+    }
+
+    const handleOnActive = (event) => {
+
+    }
+
+
+    //simply logout after idle timeout is expired
+    const idleTimer = useIdleTimeout({ onIdle: handleOnIdle, onActive: handleOnActive, idleTime: IDLE_TIMEOUT });
 
 
     return (
