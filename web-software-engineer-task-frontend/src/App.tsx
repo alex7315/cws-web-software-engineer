@@ -5,8 +5,9 @@ import AuthService from "./services/auth.service";
 import Auth from "./components/auth.component";
 import Users from "./components/users.component";
 
-class App extends Component {
-  constructor(props) {
+type Props = {};
+class App extends Component<Props> {
+  constructor(props: Props) {
     super(props);
 
     this.logOut = this.logOut.bind(this);

@@ -7,7 +7,16 @@ import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
 const Auth = () => {
-    const[inputs, setInputs] = useState({
+
+    interface IAuthInput {
+        username: string; 
+        email: string; 
+        password: string; 
+        loading: boolean; 
+        message: string;
+    }
+
+    const[inputs, setInputs] = useState<IAuthInput>({
         username: "",
         email: "",
         password: "",
@@ -15,17 +24,18 @@ const Auth = () => {
         message: ""
     });
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.SyntheticEvent) => {
+        let target = e.target as HTMLInputElement;
         setInputs((prevState) => (
             {
                 ...prevState, 
-                [e.target.name] : e.target.value
+                [target.name] : target.value
             }
         )
         )
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         handleLogin();
     };
@@ -50,6 +60,9 @@ const Auth = () => {
                     error.toString();
     
                 setInputs({
+                    username: "",
+                    email: "",
+                    password: "",
                     loading: false,
                     message: resMessage
                 });

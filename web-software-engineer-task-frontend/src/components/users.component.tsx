@@ -33,7 +33,13 @@ const Users = () => {
         { id: 'login', name: 'Username' }
     ]
 
-    const [rows, rowChange] = useState([]);
+    interface IRow {
+        id: string; 
+        githubId: string; 
+        login: string; 
+    }
+
+    const [rows, rowChange] = useState<IRow[]>([]);
     const [usersCount, setUsersCount] = useState(0);
     const [controller, setController] = useState({
         page: 0,
@@ -41,6 +47,11 @@ const Users = () => {
     });
 
     const [currentUser, setCurrentUser] = useState(undefined);
+
+    function logOut() {
+        AuthService.logout();
+        setCurrentUser(undefined);
+    }
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
@@ -50,18 +61,15 @@ const Users = () => {
         }
 
         //attach logout event
-        EventBus.on("logout", () => {
-            AuthService.logout();
-            setCurrentUser(undefined);
-        });
+        EventBus.on("logout", logOut);
 
         return () => {
             //detach logout event
-            EventBus.remove("logout");
+            EventBus.remove("logout", logOut);
         };
     }, []);
 
-    const handlePageChange = (event, newPage) => {
+    const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         if (!currentUser) {
             handleLogout();
         }
@@ -72,13 +80,14 @@ const Users = () => {
         idleTimer.reset();
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event: React.SyntheticEvent) => {
         if (!currentUser) {
             handleLogout();
         }
+        let target = event.target as HTMLInputElement;
         setController({
             ...controller,
-            rowsPerPage: parseInt(event.target.value, 10),
+            rowsPerPage: parseInt(target.value, 10),
             page: 0
         });
         idleTimer.reset();
@@ -95,16 +104,20 @@ const Users = () => {
 
     useEffect(() => {
         const getData = async () => {
-            console.log(JSON.parse(localStorage.getItem('user')).token);
+            const itemString = localStorage.getItem('user');
+            const tokenValue = itemString ? JSON.parse(itemString).token : "";
+            const apiUrl = API_URL ? API_URL : "";
+            console.log(apiUrl);
+            console.log(tokenValue);
             console.log(controller.page);
-            await axios.get(API_URL, {
+            await axios.get(apiUrl, {
                 params: {
                     page: controller.page,
                     size: controller.rowsPerPage,
                     sort: "login"
                 },
                 headers: {
-                    Authorization: "Bearer " + JSON.parse(localStorage.getItem('user')).token
+                    Authorization: "Bearer " + tokenValue
                 }
             })
                 .then(response => {
@@ -130,17 +143,18 @@ const Users = () => {
         [controller]
     );
 
-    const handleOnIdle = (event) => {
+    const handleOnIdle = () => {
         handleLogout();
     }
 
-    const handleOnActive = (event) => {
+    const handleOnActive = () => {
 
     }
 
 
     //simply logout after idle timeout is expired
-    const idleTimer = useIdleTimeout({ onIdle: handleOnIdle, onActive: handleOnActive, idleTime: IDLE_TIMEOUT });
+    let idleTimeValue: unknown = IDLE_TIMEOUT;
+    const idleTimer = useIdleTimeout({ onIdle: handleOnIdle, onActive: handleOnActive, idleTime: idleTimeValue as number});
 
 
     return (

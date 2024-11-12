@@ -6,13 +6,13 @@
  * remove() removes attached eventfrom document object
  */
 const eventBus = {
-    on(event, callback) {
-      document.addEventListener(event, (e) => callback(e.detail));
+    on(event: string, callback: EventListener) {
+      document.addEventListener(event, (e) => callback(e));
     },
-    dispatch(event, data) {
+    dispatch(event: string, data?: any) {
       document.dispatchEvent(new CustomEvent(event, { detail: data }));
     },
-    remove(event, callback) {
+    remove(event: string, callback: EventListener) {
       document.removeEventListener(event, callback);
     },
   };
