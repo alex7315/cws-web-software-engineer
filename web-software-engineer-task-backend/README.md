@@ -7,6 +7,9 @@ and scheduled Batch process to synchronize intern data with user data from  _Git
 **Database** component  
 contains database migration scripts controlled by  _Flyway_  
 
+**Security** component  
+security library is used in  __Service__  and  __Sync__  components
+
 **Service** component  
 provides  _REST API_  allows request to get paginated list of  _GitHub_  users
 
@@ -131,12 +134,14 @@ popd
 
 
 ## Using  
-_service_  Component provides endpoint to authenticate user and get paginated list of Github users.  
+__SERVICE__  Component provides endpoint to authenticate user and get paginated list of Github users.  
+
+__Api documentation URLs:__  
+
+__Swagger__  _<host>[:port]/cws-service/swagger-ui/index.html  
+
 
 __Security endpoints:__
-
-__POST__ _<host>[:port]/cws-service/api/auth/signup_ 
-
 
 __POST__ _<host>[:port]/cws-service/api/auth/signin_  
 
@@ -151,7 +156,7 @@ __GET__  _<host>[:port]/cws-service/api/users_
 
 To see detailed documentation see _<host>[:port]/cws-backend/swagger-ui/index.html_  
 
-_sync_  Component runs scheduled job process to synchronize users with actual GitHub users.  
+__SYNC__  Component runs scheduled job process to synchronize users with actual GitHub users.  
 Component provides endpoints to activate/deactivate scheduled job:  
 
 __PUT__  _<host>[:port]/cws-sync/job/scheduler/activate_  

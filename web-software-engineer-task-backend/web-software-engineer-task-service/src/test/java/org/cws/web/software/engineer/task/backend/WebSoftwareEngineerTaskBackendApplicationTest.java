@@ -41,8 +41,6 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	private static final String SIGNIN_URI = "/api/auth/signin";
 
-	private static final String SIGNUP_URI = "/api/auth/signup";
-
 	private static final String REFRESHTOKEN_URI = "/api/auth/refreshtoken";
 
 	@Autowired
@@ -63,14 +61,15 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldCreateRefreshToken() {
-        HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, String.class);
-        DocumentContext authResponseContext = JsonPath.parse(authResponse.getBody());
-        String refreshToken = authResponseContext.read("$.refreshToken");
+		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
+		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, String.class);
+		DocumentContext authResponseContext = JsonPath.parse(authResponse.getBody());
+		String refreshToken = authResponseContext.read("$.refreshToken");
 
-        HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}", headers);
+		HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}",
+				headers);
 		ResponseEntity<String> refreshTokenResponse = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest,
 				String.class);
 
@@ -78,68 +77,15 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 		DocumentContext documentContext = JsonPath.parse(refreshTokenResponse.getBody());
 
 		String actualRefreshToken = documentContext.read("$.refreshToken");
-        assertThat(actualRefreshToken).isEqualTo(refreshToken);
+		assertThat(actualRefreshToken).isEqualTo(refreshToken);
 
-        String actualToken = documentContext.read("$.token");
-        assertThat(actualToken).isNotNull();
+		String actualToken = documentContext.read("$.token");
+		assertThat(actualToken).isNotNull();
 
 	}
 
 	@Test
-    @DirtiesContext
-	void shouldCreateUserWithUserRoleThatCanBeAuthenticated() throws Exception {
-
-		HttpEntity<String> signUpRequest = new HttpEntity<>(
-				"{\"username\": \"new_user\",\"email\": \"new_user@cws.de\",\"password\": \"87654321\",\"role\": [\"user\"]}",
-				headers);
-		ResponseEntity<String> signUpResponse = restTemplate.postForEntity(SIGNUP_URI, signUpRequest, String.class);
-		assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		JSONObject newAuthJsonObject = new JSONObject();
-		newAuthJsonObject.put("username", "new_user");
-		newAuthJsonObject.put("password", "87654321");
-
-		HttpEntity<String> authRequest = new HttpEntity<>(newAuthJsonObject.toString(), headers);
-		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
-		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
-
-	@Test
-    @DirtiesContext
-	void shouldRejectCreationOfUsersWithSameUsername() {
-		HttpEntity<String> signUpRequest = new HttpEntity<>(
-				"{\"username\": \"new_user_1\",\"email\": \"new_user_1@cws.de\",\"password\": \"87654321\",\"role\": [\"user\"]}",
-				headers);
-		ResponseEntity<String> signUpResponse = restTemplate.postForEntity(SIGNUP_URI, signUpRequest, String.class);
-		assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		HttpEntity<String> signUpRequestSameUser = new HttpEntity<>(
-				"{\"username\": \"new_user_1\",\"email\": \"another_new_user@cws.de\",\"password\": \"86754231\",\"role\": [\"user\"]}",
-				headers);
-		ResponseEntity<String> signUpResponseSameUser = restTemplate.postForEntity(SIGNUP_URI, signUpRequestSameUser,
-				String.class);
-		assertThat(signUpResponseSameUser.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-	}
-
-	@Test
-    @DirtiesContext
-	void shouldRejectCreationOfUserWithSameEmail() {
-		HttpEntity<String> signUpRequest = new HttpEntity<>(
-				"{\"username\": \"new_user_2\",\"email\": \"new_user_2@cws.de\",\"password\": \"87654321\",\"role\": [\"user\"]}",
-				headers);
-		ResponseEntity<String> signUpResponse = restTemplate.postForEntity(SIGNUP_URI, signUpRequest, String.class);
-		assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		HttpEntity<String> signUpRequestSameUser = new HttpEntity<>(
-				"{\"username\": \"another_2\",\"email\": \"new_user_2@cws.de\",\"password\": \"86754231\",\"role\": [\"user\"]}",
-				headers);
-		ResponseEntity<String> signUpResponseSameUser = restTemplate.postForEntity(SIGNUP_URI, signUpRequestSameUser,
-				String.class);
-		assertThat(signUpResponseSameUser.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-	}
-
-	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldAuthenticateUser() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, String.class);
@@ -169,7 +115,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldReturnUsersPageUsesDefaultParameters() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
@@ -193,7 +139,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldReturnDescSortedPageOfUsers() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
@@ -214,7 +160,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldReturnDefaultSortedPageOfUsersWithWrongPageParameterValues() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
@@ -236,7 +182,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldReturnRequestErrorByWrongSortParameterValue() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
