@@ -13,12 +13,8 @@
 	<description>Data base migration implementation of test task to web software engineer position</description>
 	
 	<properties>
-		<java.version>17</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
 		<cws.database.image.tag>0.0.1</cws.database.image.tag>
 		
-		<spring.boot.version>3.3.4</spring.boot.version>
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
 		<jib.maven.plugin.version>3.4.3</jib.maven.plugin.version>
