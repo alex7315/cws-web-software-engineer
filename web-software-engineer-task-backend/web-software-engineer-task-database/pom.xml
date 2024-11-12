@@ -68,7 +68,7 @@
 	
 	<profiles>
 		<profile>
-			<id>local</id>
+			<id>development</id>
 			<properties>
 				<cws.datasource.url>${cws.datasource.url}</cws.datasource.url>
     			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
@@ -76,6 +76,46 @@
     			<cws.datasource.schema>${cws.datasource.schema}</cws.datasource.schema>
     			<cws.database.image.name>cws/web-software-engineer-task-database:${cws.database.image.tag}</cws.database.image.name>
 			</properties>
+		</profile>
+		
+		<profile>
+			<id>docker</id>
+			<properties>
+				<cws.datasource.url>${cws.datasource.url}</cws.datasource.url>
+    			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
+    			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
+    			<cws.datasource.schema>${cws.datasource.schema}</cws.datasource.schema>
+    			<cws.database.image.name>cws/web-software-engineer-task-database:${cws.database.image.tag}</cws.database.image.name>
+			</properties>
+			
+			<build>
+				<plugins>
+		        	<plugin>
+		                <groupId>com.google.cloud.tools</groupId>
+		                <artifactId>jib-maven-plugin</artifactId>
+		                <version>${jib.maven.plugin.version}</version>
+		                <configuration>
+		                	<from>
+		                		<image>openjdk:17</image>
+		                	</from>
+		                </configuration>
+		                <executions>
+		                	<execution>
+		                		<id>local</id>
+		                		<phase>package</phase>
+		                		<configuration>
+		                			<to>
+		                        		<image>${cws.database.image.name}</image>
+		                    		</to>
+		                		</configuration>
+		                		<goals>
+		                			<goal>dockerBuild</goal>
+		                		</goals>
+		                	</execution>
+		                </executions>
+		            </plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
@@ -116,31 +156,6 @@
         			<useDefaultDelimiters>false</useDefaultDelimiters>
         		</configuration>
         	</plugin>
-        	
-        	<plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib.maven.plugin.version}</version>
-                <configuration>
-                	<from>
-                		<image>openjdk:17</image>
-                	</from>
-                </configuration>
-                <executions>
-                	<execution>
-                		<id>local</id>
-                		<phase>package</phase>
-                		<configuration>
-                			<to>
-                        		<image>${cws.database.image.name}</image>
-                    		</to>
-                		</configuration>
-                		<goals>
-                			<goal>dockerBuild</goal>
-                		</goals>
-                	</execution>
-                </executions>
-            </plugin>
         	
 		</plugins>
 		
