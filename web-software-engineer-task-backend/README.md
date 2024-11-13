@@ -19,8 +19,10 @@ provides scheduled batch process to synchronize internal database with data from
 ## Configuration  
 Projects contain  _application.yml_  files with configuration properties.  
 This files have place holders instead of property values. Place holders are resolved by  _maven_  resource filtering that considers  _maven_  profiles are defined in  _POM_ .  
-Property values are stored in  _maven_  settings file. Usually _~/.m2/settings.xml_ or  _$MAVEN_HOME/settings.xml_  _Maven_  setting file has to be secured since it contains confidant data like user password, access token etc.  
-Follow values have to be defined in  _maven_ settings file.  
+Property values are stored in  _maven_  settings file. Usually  _~/.m2/settings.xml_  or  _$MAVEN_HOME/settings.xml_  
+
+_Maven_  setting file has to be secured since it contains confidant data like user password, access token etc.  
+Follow values have to be defined in  _maven_  settings file.  
 
 ### Database Component  
 
@@ -64,12 +66,73 @@ _cws.security.session.timeout_  Security session timeout in sec.
 
 _cws.security.refresh.token.expiration.ms_  Refresh token expiration time in ms.  
 
+###Configuration profiles  
+
+There are profiles defined in POM files of component projects:  
+__development__  
+used to build component .jar during development time, to execute unit tests and to measure current project test coverage  
+
+__docker__  
+used to build docker images of components and store them in local docker repo  
+
+Example of _settings.xml_  
+
+
+	<settings>
+		<profiles>
+			<profile>
+				<id>docker</id>
+          	<properties>
+					<build.profile.id>docker</build.profile.id>
+					<cws.datasource.url>jdbc:mysql://mysqldb:3306/cws_github?useUnicode=true&amp;characterEncoding=UTF-8&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;useJDBCCompliantTimezoneeShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</cws.datasource.url>
+					<cws.datasource.username>database_username</cws.datasource.username>
+					<cws.datasource.password>password</cws.datasource.password>
+					<cws.datasource.schema>cws_github</cws.datasource.schema>
+					<cws.jpa.ddl.auto>none</cws.jpa.ddl.auto>
+					<cws.service.port.exposed>8080</cws.service.port.exposed>
+					<cws.database.root.password>database root password</cws.database.root.password>
+					<cws.github.authorization.token>github token</cws.github.authorization.token>
+
+					<!-- sync with GitHub each 1 minute -->
+                	<cws.github.sync.scheduled.rate>60</cws.github.sync.scheduled.rate>
+                	<cws.github.user.page.size>100</cws.github.user.page.size>
+               	<cws.github.user.count.max>1000</cws.github.user.count.max>
+                	<cws.sync.port.exposed>8080</cws.sync.port.exposed>
+                	<cws.log.base.path>/cws/logs</cws.log.base.path>
+					<cws.security.jwt.secret>jwt secret</cws.security.jwt.secret>
+					
+					<!-- token expiration time 10 min -->
+					<cws.security.jwt.expiration.ms>600000</cws.security.jwt.expiration.ms>
+					
+					<!-- token expiration time 60 min -->
+					<cws.security.refresh.token.expiration.ms>3600000</cws.security.refresh.token.expiration.ms>
+
+					<!-- user session idle timeout 5min. -->
+					<cws.security.session.timeout>300</cws.security.session.timeout>
+				</properties>
+		 
+			<profile>
+		
+			<profile>
+				<id>development</id>
+	          	<properties>
+						<build.profile.id>development</build.profile.id>
+					
+					
+					...
+					
+					</properties>
+			</profile>
+		</profiles>  
+   </settings>  
+
+
 
 
 ## Build  
 _Maven_  configuration contains plugins to compile source code, to build executable .jar file and to create docker image configured according to profile provided by build command.  
 
-__mvn -P<profile> clean package__
+__mvn -Pdocker clean package__
 
 ## Deployment  
 Project contains  
@@ -138,7 +201,7 @@ __SERVICE__  Component provides endpoint to authenticate user and get paginated 
 
 __Api documentation URLs:__  
 
-__Swagger__  _<host>[:port]/cws-service/swagger-ui/index.html  
+__Swagger__  _<host>[:port]/cws-service/swagger-ui/index.html_  
 
 
 __Security endpoints:__
@@ -154,7 +217,7 @@ __GitHub user list endpoint:__
 
 __GET__  _<host>[:port]/cws-service/api/users_  
 
-To see detailed documentation see _<host>[:port]/cws-backend/swagger-ui/index.html_  
+To see detailed documentation _<host>[:port]/cws-service/swagger-ui/index.html_  
 
 __SYNC__  Component runs scheduled job process to synchronize users with actual GitHub users.  
 Component provides endpoints to activate/deactivate scheduled job:  
