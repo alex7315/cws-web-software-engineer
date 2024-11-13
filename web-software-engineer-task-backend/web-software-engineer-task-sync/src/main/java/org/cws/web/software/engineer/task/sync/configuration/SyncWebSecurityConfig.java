@@ -72,7 +72,9 @@ public class SyncWebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
-                        auth.requestMatchers("/job/scheduler/**").permitAll()
+                        auth.requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs*/**").permitAll()
+                        .requestMatchers("/job/scheduler/**").permitAll()
                         .anyRequest().authenticated()
                     );
     
