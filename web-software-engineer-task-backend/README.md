@@ -199,7 +199,7 @@ popd
 ## Using  
 __SERVICE__  Component provides endpoint to authenticate user and get paginated list of Github users.  
 
-__Api documentation URLs:__  
+__Api documentation URL:__  
 
 __Swagger__  _<host>[:port]/cws-service/swagger-ui/index.html_  
 
@@ -221,6 +221,11 @@ To see detailed documentation _<host>[:port]/cws-service/swagger-ui/index.html_
 
 __SYNC__  Component runs scheduled job process to synchronize users with actual GitHub users.  
 Component provides endpoints to activate/deactivate scheduled job:  
+
+__Api documentation URL:__  
+
+__Swagger__  _<host>[:port]/cws-sync/swagger-ui/index.html_  
+
 
 __PUT__  _<host>[:port]/cws-sync/job/scheduler/activate_  
 
