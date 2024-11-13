@@ -74,7 +74,6 @@ public class SyncWebSecurityConfig {
             .authorizeHttpRequests(auth -> 
                         auth.requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs*/**").permitAll()
-                        .requestMatchers("/job/scheduler/**").permitAll()
                         .anyRequest().authenticated()
                     );
     
