@@ -66,6 +66,7 @@ const Auth = () => {
                     loading: false,
                     message: resMessage
                 });
+                window.location.reload();
             }
           );
     }
