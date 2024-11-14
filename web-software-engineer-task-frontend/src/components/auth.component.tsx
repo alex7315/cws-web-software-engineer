@@ -44,14 +44,12 @@ const Auth = () => {
         
         AuthService.login(inputs.username, inputs.password).then(
             (data) => {
-                console.log(data);
                 if(data.roles.includes("ROLE_USER")) {
                     navigate("/users", { replace: true });
                     window.location.reload();
                 }
             },
             (error) => {
-                console.log(inputs);
                 const resMessage =
                     (error.response &&
                         error.response.data &&

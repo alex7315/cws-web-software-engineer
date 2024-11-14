@@ -18,7 +18,7 @@ import TablePagination, {
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import axios from "axios";
+import axios, {AxiosRequestConfig, RawAxiosRequestHeaders} from "axios";
 import AuthService from "../services/auth.service"
 import EventBus from "../common/eventBus";
 import useIdleTimeout from "../common/idleTimer"
@@ -107,22 +107,19 @@ const Users = () => {
             const itemString = localStorage.getItem('user');
             const tokenValue = itemString ? JSON.parse(itemString).token : "";
             const apiUrl = API_URL ? API_URL : "";
-            console.log(apiUrl);
-            console.log(tokenValue);
-            console.log(controller.page);
-            await axios.get(apiUrl, {
+            const axiosConfig: AxiosRequestConfig = {
                 params: {
                     page: controller.page,
-                    size: controller.rowsPerPage,
-                    sort: "login"
+                    size: controller.rowsPerPage
                 },
                 headers: {
-                    Authorization: "Bearer " + tokenValue
-                }
-            })
+                    'Authorization': `Bearer ${tokenValue}`,
+                } as RawAxiosRequestHeaders,
+            };
+
+            await axios.get(apiUrl, axiosConfig
+            )
                 .then(response => {
-                    console.log(response);
-                    console.log(response.data);
                     const rowData = response.data;
                     rowChange(rowData);
                     setUsersCount(1000);
