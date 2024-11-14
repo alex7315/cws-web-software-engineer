@@ -1,6 +1,6 @@
 version: "2.4"
 services:
-  mysqldb:
+  mysqldb002:
     image: "mysql:8.0"
     container_name: "mysql002"
     restart: always
@@ -19,17 +19,17 @@ services:
     networks:
       - springapimysql-net
 
-  database_service:
+  database_service002:
     image: "cws/web-software-engineer-task-database:0.0.2"
     container_name: "database002"
     restart: on-failure
     networks:
       - springapimysql-net 
     depends_on:
-      mysqldb:
+      mysqldb002:
         condition: service_healthy
 
-  backend_service:
+  backend_service002:
     image: "cws/web-software-engineer-task-service:0.0.2"
     container_name: "service002"
     restart: always
@@ -40,12 +40,12 @@ services:
     networks:
       - springapimysql-net 
     depends_on:
-      mysqldb:
+      mysqldb002:
         condition: service_healthy
-      database_service:
+      database_service002:
         condition: service_started
       
-  sync_service:
+  sync_service002:
     image: "cws/web-software-engineer-task-sync:0.0.2"
     container_name: "sync002"
     restart: always
@@ -56,11 +56,11 @@ services:
     networks:
       - springapimysql-net
     depends_on:
-      mysqldb:
+      mysqldb002:
         condition: service_healthy
-      backend_service:
+      backend_service002:
         condition: service_started
-      database_service:
+      database_service002:
         condition: service_started
 
 networks:
