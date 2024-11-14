@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -75,6 +76,9 @@ public class WebSecurityConfig {
                         auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs*/**").permitAll()
+                        /*pre-flight (OPTIONS) requests have to be not authenticated 
+                         * (avoids Firefox problem with Authorization header of OPTIONS request) */
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll() 
                         .anyRequest().authenticated()
                     );
     

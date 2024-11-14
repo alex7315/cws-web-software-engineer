@@ -29,22 +29,26 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtHandler.validateJwtToken(jwt)) {
-                String username = jwtHandler.getUserNameFromJwtToken(jwt);
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+        String jwt = parseJwt(request);
+        if (jwt != null && jwtHandler.validateJwtToken(jwt)) {
+            authenticateUserByToken(request, jwt);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void authenticateUserByToken(HttpServletRequest request, String jwt) {
+        try {
+            String username = jwtHandler.getUserNameFromJwtToken(jwt);
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication", e);
+        }
     }
 
     private String parseJwt(HttpServletRequest request) {

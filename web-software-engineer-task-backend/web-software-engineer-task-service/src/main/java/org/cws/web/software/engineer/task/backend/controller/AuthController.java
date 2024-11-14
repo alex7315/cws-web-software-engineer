@@ -10,7 +10,6 @@ import org.cws.web.software.engineer.task.persistence.model.RefreshToken;
 import org.cws.web.software.engineer.task.security.exception.TokenRefreshException;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.RefreshTokenService;
-import org.cws.web.software.engineer.task.security.service.SecurityService;
 import org.cws.web.software.engineer.task.security.service.UserDetailsImpl;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,21 +36,14 @@ public class AuthController {
 
 	private AuthenticationManager authenticationManager;
 
-	private PasswordEncoder passwordEncoder;
-
 	private JwtHandler jwtHandler;
-
-	private SecurityService securityService;
 
 	private RefreshTokenService refreshTokenService;
 
-	public AuthController(@Autowired AuthenticationManager authenticationManager,
-			@Autowired PasswordEncoder passwordEncoder, @Autowired JwtHandler jwtHandler,
-			@Autowired SecurityService securityService, @Autowired RefreshTokenService refreshTokenService) {
+    public AuthController(@Autowired AuthenticationManager authenticationManager, @Autowired JwtHandler jwtHandler,
+            @Autowired RefreshTokenService refreshTokenService) {
 		this.authenticationManager = authenticationManager;
-		this.passwordEncoder = passwordEncoder;
 		this.jwtHandler = jwtHandler;
-		this.securityService = securityService;
 		this.refreshTokenService = refreshTokenService;
 	}
 
@@ -79,7 +70,7 @@ public class AuthController {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
         LoggerFactory.getLogger(this.getClass()).debug(String.format("User name: %s refresh token: %s", userDetails.getUsername(), refreshToken.getToken()));
-            
+        
         return ResponseEntity.ok(JwtResponse.builder()
                                         .token(jwt)
                                         .id(userDetails.getId())

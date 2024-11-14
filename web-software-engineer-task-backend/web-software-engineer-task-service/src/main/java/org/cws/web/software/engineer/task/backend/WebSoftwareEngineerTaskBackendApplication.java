@@ -26,7 +26,7 @@ public class WebSoftwareEngineerTaskBackendApplication {
                 //@formatter:off
                 registry
                     .addMapping("/**")
-                    .allowedOrigins("*");
+                    .allowedOrigins("*"); 
                 //@formatter:on
             }
         };

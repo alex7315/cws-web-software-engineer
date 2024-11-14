@@ -1,5 +1,7 @@
 package org.cws.web.software.engineer.task.backend.controller;
 
+import java.nio.file.AccessDeniedException;
+
 import org.cws.web.software.engineer.task.security.exception.TokenRefreshException;
 import org.cws.web.software.engineer.task.security.exception.UserNotFoundException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -17,18 +19,31 @@ public class UsersResponseEntityExceptionHandler extends ResponseEntityException
 	@ExceptionHandler(value = { PropertyReferenceException.class })
 	protected ResponseEntity<Object> handleErrorSorting(RuntimeException ex, WebRequest request) {
 		String bodyOfResponse = "Error sorting parameters";
-		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
     @ExceptionHandler(value = { TokenRefreshException.class })
     protected ResponseEntity<Object> handleTokenRefreshError(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "Token refresh error";
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.FORBIDDEN, request);
     }
 
     @ExceptionHandler(value = { UserNotFoundException.class })
     protected ResponseEntity<Object> handleUserNotFound(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "User found error";
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = { AccessDeniedException.class })
+    protected ResponseEntity<Object> accessDenied(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Access denided";
+        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    private HttpHeaders createHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+
+        return headers;
     }
 }
