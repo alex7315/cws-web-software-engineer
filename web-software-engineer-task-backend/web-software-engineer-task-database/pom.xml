@@ -13,7 +13,7 @@
 	<description>Data base migration implementation of test task to web software engineer position</description>
 	
 	<properties>
-		<cws.database.image.tag>0.0.1</cws.database.image.tag>
+		<cws.database.image.tag>0.0.2</cws.database.image.tag>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
