@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.cws</groupId>
 		<artifactId>web-software-engineer-task-backend</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>../../web-software-engineer-task-backend</relativePath>  <!-- lookup parent from repository -->
 	</parent>
 	
@@ -14,13 +14,13 @@
 	<url/>
 	
 	<properties>
-		<cws.service.image.tag>0.0.1</cws.service.image.tag>
+		<cws.service.image.tag>0.0.2</cws.service.image.tag>
 		
 		<org.projectlombok.version>1.18.34</org.projectlombok.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<springdoc.openapi.starter.webmvc.ui.version>2.5.0</springdoc.openapi.starter.webmvc.ui.version>
-		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
-		<web.software.engineer.task.security.version>0.0.1-SNAPSHOT</web.software.engineer.task.security.version>
+		<web.software.engineer.task.persistence.version>0.0.2-SNAPSHOT</web.software.engineer.task.persistence.version>
+		<web.software.engineer.task.security.version>0.0.2-SNAPSHOT</web.software.engineer.task.security.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
@@ -144,6 +144,11 @@
                 <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
                 <cws.security.session.timeout>${cws.security.session.timeout}</cws.security.session.timeout>
+				<cws.security.ssl.enabled>${cws.security.ssl.enabled}</cws.security.ssl.enabled>
+				<cws.security.ssl.keystore.type>${cws.security.ssl.keystore.type}</cws.security.ssl.keystore.type>
+				<cws.security.ssl.keystore.location>${cws.security.ssl.keystore.location}</cws.security.ssl.keystore.location>
+				<cws.security.ssl.keystore.password>${cws.security.ssl.keystore.password}</cws.security.ssl.keystore.password>
+				<cws.security.ssl.keystore.alias>${cws.security.ssl.keystore.alias}</cws.security.ssl.keystore.alias>
 			</properties>
 			
 			<build>
@@ -205,6 +210,11 @@
                 <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
                 <cws.security.session.timeout>${cws.security.session.timeout}</cws.security.session.timeout>
+				<cws.security.ssl.enabled>${cws.security.ssl.enabled}</cws.security.ssl.enabled>
+				<cws.security.ssl.keystore.type>${cws.security.ssl.keystore.type}</cws.security.ssl.keystore.type>
+				<cws.security.ssl.keystore.location>${cws.security.ssl.keystore.location}</cws.security.ssl.keystore.location>
+				<cws.security.ssl.keystore.password>${cws.security.ssl.keystore.password}</cws.security.ssl.keystore.password>
+				<cws.security.ssl.keystore.alias>${cws.security.ssl.keystore.alias}</cws.security.ssl.keystore.alias>
 			</properties>
 			
 			<build>

@@ -4,7 +4,7 @@ server:
     session: 
       timeout: ${cws.security.session.timeout}
   ssl:
-    enabled: true
+    enabled: ${cws.security.ssl.enabled}
     key-store-type: ${cws.security.ssl.keystore.type}
     key-store: ${cws.security.ssl.keystore.location}
     key-store-password: ${cws.security.ssl.keystore.password}

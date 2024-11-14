@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.cws</groupId>
 		<artifactId>web-software-engineer-task-backend</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>../../web-software-engineer-task-backend</relativePath>  <!-- lookup parent from repository -->
 	</parent>
 

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.cws</groupId>
 		<artifactId>web-software-engineer-task-backend</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>../../web-software-engineer-task-backend</relativePath>  <!-- lookup parent from repository -->
 	</parent>
 	
@@ -15,12 +15,12 @@
 	<url/>
 
 	<properties>
-		<cws.sync.image.tag>0.0.1</cws.sync.image.tag>
+		<cws.sync.image.tag>0.0.2</cws.sync.image.tag>
 		
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<springdoc.openapi.starter.webmvc.ui.version>2.5.0</springdoc.openapi.starter.webmvc.ui.version>
-		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
-		<web.software.engineer.task.security.version>0.0.1-SNAPSHOT</web.software.engineer.task.security.version>
+		<web.software.engineer.task.persistence.version>0.0.2-SNAPSHOT</web.software.engineer.task.persistence.version>
+		<web.software.engineer.task.security.version>0.0.2-SNAPSHOT</web.software.engineer.task.security.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>

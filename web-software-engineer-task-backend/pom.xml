@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cws</groupId>
   <artifactId>web-software-engineer-task-backend</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>web-software-engineer-task-backend</name>
   <description>Parent project of Web Software Engineer Test Task Backend</description>

@@ -2,6 +2,7 @@ version: "2.4"
 services:
   mysqldb:
     image: "mysql:8.0"
+    container_name: "mysql002"
     restart: always
     ports:
       - ${CWS_DATABASE_PORT}:3306
@@ -19,7 +20,8 @@ services:
       - springapimysql-net
 
   database_service:
-    image: "cws/web-software-engineer-task-database:0.0.1"
+    image: "cws/web-software-engineer-task-database:0.0.2"
+    container_name: "database002"
     restart: on-failure
     networks:
       - springapimysql-net 
@@ -28,10 +30,11 @@ services:
         condition: service_healthy
 
   backend_service:
-    image: "cws/web-software-engineer-task-service:0.0.1"
+    image: "cws/web-software-engineer-task-service:0.0.2"
+    container_name: "service002"
     restart: always
     ports:
-      - ${CWS_BACKEND_PORT}:8080
+      - ${CWS_BACKEND_PORT}:443
     volumes:
       - ${CWS_LOG_BASEDIR}:${CWS_LOG_BASEDIR}
     networks:
@@ -43,10 +46,11 @@ services:
         condition: service_started
       
   sync_service:
-    image: "cws/web-software-engineer-task-sync:0.0.1"
+    image: "cws/web-software-engineer-task-sync:0.0.2"
+    container_name: "sync002"
     restart: always
     ports:
-      - ${CWS_SYNC_PORT}:8080
+      - ${CWS_SYNC_PORT}:443
     volumes:
       - ${CWS_LOG_BASEDIR}:${CWS_LOG_BASEDIR}
     networks:
