@@ -32,7 +32,7 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldCreateJwtContainsUserData() throws Exception {
+    void shouldCreateJwtContainsUserData() {
         
         Authentication auth = new TestingAuthenticationToken(userDetails, null);
         String token = jwtHandler.generateJwtToken(auth);
@@ -42,7 +42,7 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldValidateCreatesJwt() throws Exception {
+    void shouldValidateCreatesJwt() {
         Authentication auth = new TestingAuthenticationToken(userDetails, null);
         String token = jwtHandler.generateJwtToken(auth);
 
@@ -50,7 +50,7 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldFailJwtValidation() throws Exception {
+    void shouldFailJwtValidation() {
         assertThat(jwtHandler.validateJwtToken(
                 "malformediJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTcyOTk0MjczMiwiZXhwIjoxNzI5OTQyNzQyfQ.AEVxgOsOzsMlUB_j3ogiRVmuiHtNfi8F9bk1USeH-XrFugvE341tI4UFxPmYgAzM"))
                         .isFalse();
@@ -60,7 +60,7 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldInvalidateExpiredJwt() throws Exception {
+    void shouldInvalidateExpiredJwt() {
         JwtHandler jwtHandlerExpired = new JwtHandler("Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 1);
         Authentication auth = new TestingAuthenticationToken(userDetails, null);
         String token = jwtHandlerExpired.generateJwtToken(auth);

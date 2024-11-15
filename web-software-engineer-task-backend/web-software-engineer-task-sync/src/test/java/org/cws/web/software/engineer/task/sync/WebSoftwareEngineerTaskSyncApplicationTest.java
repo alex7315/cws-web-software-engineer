@@ -55,7 +55,7 @@ class WebSoftwareEngineerTaskSyncApplicationTest {
 
 
     @BeforeEach
-    void init() throws Exception {
+    void init() {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
     }

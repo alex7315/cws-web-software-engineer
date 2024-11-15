@@ -18,9 +18,32 @@
 		<spring.boot.version>3.3.5</spring.boot.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
-		<sonar.organization>alex7315</sonar.organization>
-  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.maven.plugin>5.0.0.4389</sonar.maven.plugin>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>development</id>
+			<properties>
+				<sonar.token>${sonar.token}</sonar.token>
+				<sonar.host.url>${sonar.host.url}</sonar.host.url>
+				<sonar.organization>${sonar.organization}</sonar.organization>
+  				<sonar.projectKey>${sonar.projectKey}</sonar.projectKey>
+			</properties>
+		</profile>
+	</profiles>
+	
+	<build>
+		<pluginManagement>
+		  <plugins>
+		    <plugin>
+		      <groupId>org.sonarsource.scanner.maven</groupId>
+		      <artifactId>sonar-maven-plugin</artifactId>
+		      <version>${sonar.maven.plugin}</version>
+		    </plugin>
+		  </plugins>
+		</pluginManagement>
+	</build>
   
   <modules>
     <module>web-software-engineer-task-service</module>

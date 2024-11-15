@@ -43,7 +43,7 @@ class UserServiceDefaultImplTest {
 	}
 
 	@Test
-	void shouldGetUsersWithPageSize10DescSorting() throws Exception {
+    void shouldGetUsersWithPageSize10DescSorting() {
 		List<GithubUserDto> actualList = usersService
 				.getUsers(PageRequest.ofSize(10).withSort(Sort.by(Direction.DESC, "login")));
 		//@formatter:off
@@ -66,7 +66,7 @@ class UserServiceDefaultImplTest {
 	}
 
 	@Test
-	void shouldGetUsersFirstPagePageSize3DefaultSorting() throws Exception {
+    void shouldGetUsersFirstPagePageSize3DefaultSorting() {
 		List<GithubUserDto> actualList = usersService.getUsers(PageRequest.ofSize(3));
 		//@formatter:off
 		assertThat(actualList)
@@ -79,7 +79,7 @@ class UserServiceDefaultImplTest {
 	}
 
 	@Test
-	void testGet2ndPagePageSize5DefaultSorting() throws Exception {
+    void testGet2ndPagePageSize5DefaultSorting() {
 		List<GithubUserDto> actualList = usersService.getUsers(PageRequest.of(1, 5));
 		//@formatter:off
 		assertThat(actualList)

@@ -82,7 +82,7 @@ class SecurityServiceImplTest {
 	}
 
 	@Test
-	void shouldSaveCreatedUser() throws Exception {
+    void shouldSaveCreatedUser() {
 		//@formatter:off
         Set<Role> roles = Stream.of(Role.builder()
                                         .name(ROLE_ADMIN)

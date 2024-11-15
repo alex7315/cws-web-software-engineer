@@ -69,14 +69,16 @@ public class AuthController {
         
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        LoggerFactory.getLogger(this.getClass()).debug(String.format("User name: %s refresh token: %s", userDetails.getUsername(), refreshToken.getToken()));
+        String userName = userDetails.getUsername();
+        String refreshTokenValue = refreshToken.getToken();
+        LoggerFactory.getLogger(this.getClass()).debug("User name: {} refresh token: {}", userName, refreshTokenValue);
         
         return ResponseEntity.ok(JwtResponse.builder()
                                         .token(jwt)
                                         .id(userDetails.getId())
-                                        .username(userDetails.getUsername())
+                                        .username(userName)
                                         .email(userDetails.getEmail())
-                                        .refreshToken(refreshToken.getToken())
+                                        .refreshToken(refreshTokenValue)
                                         .roles(roles)
                                         .build());
         //@formatter:on

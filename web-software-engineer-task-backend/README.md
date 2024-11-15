@@ -132,7 +132,11 @@ Example of _settings.xml_
 ## Build  
 _Maven_  configuration contains plugins to compile source code, to build executable .jar file and to create docker image configured according to profile provided by build command.  
 
-__mvn -Pdocker clean package__
+__mvn -Pdocker clean package__  
+
+### Code quality using Sonar Qube Cloud 
+
+__mvn -Pdevelopment verify sonar:sonar__
 
 ## Deployment  
 Project contains  

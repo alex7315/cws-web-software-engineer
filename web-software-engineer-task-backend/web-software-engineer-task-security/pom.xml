@@ -17,6 +17,8 @@
 		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+		<jacoco.plugin.version>0.8.12</jacoco.plugin.version>
+		<surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -88,6 +90,72 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>development</id>
+			<properties>
+				<cws.datasource.url>${cws.datasource.url}</cws.datasource.url>
+    			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
+    			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
+    			<cws.jpa.ddl.auto>${cws.jpa.ddl.auto}</cws.jpa.ddl.auto>
+    			<cws.github.authorization.token>${csw.github.authorization.token}</cws.github.authorization.token>
+    			<cws.github.sync.scheduled.rate>${cws.github.sync.scheduled.rate}</cws.github.sync.scheduled.rate>
+    			<cws.github.user.page.size>${cws.github.user.page.size}</cws.github.user.page.size>
+    			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
+    			<cws.sync.port.exposed>${cws.sync.port.exposed}</cws.sync.port.exposed>
+    			<cws.sync.image.name>cws/web-software-engineer-task-sync:${cws.sync.image.tag}</cws.sync.image.name>
+    			<cws.security.jwt.secret>${cws.security.jwt.secret}</cws.security.jwt.secret>
+                <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
+                <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
+                <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
+			</properties>
+			
+			<build>
+				<plugins>
+				
+					<plugin>
+				    	<artifactId>maven-surefire-plugin</artifactId>
+				        <version>${surefire.plugin.version}</version>
+				        <configuration>
+				        	<!-- Sets argument line property that is used by running of jacoco-maven-plugin. --> 
+				          	<argLine>${surefireArgLine} -Xmx1024m</argLine>
+				          	<systemPropertyVariables>
+				            	<maven.home>${maven.home}</maven.home>
+				          	</systemPropertyVariables>
+				        </configuration>
+				    </plugin>
+				      
+					<plugin> 
+					 	<groupId>org.jacoco</groupId> 
+					 	<artifactId>jacoco-maven-plugin</artifactId> 
+					 	<version>${jacoco.plugin.version}</version> 
+						
+					 	<executions> 
+					 		<execution> 
+					 			<goals> 
+					 				<goal>prepare-agent</goal> 
+					 			</goals> 
+					 			<configuration> 
+					 				<append>true</append> 
+					 				<destFile>${sonar.jacoco.reportPath}</destFile> 
+									 <!-- Sets the VM argument line used when unit tests are run. --> 
+					 				<propertyName>surefireArgLine</propertyName> 
+					 			</configuration> 
+					 		</execution> 
+					 		<execution> 
+					 			<id>report</id> 
+					 			<phase>prepare-package</phase> 
+					 			<goals> 
+					 				<goal>report</goal> 
+					 			</goals> 
+					 		</execution>
+					 	</executions> 
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>

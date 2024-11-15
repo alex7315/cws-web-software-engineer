@@ -54,7 +54,7 @@ class UserDetailsServiceImplTest {
 	}
 
 	@Test
-	void shouldThrowUserNotFoundException() throws Exception {
+    void shouldThrowUserNotFoundException() {
 
 		assertThatExceptionOfType(UsernameNotFoundException.class).isThrownBy(() -> {
 			service.loadUserByUsername("unknown");
