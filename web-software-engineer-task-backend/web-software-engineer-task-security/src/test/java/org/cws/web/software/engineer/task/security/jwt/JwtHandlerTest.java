@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 class JwtHandlerTest {
 
-    private final JwtHandler jwtHandler = new JwtHandler("Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 1000);
+    private final JwtHandler jwtHandler = new JwtHandler("Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 1000 * 30);
     private UserDetailsImpl  userDetails;
 
     @BeforeEach
