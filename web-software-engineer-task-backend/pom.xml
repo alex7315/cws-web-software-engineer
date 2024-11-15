@@ -17,6 +17,9 @@
 		<java.version>17</java.version>
 		<spring.boot.version>3.3.5</spring.boot.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<sonar.organization>alex7315</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
   
   <modules>
