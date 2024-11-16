@@ -34,5 +34,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=alex7315 -Dsonar.projectKey=alex7315_cws-web-software-engineer
+        run: mvn -Pdevelopment -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=alex7315 -Dsonar.projectKey=alex7315_cws-web-software-engineer
         working-directory: web-software-engineer-task-backend
