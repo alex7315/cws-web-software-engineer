@@ -55,7 +55,10 @@ class JwtHandlerTest {
                 "malformediJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTcyOTk0MjczMiwiZXhwIjoxNzI5OTQyNzQyfQ.AEVxgOsOzsMlUB_j3ogiRVmuiHtNfi8F9bk1USeH-XrFugvE341tI4UFxPmYgAzM"))
                         .isFalse();
         assertThat(jwtHandler.validateJwtToken("string")).isFalse();
+        assertThat(jwtHandler.validateJwtToken(null)).isFalse();
         assertThat(jwtHandler.validateJwtToken("")).isFalse();
+        assertThat(jwtHandler.validateJwtToken(
+                "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczMTc3NzEwNiwiZXhwIjoxNzMxNzc3MTM2fQ.SssMuzrvfmFe7FiORMLUvX77Dg0csgP6eufTxKEJIUYEIKBQ3aQVFLzk-maleformed"));
 
     }
 

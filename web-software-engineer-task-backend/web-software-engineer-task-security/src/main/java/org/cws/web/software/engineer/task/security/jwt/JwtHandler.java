@@ -20,7 +20,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import io.jsonwebtoken.security.SignatureException;
-import io.jsonwebtoken.security.WeakKeyException;
 
 @Service
 public class JwtHandler {
@@ -88,8 +87,6 @@ public class JwtHandler {
             LOG.error("JWT token is unsupported", e);
         } catch (IllegalArgumentException e) {
             LOG.error("JWT claims string is empty", e);
-        } catch (WeakKeyException e) {
-            LOG.error("JWT secret code has to be min. 256 bit", e);
         } catch (SecurityException e) {
             LOG.error("JWT decryption fails", e);
         }
