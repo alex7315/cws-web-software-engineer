@@ -45,7 +45,7 @@ _cws.service.port.exposed_
 _cws.log.base.path_  
 
 
-###Sync Component  
+### Sync Component  
 
 _cws.github.authorization.token_  Authorization token can be getting from GitHub using GitHub account
 
@@ -57,7 +57,7 @@ _cws.github.user.count.max_   Max. number of GitHub users are requested to synch
 
 _cws.sync.port.exposed_  
 
-###Security configuration (Backend and Sync)
+### Security configuration (Backend and Sync)
 _cws.security.jwt.secret_     Plain text 64 character secret key is used by creating of authorization token (JWT)
 
 _cws.security.jwt.expiration.ms_  
@@ -136,7 +136,9 @@ __mvn -Pdocker clean package__
 
 ### Code quality using Sonar Qube Cloud 
 
-__mvn -Pdevelopment verify sonar:sonar__
+__mvn -Pdevelopment verify sonar:sonar__  
+
+[Code analysis overview] (https://sonarcloud.io/project/overview?id=alex7315_cws-web-software-engineer)
 
 ## Deployment  
 Project contains  
@@ -210,16 +212,16 @@ __Swagger__  _<host>[:port]/cws-service/swagger-ui/index.html_
 
 __Security endpoints:__
 
-__POST__ _<host>[:port]/cws-service/api/auth/signin_  
+__POST__ _host[:port]/cws-service/api/auth/signin_  
 
 
-__POST__ _<host>[:port]/cws-service/api/auth/refreshtoken_
+__POST__ _host[:port]/cws-service/api/auth/refreshtoken_
 
 
 __GitHub user list endpoint:__  
 
 
-__GET__  _<host>[:port]/cws-service/api/users_  
+__GET__  _host[:port]/cws-service/api/users_  
 
 To see detailed documentation _<host>[:port]/cws-service/swagger-ui/index.html_  
 
@@ -228,10 +230,10 @@ Component provides endpoints to activate/deactivate scheduled job:
 
 __Api documentation URL:__  
 
-__Swagger__  _<host>[:port]/cws-sync/swagger-ui/index.html_  
+__Swagger__  _host[:port]/cws-sync/swagger-ui/index.html_  
 
 
-__PUT__  _<host>[:port]/cws-sync/job/scheduler/activate_  
+__PUT__  _host[:port]/cws-sync/job/scheduler/activate_  
 
-__PUT__  _<host>[:port]/cws-sync/job/scheduler/deactivate_ 
+__PUT__  _host[:port]/cws-sync/job/scheduler/deactivate_ 
 
