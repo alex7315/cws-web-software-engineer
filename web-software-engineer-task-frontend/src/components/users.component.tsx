@@ -61,13 +61,10 @@ const Users = () => {
     }
 
     //attach logout event
-    console.log('attach logout event')
     EventBus.on('logout', logOut)
 
     return () => {
       //detach logout event
-      console.log('detach logout event')
-
       EventBus.remove('logout', logOut)
     }
   }, [])
@@ -121,10 +118,7 @@ const Users = () => {
           return response
         })
         .catch((error) => {
-          console.log(
-            'users response error. Response status: ' + error.response.status
-          )
-          if (error.response && error.response.status === 400) {
+          if (error.response && error.response.status === 403) {
             //fire "logout" event since response got status UNAUTHORIZES
             EventBus.dispatch('logout')
           }
