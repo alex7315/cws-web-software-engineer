@@ -32,8 +32,8 @@ public class UsersResponseEntityExceptionHandler extends ResponseEntityException
 
     @ExceptionHandler(value = { TokenRefreshException.class })
     protected ResponseEntity<Object> handleTokenRefreshError(RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "Token refresh error";
-        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.FORBIDDEN, request);
+        JwtResponse responseBody = JwtResponse.builder().message("Token refresh error").build();
+        return handleExceptionInternal(ex, responseBody, createHeaders(), HttpStatus.FORBIDDEN, request);
     }
 
     @ExceptionHandler(value = { UserNotFoundException.class })
@@ -48,10 +48,8 @@ public class UsersResponseEntityExceptionHandler extends ResponseEntityException
         return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    private HttpHeaders createHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "*");
 
-        return headers;
+    private HttpHeaders createHeaders() {
+        return new HttpHeaders();
     }
 }
