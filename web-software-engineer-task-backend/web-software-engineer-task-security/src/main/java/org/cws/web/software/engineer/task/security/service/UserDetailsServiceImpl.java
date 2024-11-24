@@ -11,22 +11,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private UserRepository userRepository;
+	private UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+	public UserDetailsServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
-
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //@formatter:off
+	@Override
+	@Transactional(transactionManager = "transactionManager", readOnly = true)
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		//@formatter:off
         User user = userRepository.findByUsername(username)
                             .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found. User name: %s", username)));
         //@formatter:on
 
-        return UserDetailsImpl.build(user);
-    }
+		return UserDetailsImpl.build(user);
+	}
 
 }
