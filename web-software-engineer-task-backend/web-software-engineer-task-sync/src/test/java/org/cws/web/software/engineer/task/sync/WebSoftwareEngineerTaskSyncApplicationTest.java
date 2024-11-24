@@ -39,67 +39,69 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 //@formatter:on
 class WebSoftwareEngineerTaskSyncApplicationTest {
 
-    private static final String ACTIVATE_URI   = "/job/scheduler/activate";
-    private static final String DEACTIVATE_URI = "/job/scheduler/deactivate";
+	private static final String ACTIVATE_URI = "/job/scheduler/activate";
+	private static final String DEACTIVATE_URI = "/job/scheduler/deactivate";
 
-    @Autowired
-    private JwtHandler          jwtHandler;
+	@Autowired
+	private JwtHandler jwtHandler;
 
-    @Autowired
-    TestRestTemplate            restTemplate;
+	@Autowired
+	TestRestTemplate restTemplate;
 
-    @Autowired
-    UserDetailsService          userDetailsService;
+	@Autowired
+	UserDetailsService userDetailsService;
 
-    private HttpHeaders         headers;
+	private HttpHeaders headers;
 
+	@BeforeEach
+	void init() {
+		headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+	}
 
-    @BeforeEach
-    void init() {
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-    }
+	@Test
+	void shouldActivateSyncJob() throws Exception {
+		UserDetails adminDetails = userDetailsService.loadUserByUsername("admin");
+		Authentication adminAuth = new UsernamePasswordAuthenticationToken(adminDetails, adminDetails.getAuthorities());
+		String adminAuthToken = jwtHandler.generateJwtToken(adminAuth);
 
-    @Test
-    void shouldActivateSyncJob() throws Exception {
-        UserDetails adminDetails = userDetailsService.loadUserByUsername("admin");
-        Authentication adminAuth = new UsernamePasswordAuthenticationToken(adminDetails, adminDetails.getAuthorities());
-        String adminAuthToken = jwtHandler.generateJwtToken(adminAuth);
+		headers.setBearerAuth(adminAuthToken);
 
-        headers.setBearerAuth(adminAuthToken);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PUT, requestEntity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PUT, requestEntity, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+	}
 
-    }
+	@Test
+	void shouldDeactivateSyncJob() throws Exception {
+		UserDetails adminDetails = userDetailsService.loadUserByUsername("admin");
+		Authentication adminAuth = new UsernamePasswordAuthenticationToken(adminDetails, adminDetails.getAuthorities());
+		String adminAuthToken = jwtHandler.generateJwtToken(adminAuth);
 
-    @Test
-    void shouldDeactivateSyncJob() throws Exception {
-        UserDetails adminDetails = userDetailsService.loadUserByUsername("admin");
-        Authentication adminAuth = new UsernamePasswordAuthenticationToken(adminDetails, adminDetails.getAuthorities());
-        String adminAuthToken = jwtHandler.generateJwtToken(adminAuth);
+		headers.setBearerAuth(adminAuthToken);
 
-        headers.setBearerAuth(adminAuthToken);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = restTemplate.exchange(DEACTIVATE_URI, HttpMethod.PUT, requestEntity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(DEACTIVATE_URI, HttpMethod.PUT, requestEntity, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+	}
 
-    }
+	@Test
+	void shouldRejectRequestByUserWithoutAdminRole() throws Exception {
+		UserDetails userDetails = userDetailsService.loadUserByUsername("user");
+		Authentication userAuth = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
+		String userAuthToken = jwtHandler.generateJwtToken(userAuth);
 
-    @Test
-    void shouldRejectRequestByUserWithoutAdminRole() throws Exception {
-        UserDetails userDetails = userDetailsService.loadUserByUsername("user");
-        Authentication userAuth = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
-        String userAuthToken = jwtHandler.generateJwtToken(userAuth);
+		headers.setBearerAuth(userAuthToken);
 
-        headers.setBearerAuth(userAuthToken);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PUT, requestEntity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PUT, requestEntity, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-
-    }
+	}
 
 }

@@ -116,6 +116,18 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- since the handler of 401 error creates response with body (see UsersResponseEntityExceptionHandler), -->
+		<!-- the TestRestTemplate with internal JDK HttpURLConnection -->
+		<!-- is not able to access it and throws java.net.HttpRetryException. -->
+		<!-- To solve this problem Apache's HTTP Client can be used instead of default one.-->
+		<!-- Adding of Apache httpclient5 dependency forces Spring Boot to use Apache's HTTP Client -->
+		<dependency>
+		  	<groupId>org.apache.httpcomponents.client5</groupId>
+  			<artifactId>httpclient5</artifactId>
+  			<scope>test</scope>
+		</dependency>
+
+		
 		<dependency>
 			<groupId>com.h2database</groupId>
     		<artifactId>h2</artifactId>

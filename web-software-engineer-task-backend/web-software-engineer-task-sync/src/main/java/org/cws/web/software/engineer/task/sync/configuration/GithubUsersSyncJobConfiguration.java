@@ -47,7 +47,7 @@ public class GithubUsersSyncJobConfiguration {
 	Step createAndUpdateStep(@Qualifier("userReader") ItemReader<GithubUserDTO> userReader,
 			@Qualifier("userProcessor") ItemProcessor<GithubUserDTO, GithubUser> userProcessor,
 			@Qualifier("userWriter") ItemWriter<GithubUser> userWriter, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager,
+			@Qualifier("transactionManager") PlatformTransactionManager transactionManager,
 			@Qualifier("countChunkListener") ChunkListener countChunkListener,
 			@Qualifier("countStepExecutionListener") CountStepExecutionListener countStepExecutionListener) {
 		//@formatter:off
@@ -67,7 +67,7 @@ public class GithubUsersSyncJobConfiguration {
 	@Bean
 	Step deletionStep(@Qualifier("userToDeletionReader") ItemReader<Long> userToDeletionReader,
 			@Qualifier("deletionUserWriter") ItemWriter<Long> deletionUserWriter, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager,
+			@Qualifier("transactionManager") PlatformTransactionManager transactionManager,
 			@Qualifier("countChunkListener") ChunkListener countChunkListener,
 			@Qualifier("countStepExecutionListener") CountStepExecutionListener countStepExecutionListener) {
 		//@formatter:off

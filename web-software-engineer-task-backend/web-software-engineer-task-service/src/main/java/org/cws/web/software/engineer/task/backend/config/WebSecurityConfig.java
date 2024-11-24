@@ -3,7 +3,7 @@ package org.cws.web.software.engineer.task.backend.config;
 import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 
 import org.cws.web.software.engineer.task.security.jwt.AuthTokenFilter;
-import org.cws.web.software.engineer.task.security.jwt.JwtAuthEntryPoint;
+import org.cws.web.software.engineer.task.security.jwt.DelegatedAuthenticationEntryPoint;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -31,20 +31,20 @@ public class WebSecurityConfig {
 
 	UserDetailsService userDetailsService;
 
-	private JwtAuthEntryPoint unauthorizedHandler;
+    private DelegatedAuthenticationEntryPoint unauthorizedHandler;
 
-	private JwtHandler jvtHandler;
+	private JwtHandler jwtHandler;
 
 	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-			JwtAuthEntryPoint unauthorizedHandler, JwtHandler jvtHandler) {
+            @Qualifier("delegatedAuthenticationEntryPoint") DelegatedAuthenticationEntryPoint unauthorizedHandler, JwtHandler jwtHandler) {
 		this.userDetailsService = userDetailsService;
 		this.unauthorizedHandler = unauthorizedHandler;
-		this.jvtHandler = jvtHandler;
+		this.jwtHandler = jwtHandler;
 	}
 
 	@Bean
 	AuthTokenFilter authenticationJwtTokenFilter() {
-		return new AuthTokenFilter(jvtHandler, userDetailsService);
+		return new AuthTokenFilter(jwtHandler, userDetailsService);
 	}
 
 	@Bean
