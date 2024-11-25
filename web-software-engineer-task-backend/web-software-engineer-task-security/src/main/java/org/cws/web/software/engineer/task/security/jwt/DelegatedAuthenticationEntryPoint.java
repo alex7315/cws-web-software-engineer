@@ -12,6 +12,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * This class implements {@link AuthenticationEntryPoint} with method <code>commence()</code> <br /> 
+ * Method <code>commence()</code> is triggered anytime unautheticated user requests a secured HTTP resource <br />
+ * and {@link AuthenticationException} is thrown.
+ * 
+ */
 @Component("delegatedAuthenticationEntryPoint")
 public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

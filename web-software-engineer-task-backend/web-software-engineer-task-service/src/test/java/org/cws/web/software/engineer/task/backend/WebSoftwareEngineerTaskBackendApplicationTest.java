@@ -92,6 +92,21 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
+    @Test
+    @DirtiesContext
+    void shouldRejectResourceAccessWithWrongAccessToken() throws Exception {
+        HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
+        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
+        String authToken = authResponse.getBody().getToken();
+        headers.setBearerAuth("wrong" + authToken + "wrong");
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity, String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
+    }
+
 	@Test
 	void shouldRejectUnknownUser() throws Exception {
 		JSONObject unknownUserAuthObject = new JSONObject();
