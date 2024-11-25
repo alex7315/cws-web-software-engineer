@@ -100,7 +100,9 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 		HttpEntity<String> authRequest = new HttpEntity<>(unknownUserAuthObject.toString(), headers);
 		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
+
 		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(authResponse.getBody()).contains("Authentication failed");
 	}
 
 	@Test
@@ -111,7 +113,9 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 		HttpEntity<String> authRequest = new HttpEntity<>(unknownPasswordAuthObject.toString(), headers);
 		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
+
 		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(authResponse.getBody()).contains("Authentication failed");
 	}
 
 	@Test

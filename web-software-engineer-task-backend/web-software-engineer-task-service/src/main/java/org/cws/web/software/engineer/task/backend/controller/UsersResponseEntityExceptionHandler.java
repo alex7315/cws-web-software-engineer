@@ -4,7 +4,6 @@ import java.nio.file.AccessDeniedException;
 
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
 import org.cws.web.software.engineer.task.security.exception.TokenRefreshException;
-import org.cws.web.software.engineer.task.security.exception.UserNotFoundException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,12 +33,6 @@ public class UsersResponseEntityExceptionHandler extends ResponseEntityException
     protected ResponseEntity<Object> handleTokenRefreshError(RuntimeException ex, WebRequest request) {
         JwtResponse responseBody = JwtResponse.builder().message("Token refresh error").build();
         return handleExceptionInternal(ex, responseBody, createHeaders(), HttpStatus.FORBIDDEN, request);
-    }
-
-    @ExceptionHandler(value = { UserNotFoundException.class })
-    protected ResponseEntity<Object> handleUserNotFound(RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "User found error";
-        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(value = { AccessDeniedException.class })
