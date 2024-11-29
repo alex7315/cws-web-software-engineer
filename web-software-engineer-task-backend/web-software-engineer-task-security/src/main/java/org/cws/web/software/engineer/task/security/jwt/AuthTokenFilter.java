@@ -16,6 +16,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * This class implements {@link OncePerRequestFilter} that makes a single execution per each request.<br />
+ * Method {@code doFilterInternal()} parses request to get access token from request header, <br />
+ * validate access token and authenticates user using valid access token. 
+ */
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private JwtHandler         jwtHandler;

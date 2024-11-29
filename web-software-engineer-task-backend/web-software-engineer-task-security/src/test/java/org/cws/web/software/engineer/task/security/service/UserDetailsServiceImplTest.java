@@ -5,15 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.cws.web.software.engineer.task.persistence.model.RoleEnum.ROLE_ADMIN;
 import static org.cws.web.software.engineer.task.persistence.model.RoleEnum.ROLE_USER;
 
+import org.cws.web.software.engineer.task.security.test.configuration.DataJpaTestConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.test.context.ContextConfiguration;
 
 //@formatter:off
 @DataJpaTest(properties = {
@@ -26,9 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
       "spring.data.web.pageable.default-page-size=10",
       "cws.security.refresh.token.expiration.ms=6000"
 })
-@ComponentScan({ "org.cws.web.software.engineer.task.security.service" })
-@EnableJpaRepositories(basePackages = { "org.cws.web.software.engineer.task.persistence.repository" })
-@EntityScan("org.cws.web.software.engineer.task.persistence.model")
+@ContextConfiguration(classes = {DataJpaTestConfiguration.class})
 //@formatter:on
 class UserDetailsServiceImplTest {
 

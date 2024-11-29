@@ -2,6 +2,8 @@ package org.cws.web.software.engineer.task.security.jwt;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -15,11 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * This class implements {@link AuthenticationEntryPoint} with method <code>commence()</code> <br /> 
  * Method <code>commence()</code> is triggered anytime unautheticated user requests a secured HTTP resource <br />
- * and {@link AuthenticationException} is thrown.
- * 
+ * and {@link AuthenticationException} is thrown. <br />
+ * This implementation uses {@link HandlerExceptionResolver} to delegate handling of {@link AuthenticationException} <br />
+ * to {@code @ExceptionHandler} applied to a certain Controller (e.g. by using of {@code @ControllerAdvice}) 
  */
 @Component("delegatedAuthenticationEntryPoint")
 public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DelegatedAuthenticationEntryPoint.class);
 
     private HandlerExceptionResolver resolver;
 
@@ -29,6 +34,7 @@ public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoi
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        LOG.error("Unauthorized error: {}", authException.getMessage());
         resolver.resolveException(request, response, null, authException);
     }
 
