@@ -94,7 +94,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
     @Test
     @DirtiesContext
-    void shouldRejectResourceAccessWithWrongAccessToken() throws Exception {
+    void shouldRejectResourceAccessWithWrongAccessToken() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
         ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
         String authToken = authResponse.getBody().getToken();

@@ -55,9 +55,7 @@ public class SecurityTestConfiguration {
 
 
     @Bean
-    @SuppressWarnings("deprecation")
     PasswordEncoder passwordEncoder() {
-        //        return NoOpPasswordEncoder.getInstance();
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
