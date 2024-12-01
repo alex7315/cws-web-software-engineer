@@ -1,8 +1,8 @@
 package org.cws.web.software.engineer.task.sync.configuration;
 
-import org.cws.web.software.engineer.task.security.jwt.AuthTokenFilter;
-import org.cws.web.software.engineer.task.security.jwt.DelegatedAuthenticationEntryPoint;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
+import org.cws.web.software.engineer.task.security.web.DelegatedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

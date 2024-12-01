@@ -1,4 +1,4 @@
-package org.cws.web.software.engineer.task.security.jwt;
+package org.cws.web.software.engineer.task.security.web;
 
 import java.io.IOException;
 

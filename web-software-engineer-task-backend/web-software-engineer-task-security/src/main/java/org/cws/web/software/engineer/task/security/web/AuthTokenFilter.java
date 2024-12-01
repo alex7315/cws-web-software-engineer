@@ -1,7 +1,8 @@
-package org.cws.web.software.engineer.task.security.jwt;
+package org.cws.web.software.engineer.task.security.web;
 
 import java.io.IOException;
 
+import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -23,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
       "spring.jpa.defer-datasource-initialization=true",
       "spring.jpa.open-in-view=false",
       "spring.data.web.pageable.default-page-size=10",
+      "cws.security.jwt.expiration.ms=1000",
       "cws.security.refresh.token.expiration.ms=6000"
 })
 @ContextConfiguration(classes = {DataJpaTestConfiguration.class})
