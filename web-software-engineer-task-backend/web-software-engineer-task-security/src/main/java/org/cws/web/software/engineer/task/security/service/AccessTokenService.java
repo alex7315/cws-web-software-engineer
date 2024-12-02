@@ -7,6 +7,8 @@ public interface AccessTokenService {
 
     AccessToken createAccessToken(Authentication authentication);
 
+    AccessToken createAccessToken(String username);
+
     void revokeAccessToken(String jwtToken);
 
     boolean validateAccessToken(String jwtToken);

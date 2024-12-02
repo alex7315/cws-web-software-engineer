@@ -3,6 +3,7 @@ package org.cws.web.software.engineer.task.security.web;
 import java.io.IOException;
 
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,15 +29,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private UserDetailsService userDetailsService;
 
-    public AuthTokenFilter(JwtHandler jwtHandler, @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+    private AccessTokenService accessTokenService;
+
+    public AuthTokenFilter(JwtHandler jwtHandler, @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
+            AccessTokenService accessTokenService) {
         this.jwtHandler = jwtHandler;
         this.userDetailsService = userDetailsService;
+        this.accessTokenService = accessTokenService;
     }
 
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = parseJwt(request);
-        if (jwt != null && jwtHandler.validateJwtToken(jwt)) {
+        if (jwt != null && accessTokenService.validateAccessToken(jwt)) {
             authenticateUserByToken(request, jwt);
         }
 

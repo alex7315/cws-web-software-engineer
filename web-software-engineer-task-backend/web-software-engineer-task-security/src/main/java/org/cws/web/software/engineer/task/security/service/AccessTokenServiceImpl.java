@@ -8,6 +8,7 @@ import org.cws.web.software.engineer.task.persistence.repository.AccessTokenRepo
 import org.cws.web.software.engineer.task.persistence.repository.UserRepository;
 import org.cws.web.software.engineer.task.security.exception.UserNotFoundException;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +29,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     @Override
     @Transactional(readOnly = false)
     public AccessToken createAccessToken(Authentication authentication) {
-        String jwtToken = jwtHandler.generateJwtToken(authentication);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        User user = userRepository.findByUsername(userPrincipal.getUsername())
-                .orElseThrow(() -> new UserNotFoundException(String.format("User is not found. User name: %s", userPrincipal.getUsername())));
-        AccessToken accessToken = AccessToken.builder().token(jwtToken).user(user).build();
-        return accessTokenRepository.save(accessToken);
+        return createAccessToken(userPrincipal.getUsername());
     }
 
     @Override
@@ -62,6 +59,17 @@ public class AccessTokenServiceImpl implements AccessTokenService {
             accessTokenRepository.delete(accessToken);
         }
         return validated;
+    }
+
+    @Override
+    public AccessToken createAccessToken(String username) {
+        String jwtToken = jwtHandler.generateJwtToken(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User is not found. User name: %s", username)));
+        AccessToken accessToken = AccessToken.builder().token(jwtToken).user(user).build();
+        LoggerFactory.getLogger(this.getClass()).debug("creates access token; id: {} value: {} user id: {} user name: {}", accessToken.getId(),
+                accessToken.getToken(), accessToken.getUser().getId(), accessToken.getUser().getUsername());
+        return accessTokenRepository.save(accessToken);
     }
 
 }

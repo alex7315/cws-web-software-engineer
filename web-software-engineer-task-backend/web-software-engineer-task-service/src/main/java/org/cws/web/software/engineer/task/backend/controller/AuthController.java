@@ -6,9 +6,10 @@ import org.cws.web.software.engineer.task.backend.dto.request.LoginRequest;
 import org.cws.web.software.engineer.task.backend.dto.request.TokenRefreshRequest;
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
 import org.cws.web.software.engineer.task.backend.dto.response.TokenRefreshResponse;
+import org.cws.web.software.engineer.task.persistence.model.AccessToken;
 import org.cws.web.software.engineer.task.persistence.model.RefreshToken;
 import org.cws.web.software.engineer.task.security.exception.TokenRefreshException;
-import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.service.RefreshTokenService;
 import org.cws.web.software.engineer.task.security.service.UserDetailsImpl;
 import org.slf4j.LoggerFactory;
@@ -36,14 +37,14 @@ public class AuthController {
 
 	private AuthenticationManager authenticationManager;
 
-	private JwtHandler jwtHandler;
+    private AccessTokenService    accessTokenService;
 
 	private RefreshTokenService refreshTokenService;
 
-    public AuthController(@Autowired AuthenticationManager authenticationManager, @Autowired JwtHandler jwtHandler,
+    public AuthController(@Autowired AuthenticationManager authenticationManager, @Autowired AccessTokenService accessTokenService,
             @Autowired RefreshTokenService refreshTokenService) {
 		this.authenticationManager = authenticationManager;
-		this.jwtHandler = jwtHandler;
+        this.accessTokenService = accessTokenService;
 		this.refreshTokenService = refreshTokenService;
 	}
 
@@ -58,7 +59,7 @@ public class AuthController {
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtHandler.generateJwtToken(authentication);
+        AccessToken accessToken = accessTokenService.createAccessToken(authentication);
 
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -74,7 +75,7 @@ public class AuthController {
         LoggerFactory.getLogger(this.getClass()).debug("User name: {} refresh token: {}", userName, refreshTokenValue);
         
         return ResponseEntity.ok(JwtResponse.builder()
-                                        .token(jwt)
+                                        .token(accessToken.getToken())
                                         .id(userDetails.getId())
                                         .username(userName)
                                         .email(userDetails.getEmail())
@@ -101,9 +102,9 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                                String token = jwtHandler.generateJwtToken(user.getUsername());
+                                AccessToken accessToken = accessTokenService.createAccessToken(user.getUsername());
                                 return ResponseEntity.ok(TokenRefreshResponse.builder()
-                                                                .token(token)
+                                                                .token(accessToken.getToken())
                                                                 .refreshToken(requestRefreshToken)
                                                                 .build());
                             }).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));

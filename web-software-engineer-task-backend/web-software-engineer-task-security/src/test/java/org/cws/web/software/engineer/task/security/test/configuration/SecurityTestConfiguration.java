@@ -2,13 +2,19 @@ package org.cws.web.software.engineer.task.security.test.configuration;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import org.cws.web.software.engineer.task.persistence.repository.AccessTokenRepository;
+import org.cws.web.software.engineer.task.persistence.repository.UserRepository;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.service.AccessTokenService;
+import org.cws.web.software.engineer.task.security.service.AccessTokenServiceImpl;
 import org.cws.web.software.engineer.task.security.test.controller.SecurityTestExceptionHandler;
 import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
 import org.cws.web.software.engineer.task.security.web.DelegatedAuthenticationEntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +31,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
 @Configuration
+@Import({ DataJpaTestConfiguration.class })
 public class SecurityTestConfiguration {
 
     @Value("${cws.security.jwt.secret}")
@@ -32,6 +39,12 @@ public class SecurityTestConfiguration {
 
     @Value("${cws.security.jwt.expiration.ms}")
     int                              jwtExpirationMs;
+
+    @Autowired
+    AccessTokenRepository accessTokenRepository;
+
+    @Autowired
+    UserRepository        userRepository;
 
     @Bean
     SecurityTestExceptionHandler securityTestExceptionHandler() {
@@ -53,6 +66,11 @@ public class SecurityTestConfiguration {
         return new JwtHandler(jwtSecret, jwtExpirationMs);
     }
 
+    @Bean
+    AccessTokenService accessTokenService() {
+        return new AccessTokenServiceImpl(accessTokenRepository, userRepository, jwtHandler());
+    }
+
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -67,7 +85,7 @@ public class SecurityTestConfiguration {
 
     @Bean
     AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtHandler(), userDetailsService());
+        return new AuthTokenFilter(jwtHandler(), userDetailsService(), accessTokenService());
     }
 
     @Bean

@@ -3,6 +3,7 @@ package org.cws.web.software.engineer.task.backend.config;
 import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
 import org.cws.web.software.engineer.task.security.web.DelegatedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,7 +31,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 //(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 //by default
 @ComponentScan({ "org.cws.web.software.engineer.task.security.jwt",
-		"org.cws.web.software.engineer.task.security.service" })
+        "org.cws.web.software.engineer.task.security.service", "org.cws.web.software.engineer.task.security.web" })
 public class WebSecurityConfig {
 
 	UserDetailsService userDetailsService;
@@ -39,16 +40,20 @@ public class WebSecurityConfig {
 
 	private JwtHandler jwtHandler;
 
+    private AccessTokenService                accessTokenService;
+
 	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            @Qualifier("delegatedAuthenticationEntryPoint") DelegatedAuthenticationEntryPoint unauthorizedHandler, JwtHandler jwtHandler) {
+            @Qualifier("delegatedAuthenticationEntryPoint") DelegatedAuthenticationEntryPoint unauthorizedHandler, JwtHandler jwtHandler,
+            AccessTokenService accessTokenService) {
 		this.userDetailsService = userDetailsService;
 		this.unauthorizedHandler = unauthorizedHandler;
 		this.jwtHandler = jwtHandler;
+        this.accessTokenService = accessTokenService;
 	}
 
 	@Bean
 	AuthTokenFilter authenticationJwtTokenFilter() {
-		return new AuthTokenFilter(jwtHandler, userDetailsService);
+        return new AuthTokenFilter(jwtHandler, userDetailsService, accessTokenService);
 	}
 
 	@Bean
