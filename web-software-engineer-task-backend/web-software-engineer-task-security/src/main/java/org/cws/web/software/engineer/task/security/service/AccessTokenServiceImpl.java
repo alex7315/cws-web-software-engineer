@@ -27,14 +27,14 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(transactionManager = "transactionManager", readOnly = false)
     public AccessToken createAccessToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         return createAccessToken(userPrincipal.getUsername());
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(transactionManager = "transactionManager", readOnly = false)
     public void revokeAccessToken(String jwtToken) {
         Optional<AccessToken> accessTokenOptional = accessTokenRepository.findByToken(jwtToken);
         if (accessTokenOptional.isPresent()) {
@@ -44,7 +44,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(transactionManager = "transactionManager", readOnly = false)
     public boolean validateAccessToken(String jwtToken) {
         Optional<AccessToken> accessTokenOptional = accessTokenRepository.findByToken(jwtToken);
         if (accessTokenOptional.isPresent()) {

@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 //@formatter:on
 @ContextConfiguration(classes = { SecurityTestConfiguration.class })
 @ComponentScan({ "org.cws.web.software.engineer.task.security.test.controller" })
-class TestSecurityWithMock {
+class TestSecurityWithMockMvc {
 
     @Autowired
     MockMvc mockMvc;

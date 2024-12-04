@@ -34,7 +34,7 @@ public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoi
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        LOG.error("Unauthorized error: {}", authException.getMessage());
+        LOG.error("Unauthorized error: {} ", authException.getMessage(), authException);
         resolver.resolveException(request, response, null, authException);
     }
 
