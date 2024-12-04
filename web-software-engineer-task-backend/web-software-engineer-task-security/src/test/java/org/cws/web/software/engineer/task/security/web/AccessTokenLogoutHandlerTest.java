@@ -68,7 +68,7 @@ class AccessTokenLogoutHandlerTest {
     }
 
     @Test
-    void shouldHandleLogautWithoutExceptionIfAccessTokenDoesNotSend() throws Exception {
+    void shouldHandleLogautWithoutExceptionIfAccessTokenDoesNotSend() {
         Request request = new Request(new Connector());
         org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
         request.setCoyoteRequest(coyoteRequest);
