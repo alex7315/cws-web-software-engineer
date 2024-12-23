@@ -5,6 +5,7 @@ import java.util.List;
 import org.cws.web.software.engineer.task.backend.dto.request.LoginRequest;
 import org.cws.web.software.engineer.task.backend.dto.request.TokenRefreshRequest;
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
+import org.cws.web.software.engineer.task.backend.dto.response.MessageResponse;
 import org.cws.web.software.engineer.task.backend.dto.response.TokenRefreshResponse;
 import org.cws.web.software.engineer.task.persistence.model.AccessToken;
 import org.cws.web.software.engineer.task.persistence.model.RefreshToken;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,9 +54,11 @@ public class AuthController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Authenticates user successfully", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Request parameter error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)) }),
 			@ApiResponse(responseCode = "401", description = "User authentication error", content = @Content) })
 	@PostMapping("/signin")
-	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 

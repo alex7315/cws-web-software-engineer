@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.cws.web.software.engineer.task.backend.config.JpaConfiguration;
 import org.cws.web.software.engineer.task.backend.dto.GithubUserDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.test.context.ContextConfiguration;
 
 //@formatter:off
 @DataJpaTest(properties = {
@@ -25,6 +27,7 @@ import org.springframework.data.domain.Sort.Direction;
 })
 @ComponentScan({ "org.cws.web.software.engineer.task.backend.service",
 		"org.cws.web.software.engineer.task.backend.mapper" })
+@ContextConfiguration(classes = {JpaConfiguration.class})
 //@formatter:on
 class UserServiceDefaultImplTest {
 

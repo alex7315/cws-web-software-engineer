@@ -3,12 +3,15 @@ package org.cws.web.software.engineer.task.backend.controller;
 import java.nio.file.AccessDeniedException;
 
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
+import org.cws.web.software.engineer.task.backend.dto.response.MessageResponse;
 import org.cws.web.software.engineer.task.security.exception.TokenRefreshException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -37,10 +40,22 @@ public class UsersResponseEntityExceptionHandler extends ResponseEntityException
 
     @ExceptionHandler(value = { AccessDeniedException.class })
     protected ResponseEntity<Object> accessDenied(RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "Access denided";
-        return handleExceptionInternal(ex, bodyOfResponse, createHeaders(), HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, new MessageResponse("Access denided"), createHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status,
+            WebRequest request) {
+      //@formatter:off
+      String stringOfResponse = ex.getBindingResult().getAllErrors()
+              .stream()
+              .map(eo -> String.format("object name: %s  error message: %s%n", eo.getObjectName(), eo.getDefaultMessage()))
+              .reduce("", String::concat);
+      MessageResponse responseBody = new MessageResponse(stringOfResponse);
+      //@formatter:on
+        return handleExceptionInternal(ex, responseBody, createHeaders(), HttpStatus.BAD_REQUEST, request);
+
+    }
 
     private HttpHeaders createHeaders() {
         return new HttpHeaders();

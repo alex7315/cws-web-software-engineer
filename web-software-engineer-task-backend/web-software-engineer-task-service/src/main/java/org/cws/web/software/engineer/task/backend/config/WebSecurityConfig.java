@@ -1,11 +1,10 @@
 package org.cws.web.software.engineer.task.backend.config;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
-import org.cws.web.software.engineer.task.security.web.DelegatedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,11 +19,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 @Configuration
 @EnableMethodSecurity
@@ -34,19 +35,19 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
         "org.cws.web.software.engineer.task.security.service", "org.cws.web.software.engineer.task.security.web" })
 public class WebSecurityConfig {
 
-	UserDetailsService userDetailsService;
+    private UserDetailsService       userDetailsService;
 
-    private DelegatedAuthenticationEntryPoint unauthorizedHandler;
+    private AuthenticationEntryPoint unauthorizedHandler;
 
-	private JwtHandler jwtHandler;
+    private JwtHandler               jwtHandler;
 
-    private AccessTokenService                accessTokenService;
+    private AccessTokenService       accessTokenService;
 
 	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            @Qualifier("delegatedAuthenticationEntryPoint") DelegatedAuthenticationEntryPoint unauthorizedHandler, JwtHandler jwtHandler,
+            @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint delegatedAuthenticationEntryPoint, JwtHandler jwtHandler,
             AccessTokenService accessTokenService) {
 		this.userDetailsService = userDetailsService;
-		this.unauthorizedHandler = unauthorizedHandler;
+        this.unauthorizedHandler = delegatedAuthenticationEntryPoint;
 		this.jwtHandler = jwtHandler;
         this.accessTokenService = accessTokenService;
 	}
@@ -79,23 +80,31 @@ public class WebSecurityConfig {
 	@Bean
     SecurityFilterChain filterChain(HttpSecurity http, @Qualifier("accessTokenLogoutHandler") LogoutHandler accessTokenLogoutHandler) throws Exception {
 		//@formatter:off
-        http.csrf(csrf -> csrf.disable())
+        http
+            //secure access token (JWT) is used as credentials
+            //no session is used on the server-side
+            //it is expected, that user does not persist credentials or stores credentials in the Browser Storage
+            //in this case CSRF protection can be disabled
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(STATELESS))
+            //using of Content-Security-Policy (CSP) to prevent Cross-Site Scripting (XSS) Attack 
+            //java script resources can be loaded only from the same origin as the document (using of "script-src 'self'" policy directive)  
+            .headers(headersConfigurer -> 
+                            headersConfigurer.xssProtection(xxssConfig -> 
+                                                                xxssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+                                             .contentSecurityPolicy(contentSecurityPolicyConfig -> 
+                                                                 contentSecurityPolicyConfig.policyDirectives("script-src 'self'")))
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .authorizeHttpRequests(auth -> 
                         auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs*/**").permitAll()
-                        /*pre-flight (OPTIONS) requests have to be not authenticated 
+                        /*pre-flight requests (OPTIONS) have not be authenticated 
                          * (avoids Firefox problem with Authorization header of OPTIONS request) */
                         .requestMatchers(HttpMethod.OPTIONS).permitAll() 
-                        .anyRequest().authenticated()
-                    );
-    
-        http.authenticationProvider(authenticationProvider());
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        
-        http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(ALWAYS));
         
         LogoutHandler compositLogoutHandler = new CompositeLogoutHandler(accessTokenLogoutHandler, new SecurityContextLogoutHandler());
         http.logout(lc -> lc
