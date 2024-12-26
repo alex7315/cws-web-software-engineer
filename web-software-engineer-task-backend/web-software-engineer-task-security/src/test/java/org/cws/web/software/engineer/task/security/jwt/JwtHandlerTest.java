@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 class JwtHandlerTest {
 
-    private final JwtHandler jwtHandler = new JwtHandler("Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 1000);
+    private final JwtHandler jwtHandler = new JwtHandler("Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 1000 * 30);
     private UserDetailsImpl  userDetails;
 
     @BeforeEach
@@ -32,7 +32,7 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldCreateJwtContainsUserData() throws Exception {
+    void shouldCreateJwtContainsUserData() {
         
         Authentication auth = new TestingAuthenticationToken(userDetails, null);
         String token = jwtHandler.generateJwtToken(auth);
@@ -42,7 +42,7 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldValidateCreatesJwt() throws Exception {
+    void shouldValidateCreatesJwt() {
         Authentication auth = new TestingAuthenticationToken(userDetails, null);
         String token = jwtHandler.generateJwtToken(auth);
 
@@ -50,17 +50,21 @@ class JwtHandlerTest {
     }
 
     @Test
-    void shouldFailJwtValidation() throws Exception {
+    void shouldFailJwtValidation() {
         assertThat(jwtHandler.validateJwtToken(
                 "malformediJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTcyOTk0MjczMiwiZXhwIjoxNzI5OTQyNzQyfQ.AEVxgOsOzsMlUB_j3ogiRVmuiHtNfi8F9bk1USeH-XrFugvE341tI4UFxPmYgAzM"))
                         .isFalse();
         assertThat(jwtHandler.validateJwtToken("string")).isFalse();
+        assertThat(jwtHandler.validateJwtToken(null)).isFalse();
         assertThat(jwtHandler.validateJwtToken("")).isFalse();
+        assertThat(jwtHandler.validateJwtToken(
+                "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczMTc3NzEwNiwiZXhwIjoxNzMxNzc3MTM2fQ.SssMuzrvfmFe7FiORMLUvX77Dg0csgP6eufTxKEJIUYEIKBQ3aQVFLzk-maleformed"))
+                        .isFalse();
 
     }
 
     @Test
-    void shouldInvalidateExpiredJwt() throws Exception {
+    void shouldInvalidateExpiredJwt() {
         JwtHandler jwtHandlerExpired = new JwtHandler("Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65", 1);
         Authentication auth = new TestingAuthenticationToken(userDetails, null);
         String token = jwtHandlerExpired.generateJwtToken(auth);

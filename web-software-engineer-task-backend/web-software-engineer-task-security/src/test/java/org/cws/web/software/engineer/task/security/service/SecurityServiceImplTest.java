@@ -12,12 +12,11 @@ import java.util.stream.Stream;
 import org.cws.web.software.engineer.task.persistence.model.Role;
 import org.cws.web.software.engineer.task.persistence.model.User;
 import org.cws.web.software.engineer.task.security.exception.SecurityException;
+import org.cws.web.software.engineer.task.security.test.configuration.DataJpaTestConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ContextConfiguration;
 
 //@formatter:off
 @DataJpaTest(properties = {
@@ -28,12 +27,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "spring.jpa.defer-datasource-initialization=true",
         "spring.jpa.open-in-view=false",
         "spring.data.web.pageable.default-page-size=10",
+        "cws.security.jwt.expiration.ms=1000",
         "cws.security.refresh.token.expiration.ms=6000"
   })
 //@formatter:on
-@ComponentScan({ "org.cws.web.software.engineer.task.security.service" })
-@EnableJpaRepositories(basePackages = { "org.cws.web.software.engineer.task.persistence.repository" })
-@EntityScan("org.cws.web.software.engineer.task.persistence.model")
+@ContextConfiguration(classes = { DataJpaTestConfiguration.class })
 class SecurityServiceImplTest {
 
 	@Autowired
@@ -82,7 +80,7 @@ class SecurityServiceImplTest {
 	}
 
 	@Test
-	void shouldSaveCreatedUser() throws Exception {
+    void shouldSaveCreatedUser() {
 		//@formatter:off
         Set<Role> roles = Stream.of(Role.builder()
                                         .name(ROLE_ADMIN)

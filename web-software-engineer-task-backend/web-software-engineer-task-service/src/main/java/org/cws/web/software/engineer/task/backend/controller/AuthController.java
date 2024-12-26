@@ -5,12 +5,13 @@ import java.util.List;
 import org.cws.web.software.engineer.task.backend.dto.request.LoginRequest;
 import org.cws.web.software.engineer.task.backend.dto.request.TokenRefreshRequest;
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
+import org.cws.web.software.engineer.task.backend.dto.response.MessageResponse;
 import org.cws.web.software.engineer.task.backend.dto.response.TokenRefreshResponse;
+import org.cws.web.software.engineer.task.persistence.model.AccessToken;
 import org.cws.web.software.engineer.task.persistence.model.RefreshToken;
 import org.cws.web.software.engineer.task.security.exception.TokenRefreshException;
-import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.service.RefreshTokenService;
-import org.cws.web.software.engineer.task.security.service.SecurityService;
 import org.cws.web.software.engineer.task.security.service.UserDetailsImpl;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,21 +39,14 @@ public class AuthController {
 
 	private AuthenticationManager authenticationManager;
 
-	private PasswordEncoder passwordEncoder;
-
-	private JwtHandler jwtHandler;
-
-	private SecurityService securityService;
+    private AccessTokenService    accessTokenService;
 
 	private RefreshTokenService refreshTokenService;
 
-	public AuthController(@Autowired AuthenticationManager authenticationManager,
-			@Autowired PasswordEncoder passwordEncoder, @Autowired JwtHandler jwtHandler,
-			@Autowired SecurityService securityService, @Autowired RefreshTokenService refreshTokenService) {
+    public AuthController(@Autowired AuthenticationManager authenticationManager, @Autowired AccessTokenService accessTokenService,
+            @Autowired RefreshTokenService refreshTokenService) {
 		this.authenticationManager = authenticationManager;
-		this.passwordEncoder = passwordEncoder;
-		this.jwtHandler = jwtHandler;
-		this.securityService = securityService;
+        this.accessTokenService = accessTokenService;
 		this.refreshTokenService = refreshTokenService;
 	}
 
@@ -60,14 +54,16 @@ public class AuthController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Authenticates user successfully", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Request parameter error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class)) }),
 			@ApiResponse(responseCode = "401", description = "User authentication error", content = @Content) })
 	@PostMapping("/signin")
-	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtHandler.generateJwtToken(authentication);
+        AccessToken accessToken = accessTokenService.createAccessToken(authentication);
 
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -78,14 +74,16 @@ public class AuthController {
         
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        LoggerFactory.getLogger(this.getClass()).debug(String.format("User name: %s refresh token: %s", userDetails.getUsername(), refreshToken.getToken()));
-            
+        String userName = userDetails.getUsername();
+        String refreshTokenValue = refreshToken.getToken();
+        LoggerFactory.getLogger(this.getClass()).debug("User name: {} refresh token: {}", userName, refreshTokenValue);
+        
         return ResponseEntity.ok(JwtResponse.builder()
-                                        .token(jwt)
+                                        .token(accessToken.getToken())
                                         .id(userDetails.getId())
-                                        .username(userDetails.getUsername())
+                                        .username(userName)
                                         .email(userDetails.getEmail())
-                                        .refreshToken(refreshToken.getToken())
+                                        .refreshToken(refreshTokenValue)
                                         .roles(roles)
                                         .build());
         //@formatter:on
@@ -108,9 +106,9 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                                String token = jwtHandler.generateJwtToken(user.getUsername());
+                                AccessToken accessToken = accessTokenService.createAccessToken(user.getUsername());
                                 return ResponseEntity.ok(TokenRefreshResponse.builder()
-                                                                .token(token)
+                                                                .token(accessToken.getToken())
                                                                 .refreshToken(requestRefreshToken)
                                                                 .build());
                             }).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));

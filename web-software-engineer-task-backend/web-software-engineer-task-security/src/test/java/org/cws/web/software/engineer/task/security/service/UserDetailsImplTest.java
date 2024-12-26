@@ -44,5 +44,9 @@ class UserDetailsImplTest {
         
         assertThat(userDetails2).usingRecursiveComparison().isEqualTo(expectedDetails);
         assertThat(userDetails1).isEqualTo(userDetails2);
+        assertThat(userDetails2.isAccountNonExpired()).isTrue();
+        assertThat(userDetails2.isAccountNonLocked()).isTrue();
+        assertThat(userDetails2.isCredentialsNonExpired()).isTrue();
+        assertThat(userDetails2.isEnabled()).isTrue();
     }
 }

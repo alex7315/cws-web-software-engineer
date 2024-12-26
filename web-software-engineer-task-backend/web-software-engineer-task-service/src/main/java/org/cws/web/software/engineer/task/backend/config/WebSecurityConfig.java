@@ -1,49 +1,60 @@
 package org.cws.web.software.engineer.task.backend.config;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import org.cws.web.software.engineer.task.security.jwt.AuthTokenFilter;
-import org.cws.web.software.engineer.task.security.jwt.JwtAuthEntryPoint;
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
+import org.cws.web.software.engineer.task.security.service.AccessTokenService;
+import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 @Configuration
 @EnableMethodSecurity
 //(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 //by default
 @ComponentScan({ "org.cws.web.software.engineer.task.security.jwt",
-		"org.cws.web.software.engineer.task.security.service" })
+        "org.cws.web.software.engineer.task.security.service", "org.cws.web.software.engineer.task.security.web" })
 public class WebSecurityConfig {
 
-	UserDetailsService userDetailsService;
+    private UserDetailsService       userDetailsService;
 
-	private JwtAuthEntryPoint unauthorizedHandler;
+    private AuthenticationEntryPoint unauthorizedHandler;
 
-	private JwtHandler jvtHandler;
+    private JwtHandler               jwtHandler;
+
+    private AccessTokenService       accessTokenService;
 
 	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-			JwtAuthEntryPoint unauthorizedHandler, JwtHandler jvtHandler) {
+            @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint delegatedAuthenticationEntryPoint, JwtHandler jwtHandler,
+            AccessTokenService accessTokenService) {
 		this.userDetailsService = userDetailsService;
-		this.unauthorizedHandler = unauthorizedHandler;
-		this.jvtHandler = jvtHandler;
+        this.unauthorizedHandler = delegatedAuthenticationEntryPoint;
+		this.jwtHandler = jwtHandler;
+        this.accessTokenService = accessTokenService;
 	}
 
 	@Bean
 	AuthTokenFilter authenticationJwtTokenFilter() {
-		return new AuthTokenFilter(jvtHandler, userDetailsService);
+        return new AuthTokenFilter(jwtHandler, userDetailsService, accessTokenService);
 	}
 
 	@Bean
@@ -67,22 +78,41 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, @Qualifier("accessTokenLogoutHandler") LogoutHandler accessTokenLogoutHandler) throws Exception {
 		//@formatter:off
-        http.csrf(csrf -> csrf.disable())
+        http
+            //secure access token (JWT) is used as credentials
+            //no session is used on the server-side
+            //it is expected, that user does not persist credentials or stores credentials in the Browser Storage
+            //in this case CSRF protection can be disabled
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(STATELESS))
+            //using of Content-Security-Policy (CSP) to prevent Cross-Site Scripting (XSS) Attack 
+            //java script resources can be loaded only from the same origin as the document (using of "script-src 'self'" policy directive)  
+            .headers(headersConfigurer -> 
+                            headersConfigurer.xssProtection(xxssConfig -> 
+                                                                xxssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+                                             .contentSecurityPolicy(contentSecurityPolicyConfig -> 
+                                                                 contentSecurityPolicyConfig.policyDirectives("script-src 'self'")))
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .authorizeHttpRequests(auth -> 
                         auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs*/**").permitAll()
-                        .anyRequest().authenticated()
-                    );
-    
-        http.authenticationProvider(authenticationProvider());
+                        /*pre-flight requests (OPTIONS) have not be authenticated 
+                         * (avoids Firefox problem with Authorization header of OPTIONS request) */
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll() 
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         
-        http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(ALWAYS));
+        LogoutHandler compositLogoutHandler = new CompositeLogoutHandler(accessTokenLogoutHandler, new SecurityContextLogoutHandler());
+        http.logout(lc -> lc
+                .logoutUrl("/api/auth/logout")
+                .addLogoutHandler(compositLogoutHandler)
+                .logoutSuccessHandler((request, response, authentication) -> 
+                                            SecurityContextHolder.clearContext())
+                );
     
         return http.build();
         //@formatter:on

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: web-software-engineer-task-security
+  main:
+    allow-bean-definition-overriding: true

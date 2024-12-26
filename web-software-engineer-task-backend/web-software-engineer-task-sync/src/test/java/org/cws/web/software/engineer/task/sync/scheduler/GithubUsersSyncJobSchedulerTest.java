@@ -26,7 +26,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "cws.github.user.count.max=8",
         "cws.github.authorization.token=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65",
         "cws.security.jwt.secret=secret",
-        "cws.security.jwt.expiration.ms=600"
+        "cws.security.jwt.expiration.ms=600",
+        "cws.security.refresh.token.expiration.ms=1200"
         
 })
 @EnableTransactionManagement
