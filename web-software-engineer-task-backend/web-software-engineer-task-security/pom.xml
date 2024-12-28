@@ -14,7 +14,7 @@
 	
 	<properties>		
 		<io.jsonwebtoke.version>0.12.6</io.jsonwebtoke.version>
-		<web.software.engineer.task.persistence.version>0.0.1-SNAPSHOT</web.software.engineer.task.persistence.version>
+		<web.software.engineer.task.persistence.version>0.0.2-SNAPSHOT</web.software.engineer.task.persistence.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<jacoco.plugin.version>0.8.12</jacoco.plugin.version>
