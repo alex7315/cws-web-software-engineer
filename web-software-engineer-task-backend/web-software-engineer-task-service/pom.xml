@@ -242,6 +242,7 @@
 		                    <container>
 		                    	<volumes>
 		               				<volume>${cws.log.base.path}</volume>
+		               				<volume>${cws.security.ssl.keystore.base.path}</volume>
 		           				</volumes>
 		                		<ports>
 		                			<port>${cws.service.port.exposed}</port>
