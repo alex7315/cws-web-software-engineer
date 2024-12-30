@@ -66,6 +66,17 @@ _cws.security.session.timeout_  Security session timeout in sec.
 
 _cws.security.refresh.token.expiration.ms_  Refresh token expiration time in ms.  
 
+_cws.security.ssl.enabled_   Enabling SSL connection (true/false)  
+
+_cws.security.ssl.keystore.type_  SSL Keystore type (PKCS12/JKS)  
+
+_cws.security.ssl.keystore.location_   Path to SSL Keystore  
+
+_cws.security.ssl.keystore.password_  
+
+_cws.security.ssl.keystore.alias_  
+
+
 ###Configuration profiles  
 
 There are profiles defined in POM files of component projects:  
@@ -75,7 +86,7 @@ used to build component .jar during development time, to execute unit tests and 
 __docker__  
 used to build docker images of components and store them in local docker repo  
 
-Example of _settings.xml_  
+Example of  _settings.xml_  
 
 
 	<settings>
@@ -109,6 +120,12 @@ Example of _settings.xml_
 
 					<!-- user session idle timeout 5min. -->
 					<cws.security.session.timeout>300</cws.security.session.timeout>
+					
+					<cws.security.ssl.enabled>true</cws.security.ssl.enabled>
+				<cws.security.ssl.keystore.type>PKCS12</cws.security.ssl.keystore.type>
+				<cws.security.ssl.keystore.location>/cws/ssl</cws.security.ssl.keystore.location>
+				<cws.security.ssl.keystore.password><keystore password></cws.security.ssl.keystore.password>
+				<cws.security.ssl.keystore.alias>cws</cws.security.ssl.keystore.alias>
 				</properties>
 		 
 			<profile>
@@ -161,13 +178,19 @@ CWS_DATABASE_PORT
 
 CWS_LOG_BASEDIR  
 
-CWS_BACKEND_PORT  
+CWS_SERVICE_PORT_EXPOSED - port exposed by docker image of service application
 
-CWS_SYNC_PORT  
+CWS_SERVICE_PORT - port exposed by container 
+
+CWS_SYNC_PORT_EXPOSED - port exposed by docker image of sync application
+
+CWS_SYNC_PORT - port exposed by container
 
 One possibility to set environment variables and start  _docker compose_  is to write simple  _.sh_  command file.  
 
 e.g.  
+
+```
 \#!/bin/bash
 
 MYSQL_DATABASE=<data base name>; export MYSQL_DATABASE  
@@ -182,14 +205,32 @@ CWS_DATABASE_PORT=3306; export CWS_DATABASE_PORT
 
 CWS_LOG_BASEDIR=/home/cws/logs; export CWS_LOG_BASEDIR  
 
-CWS_BACKEND_PORT=8080; export CWS_BACKEND_PORT  
+CWS_SERVICE_PORT_EXPOSED = 443; export CWS_SERVICE_PORT_EXPOSED
 
-CWS_SYNC_PORT=8090; export CWS_SYNC_PORT  
+CWS_SERVICE_PORT=8443; export CWS_BACKEND_PORT  
+
+CWS_SYNC_PORT_EXPOSED = 443; export CWS_SYNC_PORT_EXPOSED
+
+CWS_SYNC_PORT=9443; export CWS_SYNC_PORT  
+
+CWS_MYSQL_CONTAINER_NAME="mysql80"; export CWS_MYSQL_CONTAINER_NAME
+
+CWS_DATABASE_IMAGE_NAME="cws/web-software-engineer-task-database:0.0.2"; export CWS_DATABASE_IMAGE_NAME
+
+CWS_DATABASE_CONTAINER_NAME="database"; export CWS_DATABASE_CONTAINER_NAME
+
+CWS_SERVICE_IMAGE_NAME="cws/web-software-engineer-task-service:0.0.2"; export CWS_SERVICE_IMAGE_NAME
+
+CWS_SERVICE_CONTAINER_NAME="service"; export CWS_SERVICE_CONTAINER_NAME
+
+CWS_SYNC_IMAGE_NAME="cws/web-software-engineer-task-sync:0.0.2"; export CWS_SYNC_IMAGE_NAME
+
+CWS_SYNC_CONTAINER_NAME="sync"; export CWS_SYNC_CONTAINER_NAME
 
 
 CWS_WORKDIR=~/git/cws-web-software-engineer/web-software-engineer-task  
 
-containers=("web-software-engineer-task_sync_service_1" "web-software-engineer-task_backend_service_1" "web-software-engineer-task_database_service_1" "web-software-engineer-task_mysqldb_1")  
+containers=($CWS_MYSQL_CONTAINER_NAME $CWS_DATABASE_CONTAINER_NAME $CWS_SERVICE_CONTAINER_NAME $CWS_SYNC_CONTAINER_NAME)  
 for i in ${containers[@]}  
 do  
         docker rm $i  
@@ -201,7 +242,7 @@ pushd $CWS_WORKDIR
 docker-compose up  
 
 popd  
-
+```
 
 ## Using  
 __SERVICE__  Component provides endpoint to authenticate user and get paginated list of Github users.  
@@ -213,16 +254,16 @@ __Swagger__  _<host>[:port]/cws-service/swagger-ui/index.html_
 
 __Security endpoints:__
 
-__POST__ _host[:port]/cws-service/api/auth/signin_  
+__POST__   _host[:port]/cws-service/api/auth/signin_  
 
 
-__POST__ _host[:port]/cws-service/api/auth/refreshtoken_
+__POST__   _host[:port]/cws-service/api/auth/refreshtoken_
 
 
 __GitHub user list endpoint:__  
 
 
-__GET__  _host[:port]/cws-service/api/users_  
+__GET__   _host[:port]/cws-service/api/users_  
 
 To see detailed documentation _<host>[:port]/cws-service/swagger-ui/index.html_  
 
@@ -231,10 +272,10 @@ Component provides endpoints to activate/deactivate scheduled job:
 
 __Api documentation URL:__  
 
-__Swagger__  _host[:port]/cws-sync/swagger-ui/index.html_  
+__Swagger__   _host[:port]/cws-sync/swagger-ui/index.html_  
 
 
-__PUT__  _host[:port]/cws-sync/job/scheduler/activate_  
+__PUT__   _host[:port]/cws-sync/job/scheduler/activate_  
 
-__PUT__  _host[:port]/cws-sync/job/scheduler/deactivate_ 
+__PUT__   _host[:port]/cws-sync/job/scheduler/deactivate_ 
 

@@ -1,8 +1,8 @@
 version: "2.4"
 services:
-  mysqldb002:
+  mysqldb:
     image: "mysql:8.0"
-    container_name: "mysql002"
+    container_name: ${CWS_MYSQL_CONTAINER_NAME}
     restart: always
     ports:
       - ${CWS_DATABASE_PORT}:3306
@@ -19,50 +19,50 @@ services:
     networks:
       - springapimysql-net
 
-  database_service002:
-    image: "cws/web-software-engineer-task-database:0.0.2"
-    container_name: "database002"
+  database_service:
+    image: ${CWS_DATABASE_IMAGE_NAME}
+    container_name: ${CWS_DATABASE_CONTAINER_NAME}
     restart: on-failure
     networks:
       - springapimysql-net 
     depends_on:
-      mysqldb002:
+      mysqldb:
         condition: service_healthy
 
-  backend_service002:
-    image: "cws/web-software-engineer-task-service:0.0.2"
-    container_name: "service002"
+  backend_service:
+    image: ${CWS_SERVICE_IMAGE_NAME}
+    container_name: ${CWS_SERVICE_CONTAINER_NAME}
     restart: always
     ports:
-      - ${CWS_BACKEND_PORT}:8080
+      - ${CWS_SERVICE_PORT}:${CWS_SERVICE_PORT_EXPOSED}
     volumes:
       - ${CWS_LOG_BASEDIR}:${CWS_LOG_BASEDIR}
       - ${CWS_SSL_KEYSTORE_BASEDIR}:${CWS_SSL_KEYSTORE_BASEDIR}
     networks:
       - springapimysql-net 
     depends_on:
-      mysqldb002:
+      mysqldb:
         condition: service_healthy
-      database_service002:
+      database_service:
         condition: service_started
       
-  sync_service002:
-    image: "cws/web-software-engineer-task-sync:0.0.2"
-    container_name: "sync002"
+  sync_service:
+    image: ${CWS_SYNC_IMAGE_NAME}
+    container_name: ${CWS_SYNC_CONTAINER_NAME}
     restart: always
     ports:
-      - ${CWS_SYNC_PORT}:8080
+      - ${CWS_SYNC_PORT}:${CWS_SYNC_PORT_EXPOSED}
     volumes:
       - ${CWS_LOG_BASEDIR}:${CWS_LOG_BASEDIR}
       - ${CWS_SSL_KEYSTORE_BASEDIR}:${CWS_SSL_KEYSTORE_BASEDIR}
     networks:
       - springapimysql-net
     depends_on:
-      mysqldb002:
+      mysqldb:
         condition: service_healthy
-      backend_service002:
+      backend_service:
         condition: service_started
-      database_service002:
+      database_service:
         condition: service_started
 
 networks:

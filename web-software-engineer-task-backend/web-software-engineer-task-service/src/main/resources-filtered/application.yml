@@ -1,4 +1,5 @@
 server:
+  port: ${cws.service.port.exposed}
   servlet:
     contextPath: /cws-service
     session: 

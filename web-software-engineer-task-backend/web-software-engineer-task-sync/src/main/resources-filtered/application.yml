@@ -1,4 +1,5 @@
 server:
+  port: ${cws.sync.port.exposed}
   servlet:
     contextPath: /cws-sync
 spring:
