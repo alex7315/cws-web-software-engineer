@@ -1,8 +1,8 @@
 version: '2.4'
 services:
   frontend_service:
-    image: 'cws/web-software-engineer-task-frontend:0.0.1'
-    container_name: web-software-engineer-task-frontend
+    image: ${IMAGE_NAME}
+    container_name: ${CONTAINER_NAME}
     restart: always
     build:
       context: .
