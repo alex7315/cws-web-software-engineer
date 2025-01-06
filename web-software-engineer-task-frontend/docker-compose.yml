@@ -1,13 +1,15 @@
-version: "2.4"
+version: '2.4'
 services:
   frontend_service:
-    image: ${CWS_FRONTEND_IMAGE_NAME}
-    container_name: ${CWS_FRONTEND_CONTAINER_NAME}
+    image: ${IMAGE_NAME}
+    container_name: ${CONTAINER_NAME}
     restart: always
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - ${CWS_FRONTEND_PORT}:3000
+    volumes:
+      - ${CWS_CERT_DIR}:/app/certs
     env_file:
       - .env

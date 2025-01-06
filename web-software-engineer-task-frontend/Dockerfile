@@ -9,6 +9,8 @@ RUN npm install --force
 
 COPY . .
 
+RUN mkdir /app/certs
+
 RUN npm run build
 
 EXPOSE 3000
