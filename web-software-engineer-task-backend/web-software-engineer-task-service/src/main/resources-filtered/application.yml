@@ -20,6 +20,10 @@ spring:
   jpa:
     open-in-view: false
 cws:
+  user:
+    service:
+      sort:
+        default: login
   security:
     jwt:
       secret: ${cws.security.jwt.secret}

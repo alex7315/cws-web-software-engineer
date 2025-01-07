@@ -5,6 +5,7 @@ import java.util.List;
 import org.cws.web.software.engineer.task.backend.dto.GithubUserDto;
 import org.cws.web.software.engineer.task.backend.mapper.GithubUserMapper;
 import org.cws.web.software.engineer.task.persistence.repository.GithubUserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,9 +19,13 @@ public class UserServiceDefaultImpl implements UsersService {
 
 	private GithubUserMapper githubUserMapper;
 
-	public UserServiceDefaultImpl(GithubUserRepository githubUserRepository, GithubUserMapper githubUserMapper) {
+	private String sortDefault;
+
+	public UserServiceDefaultImpl(GithubUserRepository githubUserRepository, GithubUserMapper githubUserMapper,
+			@Value("${cws.user.service.sort.default}") String sortDefault) {
 		this.githubUserRepository = githubUserRepository;
 		this.githubUserMapper = githubUserMapper;
+		this.sortDefault = sortDefault;
 	}
 
 	@Override
@@ -30,7 +35,7 @@ public class UserServiceDefaultImpl implements UsersService {
 		return githubUserRepository
 					.findAll(PageRequest.of(pageable.getPageNumber()
 										, pageable.getPageSize()
-										, pageable.getSortOr(Sort.by(Sort.Direction.ASC, "login"))))
+										, pageable.getSortOr(Sort.by(Sort.Direction.ASC, sortDefault))))
 					.map(ghu -> githubUserMapper.toDto(ghu))
 					.toList();
 		//@formatter:on
