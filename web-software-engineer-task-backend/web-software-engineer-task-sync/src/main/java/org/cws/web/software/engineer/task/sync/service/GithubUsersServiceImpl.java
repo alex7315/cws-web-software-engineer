@@ -21,7 +21,7 @@ import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleC
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * {@link GithubUsersService} gets github users using request to Github REST API
+ * {@link GithubUsersService} gets GitHub users using request to GitHub REST API
  */
 @Service
 public class GithubUsersServiceImpl implements GithubUsersService {
@@ -64,7 +64,7 @@ public class GithubUsersServiceImpl implements GithubUsersService {
 	}
 
 	/**
-	 * gets list of github users from {@code https://api.github.com/users}
+	 * gets list of github users from GitHub REST API e.g. {@code https://api.github.com/users}
 	 * 
 	 * @see GithubUsersService#getUsers(Long, Integer)
 	 */
@@ -73,7 +73,7 @@ public class GithubUsersServiceImpl implements GithubUsersService {
 
 		//@formatter:off
         return this.builder
-				.baseUrl(githubBaseUrl)
+				.baseUrl(githubBaseUrl + "/users")
 				.defaultHeader(HEADER_ACCEPT, ACCEPTED_MEDIA_DEFAULT)
 				.build()
                 .get()

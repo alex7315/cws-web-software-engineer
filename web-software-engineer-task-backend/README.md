@@ -1,4 +1,4 @@
-# CoreWillSoft (CWS) Software Engineer Test Task Project. Backend.
+# Software Engineer Test Task Project. Backend.
 
 ## Project structure
 This project contains implementation of Backend Components provides REST API to get paginated list of  _GitHub_  users  
@@ -50,7 +50,9 @@ _cws.user.service.sort.default_
 
 ### Sync Component  
 
-_cws.github.authorization.token_  Authorization token can be getting from GitHub using GitHub account
+_cws.github.api.authorization.token_  Authorization token can be getting from GitHub using GitHub account
+
+_cws.github.api.base.url_ GitHub API base URL (e.g. https://api.github.com)
 
 _cws.github.sync.scheduled.rate_  Time interval in sec. is used by scheduler to run sync job. Default value 60
 
@@ -105,7 +107,8 @@ Example of  _settings.xml_
 					<cws.jpa.ddl.auto>none</cws.jpa.ddl.auto>
 					<cws.service.port.exposed>8080</cws.service.port.exposed>
 					<cws.database.root.password>database root password</cws.database.root.password>
-					<cws.github.authorization.token>github token</cws.github.authorization.token>
+					<cws.github.api.authorization.token>github token</cws.github.api.authorization.token>
+					<cws.github.api.base.url>https://api.github.com</cws.github.api.base.url>
 
 					<!-- sync with GitHub each 1 minute -->
                 	<cws.github.sync.scheduled.rate>60</cws.github.sync.scheduled.rate>
