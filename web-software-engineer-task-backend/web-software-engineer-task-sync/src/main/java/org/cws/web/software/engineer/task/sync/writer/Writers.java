@@ -3,6 +3,7 @@ package org.cws.web.software.engineer.task.sync.writer;
 import javax.sql.DataSource;
 
 import org.cws.web.software.engineer.task.persistence.model.GithubUser;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -15,6 +16,14 @@ import jakarta.persistence.EntityManagerFactory;
 
 @Configuration
 public class Writers {
+
+    @Bean
+    AsyncItemWriter<GithubUser> asyncUserWriter(EntityManagerFactory usersEntityManagementFactory) {
+        AsyncItemWriter<GithubUser> asyncItemWriter = new AsyncItemWriter<>();
+
+        asyncItemWriter.setDelegate(userWriter(usersEntityManagementFactory));
+        return asyncItemWriter;
+    }
 
     @Bean
     JpaItemWriter<GithubUser> userWriter(EntityManagerFactory usersEntityManagementFactory) {

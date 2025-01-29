@@ -55,6 +55,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+    		<artifactId>spring-batch-integration</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -128,7 +134,8 @@
     			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
     			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
     			<cws.jpa.ddl.auto>${cws.jpa.ddl.auto}</cws.jpa.ddl.auto>
-    			<cws.github.authorization.token>${csw.github.authorization.token}</cws.github.authorization.token>
+    			<cws.github.api.authorization.token>${csw.github.api.authorization.token}</cws.github.api.authorization.token>
+    			<cws.github.api.base.url>${cws.github.api.base.url}</cws.github.api.base.url>
     			<cws.github.sync.scheduled.rate>${cws.github.sync.scheduled.rate}</cws.github.sync.scheduled.rate>
     			<cws.github.user.page.size>${cws.github.user.page.size}</cws.github.user.page.size>
     			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>
@@ -192,7 +199,8 @@
     			<cws.datasource.username>${cws.datasource.username}</cws.datasource.username>
     			<cws.datasource.password>${cws.datasource.password}</cws.datasource.password>
     			<cws.jpa.ddl.auto>${cws.jpa.ddl.auto}</cws.jpa.ddl.auto>
-    			<cws.github.authorization.token>${csw.github.authorization.token}</cws.github.authorization.token>
+    			<cws.github.api.authorization.token>${cws.github.api.authorization.token}</cws.github.api.authorization.token>
+    			<cws.github.api.base.url>${cws.github.api.base.url}</cws.github.api.base.url>
     			<cws.github.sync.scheduled.rate>${cws.github.sync.scheduled.rate}</cws.github.sync.scheduled.rate>
     			<cws.github.user.page.size>${cws.github.user.page.size}</cws.github.user.page.size>
     			<cws.github.user.count.max>${cws.github.user.count.max}</cws.github.user.count.max>

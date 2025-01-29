@@ -37,7 +37,7 @@ public class Readers {
 		this.entityManagerFactory = entityManagerFactory;
 	}
 
-	@Bean
+    @Bean("userReader")
 	@JobScope
 	ItemStreamReader<GithubUserDTO> userReader() {
 		SynchronizedItemStreamReader<GithubUserDTO> synchReader = new SynchronizedItemStreamReader<>();

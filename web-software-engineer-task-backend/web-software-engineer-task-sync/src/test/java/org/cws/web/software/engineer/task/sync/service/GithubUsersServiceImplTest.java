@@ -34,7 +34,7 @@ class GithubUsersServiceImplTest {
 
 	@BeforeEach
 	void init() {
-		client = new GithubUsersServiceImpl("apiVersion", "authToken", RestClient.builder(), new ObjectMapper());
+        client = new GithubUsersServiceImpl("apiVersion", "authToken", "https://api.github.com/users", RestClient.builder(), new ObjectMapper());
 		server = MockRestServiceServer.bindTo(client.getBuilder()).build();
 	}
 
@@ -50,7 +50,7 @@ class GithubUsersServiceImplTest {
 	}
 
 	@Test
-	void shouldThrowResponseException() {
+    void shouldThrowResponseExceptionByNotSuccessfulStatusCode() {
 		this.server.expect(requestTo("https://api.github.com/users?since=0&per_page=2"))
 				.andRespond(withStatus(HttpStatusCode.valueOf(304)));
 		InvalidGithubResponseException exception = catchThrowableOfType(() -> client.getUsers(0L, 2),

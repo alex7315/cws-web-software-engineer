@@ -18,10 +18,19 @@ spring:
       initialize-schema: always
     job:
       enabled: false
+  task:
+    execution:
+      pool:
+        core-size: 20
+        max-size: 20
+        queue-capacity: 20
 cws:
   github:
-    authorization:
-      token: ${cws.github.authorization.token}
+    api:
+      base:
+        url: ${cws.github.api.base.url}
+      authorization:
+        token: ${cws.github.api.authorization.token}
     sync:
       scheduled:
         rate: ${cws.github.sync.scheduled.rate}

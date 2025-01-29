@@ -24,10 +24,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "cws.github.sync.scheduled.rate=8",
         "cws.github.user.page.size=4",
         "cws.github.user.count.max=8",
-        "cws.github.authorization.token=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65",
+        "cws.github.api.authorization.token=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65",
         "cws.security.jwt.secret=secret",
         "cws.security.jwt.expiration.ms=600",
-        "cws.security.refresh.token.expiration.ms=1200"
+        "cws.security.refresh.token.expiration.ms=1200",
+        "cws.sync.port.exposed=8080"
         
 })
 @EnableTransactionManagement

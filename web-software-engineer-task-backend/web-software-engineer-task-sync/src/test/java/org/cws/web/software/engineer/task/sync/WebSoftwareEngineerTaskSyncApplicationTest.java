@@ -39,6 +39,7 @@ import org.springframework.test.annotation.DirtiesContext;
                 , "cws.security.jwt.secret=Secret12Secret34Secret56Secret78Secret90Secret09Secret87Secret65" 
                 , "cws.security.jwt.expiration.ms=600000"
                 , "cws.security.refresh.token.expiration.ms=6000"
+                , "cws.sync.port.exposed=8080"
 })
 //@formatter:on
 class WebSoftwareEngineerTaskSyncApplicationTest {
