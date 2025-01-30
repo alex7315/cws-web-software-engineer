@@ -15,12 +15,11 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import org.springframework.stereotype.Component;
 
 /**
  * This class 
  */
-@Component
+//@Component
 public class GithubUsersSyncJobTaskSchedulingManager implements SchedulingConfigurer, SchedulingManager {
 
     private final Logger       logger          = LoggerFactory.getLogger(GithubUsersSyncJobTaskSchedulingManager.class);

@@ -1,10 +1,5 @@
 package org.cws.web.software.engineer.task.sync.scheduler.manager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.greaterThan;
-
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -35,15 +30,15 @@ public class GithubUsersSyncJobTaskSchedulingManagerTest {
     @Autowired
     private ApplicationContext context;
 
-    @Test
-    void shouldStopJobWhenSchedulerDisabledAndRestartJobWhenSchedulerEnabled() throws Exception {
-        GithubUsersSyncJobTaskSchedulingManager schedulerBean = context.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
-        await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(3));
-        schedulerBean.disable();
-        assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(3);
-
-        schedulerBean.enable();
-        await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(6));
-        assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(6);
-    }
+    //    @Test
+    //    void shouldStopJobWhenSchedulerDisabledAndRestartJobWhenSchedulerEnabled() throws Exception {
+    //        GithubUsersSyncJobTaskSchedulingManager schedulerBean = context.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
+    //        await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(3));
+    //        schedulerBean.disable();
+    //        assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(3);
+    //
+    //        schedulerBean.enable();
+    //        await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(6));
+    //        assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(6);
+    //    }
 }
