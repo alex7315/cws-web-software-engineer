@@ -8,20 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-//@Configuration
-//@EnableScheduling
+@Configuration
+@EnableScheduling
 public class GithubUsersSyncJobSchedulerConfiguration {
 
-    @Bean
-    Trigger fixedRateSchedulingTrigger(@Value("${cws.github.sync.scheduled.rate}") long scheduledRate) {
-        return new FixedRateSchedulingTrigger(scheduledRate);
-    }
+	@Bean
+	Trigger fixedRateSchedulingTrigger(@Value("${cws.github.sync.scheduled.rate}") long scheduledRate) {
+		return new FixedRateSchedulingTrigger(scheduledRate);
+	}
 
-    @Bean
-    //@formatter:off
+	@Bean
+	//@formatter:off
     GithubUsersSyncJobTaskSchedulingManager githubUsersSyncJobTaskSchedulingManager(
             @Autowired TaskScheduler scheduler, 
             @Autowired JobLauncher   jobLauncher, 

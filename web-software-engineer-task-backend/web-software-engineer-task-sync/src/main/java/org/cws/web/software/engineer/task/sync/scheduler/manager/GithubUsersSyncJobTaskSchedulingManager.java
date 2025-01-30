@@ -15,78 +15,81 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.stereotype.Component;
 
 /**
- * This class 
+ * This class configures Job task scheduling using {@link Trigger} and
+ * implements simple {@link SchedulingManager} to enable/disable scheduling
  */
-//@Component
+@Component
 public class GithubUsersSyncJobTaskSchedulingManager implements SchedulingConfigurer, SchedulingManager {
 
-    private final Logger       logger          = LoggerFactory.getLogger(GithubUsersSyncJobTaskSchedulingManager.class);
+	private final Logger logger = LoggerFactory.getLogger(GithubUsersSyncJobTaskSchedulingManager.class);
 
-    private TaskScheduler      scheduler;
+	private TaskScheduler scheduler;
 
-    private Trigger            trigger;
+	private Trigger trigger;
 
-    private ScheduledFuture<?> future;
+	private ScheduledFuture<?> future;
 
-    private AtomicInteger      batchRunCounter = new AtomicInteger(0);
+	private AtomicInteger batchRunCounter = new AtomicInteger(0);
 
-    private JobLauncher        jobLauncher;
+	private JobLauncher jobLauncher;
 
-    private Job                githubUsersSyncJob;
+	private Job githubUsersSyncJob;
 
-    //@formatter:off
+	//@formatter:off
     public GithubUsersSyncJobTaskSchedulingManager(TaskScheduler scheduler, 
             Trigger trigger,
             JobLauncher jobLauncher, 
             @Qualifier("githubUsersSyncJob") Job githubUsersSyncJob) {
     //@formatter:on
-        this.scheduler = scheduler;
-        this.trigger = trigger;
-        this.jobLauncher = jobLauncher;
-        this.githubUsersSyncJob = githubUsersSyncJob;
-    }
+		this.scheduler = scheduler;
+		this.trigger = trigger;
+		this.jobLauncher = jobLauncher;
+		this.githubUsersSyncJob = githubUsersSyncJob;
+	}
 
-    @Override
-    public void enable() {
-        logger.info("Enable job scheduling");
-        future = scheduler.schedule(new JobRunner(), trigger);
-    }
+	@Override
+	public void enable() {
+		logger.info("Enable job scheduling");
+		future = scheduler.schedule(new JobRunner(), trigger);
+	}
 
-    private class JobRunner implements Runnable {
+	private class JobRunner implements Runnable {
 
-        @Override
-        public void run() {
-            logger.debug("Using launcher {}", jobLauncher.getClass());
-            try {
-                logger.info("Running job {}", githubUsersSyncJob.getName());
-                JobExecution jobExecution = jobLauncher.run(githubUsersSyncJob, new JobParametersBuilder().toJobParameters());
-                batchRunCounter.incrementAndGet();
-                logger.debug("Job {} executed with status {} ", githubUsersSyncJob.getName(), jobExecution.getStatus());
-            } catch (JobExecutionException e) {
-                logger.error("Can not run job " + githubUsersSyncJob.getName(), e);
-            } catch (Exception e) {
-                logger.error("Can not get job explorer object" + githubUsersSyncJob.getName(), e);
-            }
-        }
+		@Override
+		public void run() {
+			logger.debug("Using launcher {}", jobLauncher.getClass());
+			try {
+				logger.info("Running job {}", githubUsersSyncJob.getName());
+				JobExecution jobExecution = jobLauncher.run(githubUsersSyncJob,
+						new JobParametersBuilder().toJobParameters());
+				batchRunCounter.incrementAndGet();
+				logger.debug("Job {} executed with status {} ", githubUsersSyncJob.getName(), jobExecution.getStatus());
+			} catch (JobExecutionException e) {
+				logger.error("Can not run job " + githubUsersSyncJob.getName(), e);
+			} catch (Exception e) {
+				logger.error("Can not get job explorer object" + githubUsersSyncJob.getName(), e);
+			}
+		}
 
-    }
+	}
 
-    @Override
-    public void disable() {
-        logger.info("Disable job scheduling");
-        future.cancel(true);
+	@Override
+	public void disable() {
+		logger.info("Disable job scheduling");
+		future.cancel(true);
 
-    }
+	}
 
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        enable();
-    }
+	@Override
+	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+		enable();
+	}
 
-    public AtomicInteger getBatchRunCounter() {
-        return batchRunCounter;
-    }
+	public AtomicInteger getBatchRunCounter() {
+		return batchRunCounter;
+	}
 
 }

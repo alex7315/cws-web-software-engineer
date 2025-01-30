@@ -1,6 +1,7 @@
 package org.cws.web.software.engineer.task.sync.controller;
 
-import org.cws.web.software.engineer.task.sync.scheduler.GithubUsersSyncJobScheduler;
+import org.cws.web.software.engineer.task.security.authority.Authority;
+import org.cws.web.software.engineer.task.sync.scheduler.manager.GithubUsersSyncJobTaskSchedulingManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -25,23 +26,25 @@ public class JobSchedulerController {
 		this.applicationContext = applicationContext;
 	}
 
-    @Operation(summary = "Activated synch job")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Synch job is activated") })
-    @PreAuthorize("hasRole('ADMIN')")
+	@Operation(summary = "Activated synch job")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Activate sync job scheduling") })
+	@PreAuthorize(Authority.ADMIN)
 	@PutMapping("/scheduler/activate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void activate() {
-        GithubUsersSyncJobScheduler scheduler = applicationContext.getBean(GithubUsersSyncJobScheduler.class);
+		GithubUsersSyncJobTaskSchedulingManager scheduler = applicationContext
+				.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
 		scheduler.enable();
 	}
 
-    @Operation(summary = "Deactivated synch job")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Synch job is deactivated") })
-    @PreAuthorize("hasRole('ADMIN')")
+	@Operation(summary = "Deactivated synch job")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Deactivate sync job scheduling") })
+	@PreAuthorize(Authority.ADMIN)
 	@PutMapping("/scheduler/deactivate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deactivate() {
-        GithubUsersSyncJobScheduler scheduler = applicationContext.getBean(GithubUsersSyncJobScheduler.class);
+		GithubUsersSyncJobTaskSchedulingManager scheduler = applicationContext
+				.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
 		scheduler.disable();
 	}
 
