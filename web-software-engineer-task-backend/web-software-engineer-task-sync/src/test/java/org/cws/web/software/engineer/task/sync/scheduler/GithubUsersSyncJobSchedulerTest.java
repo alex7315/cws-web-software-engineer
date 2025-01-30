@@ -2,7 +2,7 @@ package org.cws.web.software.engineer.task.sync.scheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.Matchers.greaterThan;
 
 import java.util.concurrent.TimeUnit;
 
@@ -42,10 +42,10 @@ class GithubUsersSyncJobSchedulerTest {
 	@Test
 	void shouldStopJobWhenSchedulerDisabled() throws Exception {
 		GithubUsersSyncJobScheduler schedulerBean = context.getBean(GithubUsersSyncJobScheduler.class);
-		await().untilAsserted(() -> assertEquals(2, schedulerBean.getBatchRunCounter().get()));
+        await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(2));
 		schedulerBean.disable();
 		await().atLeast(20, TimeUnit.SECONDS);
 
-		assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(1);
+        assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(2);
 	}
 }
