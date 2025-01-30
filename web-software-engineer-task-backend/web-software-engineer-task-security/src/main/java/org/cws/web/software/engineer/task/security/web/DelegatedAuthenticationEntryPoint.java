@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This class implements {@link AuthenticationEntryPoint} with method <code>commence()</code> <br /> 
- * Method <code>commence()</code> is triggered anytime unautheticated user requests a secured HTTP resource <br />
+ * Method <code>commence()</code> is triggered anytime unauthenticated user requests a secured HTTP resource <br />
  * and {@link AuthenticationException} is thrown. <br />
  * This implementation uses {@link HandlerExceptionResolver} to delegate handling of {@link AuthenticationException} <br />
  * to {@code @ExceptionHandler} applied to a certain Controller (e.g. by using of {@code @ControllerAdvice}) 

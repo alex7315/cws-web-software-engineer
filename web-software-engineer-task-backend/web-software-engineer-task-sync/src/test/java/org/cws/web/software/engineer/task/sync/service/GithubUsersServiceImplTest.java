@@ -34,7 +34,7 @@ class GithubUsersServiceImplTest {
 
 	@BeforeEach
 	void init() {
-        client = new GithubUsersServiceImpl("apiVersion", "authToken", "https://api.github.com/users", RestClient.builder(), new ObjectMapper());
+        client = new GithubUsersServiceImpl("apiVersion", "authToken", "https://api.github.com", RestClient.builder(), new ObjectMapper());
 		server = MockRestServiceServer.bindTo(client.getBuilder()).build();
 	}
 
