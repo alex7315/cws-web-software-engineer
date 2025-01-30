@@ -116,7 +116,8 @@ public class GithubUsersSyncJobConfiguration {
     //@formatter:off
     TaskExecutor taskExecutor(@Value("${spring.task.execution.pool.core-size}") int corePoolSize,
             @Value("${spring.task.execution.pool.max-size}") int maxPoolSize, 
-            @Value("${spring.task.execution.pool.queue-capacity}") int queueCapacity) {
+            @Value("${spring.task.execution.pool.queue-capacity}") int queueCapacity,
+            @Value("${spring.task.execution.pool.queue-max-wait}") int queueMaxWait) {
         
             ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutorBuilder()
                 .corePoolSize(corePoolSize)
@@ -125,7 +126,7 @@ public class GithubUsersSyncJobConfiguration {
                 .threadNamePrefix(THREAD_NAME_PREFIX)
                 .build();
         //@formatter:on
-        executor.setRejectedExecutionHandler(new CallerBlocksPolicy(10000));
+        executor.setRejectedExecutionHandler(new CallerBlocksPolicy(queueMaxWait));
         return executor;
     }
 

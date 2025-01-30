@@ -24,6 +24,7 @@ spring:
         core-size: 20
         max-size: 20
         queue-capacity: 20
+        queue-max-wait: 10000
 cws:
   github:
     api:
