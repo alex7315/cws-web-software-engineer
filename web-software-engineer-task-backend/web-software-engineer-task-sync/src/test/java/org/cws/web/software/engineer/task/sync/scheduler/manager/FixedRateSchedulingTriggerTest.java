@@ -19,7 +19,7 @@ class FixedRateSchedulingTriggerTest {
             .toInstant();
 
     @Test
-    void schouldReturnExecutionTimeIfLastActualExecutionIsNotAvailable() throws Exception {
+    void schouldReturnExecutionTimeIfLastActualExecutionIsNotAvailable() {
         FixedRateSchedulingTrigger trigger = new FixedRateSchedulingTrigger(SCHEDULING_RATE_IN_SECONG);
         TriggerContext triggerContext = new SimpleTriggerContext();
 
@@ -27,7 +27,7 @@ class FixedRateSchedulingTriggerTest {
     }
 
     @Test
-    void schuldReturnExecutionTimeGreaterThenLastActualExecution() throws Exception {
+    void schuldReturnExecutionTimeGreaterThenLastActualExecution() {
         FixedRateSchedulingTrigger trigger = new FixedRateSchedulingTrigger(SCHEDULING_RATE_IN_SECONG);
 
         TriggerContext triggerContext = new SimpleTriggerContext(INITIAL_EXECUTION_INSTANT, INITIAL_EXECUTION_INSTANT, INITIAL_EXECUTION_INSTANT);
