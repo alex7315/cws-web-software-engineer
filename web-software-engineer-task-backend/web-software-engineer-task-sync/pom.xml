@@ -145,6 +145,11 @@
                 <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
                 <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
+                <cws.security.ssl.enabled>${cws.security.ssl.enabled}</cws.security.ssl.enabled>
+				<cws.security.ssl.keystore.type>${cws.security.ssl.keystore.type}</cws.security.ssl.keystore.type>
+				<cws.security.ssl.keystore.location>${cws.security.ssl.keystore.location}</cws.security.ssl.keystore.location>
+				<cws.security.ssl.keystore.password>${cws.security.ssl.keystore.password}</cws.security.ssl.keystore.password>
+				<cws.security.ssl.keystore.alias>${cws.security.ssl.keystore.alias}</cws.security.ssl.keystore.alias>
 			</properties>
 			
 			<build>
@@ -210,6 +215,11 @@
                 <cws.security.jwt.expiration.ms>${cws.security.jwt.expiration.ms}</cws.security.jwt.expiration.ms>
                 <cws.log.base.path>${cws.log.base.path}</cws.log.base.path>
                 <cws.security.refresh.token.expiration.ms>${cws.security.refresh.token.expiration.ms}</cws.security.refresh.token.expiration.ms>
+                <cws.security.ssl.enabled>${cws.security.ssl.enabled}</cws.security.ssl.enabled>
+				<cws.security.ssl.keystore.type>${cws.security.ssl.keystore.type}</cws.security.ssl.keystore.type>
+				<cws.security.ssl.keystore.location>${cws.security.ssl.keystore.location}</cws.security.ssl.keystore.location>
+				<cws.security.ssl.keystore.password>${cws.security.ssl.keystore.password}</cws.security.ssl.keystore.password>
+				<cws.security.ssl.keystore.alias>${cws.security.ssl.keystore.alias}</cws.security.ssl.keystore.alias>
 			</properties>
 			
 			<build>
