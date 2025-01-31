@@ -2,6 +2,12 @@ server:
   port: ${cws.sync.port.exposed}
   servlet:
     contextPath: /cws-sync
+  ssl:
+    enabled: ${cws.security.ssl.enabled}
+    key-store-type: ${cws.security.ssl.keystore.type}
+    key-store: ${cws.security.ssl.keystore.location}
+    key-store-password: ${cws.security.ssl.keystore.password}
+    key-alias: ${cws.security.ssl.keystore.alias}
 spring:
   application:
     name: web-software-engineer-task-sync

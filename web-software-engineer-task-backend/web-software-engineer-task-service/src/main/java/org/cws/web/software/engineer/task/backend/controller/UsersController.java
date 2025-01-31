@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.cws.web.software.engineer.task.backend.dto.GithubUserDto;
 import org.cws.web.software.engineer.task.backend.service.UsersService;
+import org.cws.web.software.engineer.task.security.authority.Authority;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,7 +46,7 @@ public class UsersController {
 							content = @Content),
 	})
 	//@formatter:on
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(Authority.USER_OR_ADMIN)
 	@GetMapping
 	public ResponseEntity<List<GithubUserDto>> getAll(Pageable pageable) {
 		return ResponseEntity.ok(userService.getUsers(pageable));
