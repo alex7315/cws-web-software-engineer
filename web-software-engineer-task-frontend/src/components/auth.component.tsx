@@ -1,5 +1,13 @@
 import React, { useState } from 'react'
-import { Box, TextField, Button, Typography, Snackbar } from '@mui/material'
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Snackbar,
+  Container,
+  Paper,
+} from '@mui/material'
 import LoginIcon from '@mui/icons-material/Login'
 
 import { useNavigate } from 'react-router-dom'
@@ -80,29 +88,12 @@ const Auth = () => {
   const navigate = useNavigate()
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          maxWidth={400}
-          alignItems={'center'}
-          justifyContent={'center'}
-          margin={'auth'}
-          marginTop={5}
-          padding={3}
-          borderRadius={5}
-          boxShadow={'5px 5px 10px #ccc'}
-          sx={{
-            ':hover': {
-              boxShadow: '10px 10px 20px #ccc',
-            },
-          }}
-        >
-          <Typography variant="h2" padding={3} textAlign={'center'}>
-            Login
-          </Typography>
-
+    <Container maxWidth="xs">
+      <Paper elevation={10} sx={{ marginTop: 8, padding: 2 }}>
+        <Typography variant="h2" padding={3} textAlign={'center'}>
+          Login
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             onChange={handleChange}
             name="username"
@@ -110,9 +101,11 @@ const Auth = () => {
             margin="normal"
             type={'text'}
             variant="outlined"
+            fullWidth
+            required
+            autoFocus
             placeholder="Username"
           ></TextField>
-
           <TextField
             onChange={handleChange}
             name="password"
@@ -120,20 +113,23 @@ const Auth = () => {
             margin="normal"
             type={'password'}
             variant="outlined"
+            fullWidth
+            required
+            autoFocus
             placeholder="Password"
           ></TextField>
-
           <Button
             endIcon={<LoginIcon />}
             type="submit"
-            sx={{ marginTop: 3, borderRadius: 3 }}
             variant="contained"
+            fullWidth
+            sx={{ marginTop: 3, borderRadius: 3 }}
             style={{ backgroundColor: 'black', color: 'white' }}
           >
             Login
           </Button>
         </Box>
-      </form>
+      </Paper>
       <Snackbar
         open={snackState}
         onClose={handleSnackClose}
@@ -141,7 +137,7 @@ const Auth = () => {
         key={Math.random()}
         autoHideDuration={3000}
       />
-    </div>
+    </Container>
   )
 }
 
