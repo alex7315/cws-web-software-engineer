@@ -40,6 +40,7 @@ import org.springframework.test.annotation.DirtiesContext;
                 , "cws.security.jwt.expiration.ms=600000"
                 , "cws.security.refresh.token.expiration.ms=6000"
                 , "cws.sync.port.exposed=8080"
+                , "server.ssl.enabled=false"
 })
 //@formatter:on
 class WebSoftwareEngineerTaskSyncApplicationTest {
@@ -47,8 +48,8 @@ class WebSoftwareEngineerTaskSyncApplicationTest {
 	private static final String ACTIVATE_URI = "/job/scheduler/activate";
 	private static final String DEACTIVATE_URI = "/job/scheduler/deactivate";
 
-    @Autowired
-    private AccessTokenService  accessTokenService;
+	@Autowired
+	private AccessTokenService accessTokenService;
 
 	@Autowired
 	TestRestTemplate restTemplate;
@@ -65,13 +66,13 @@ class WebSoftwareEngineerTaskSyncApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldActivateSyncJob() throws Exception {
 		UserDetails adminDetails = userDetailsService.loadUserByUsername("admin");
 		Authentication adminAuth = new UsernamePasswordAuthenticationToken(adminDetails, adminDetails.getAuthorities());
-        AccessToken adminAuthToken = accessTokenService.createAccessToken(adminAuth);
+		AccessToken adminAuthToken = accessTokenService.createAccessToken(adminAuth);
 
-        headers.setBearerAuth(adminAuthToken.getToken());
+		headers.setBearerAuth(adminAuthToken.getToken());
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PUT, requestEntity,
@@ -81,13 +82,13 @@ class WebSoftwareEngineerTaskSyncApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldDeactivateSyncJob() throws Exception {
 		UserDetails adminDetails = userDetailsService.loadUserByUsername("admin");
 		Authentication adminAuth = new UsernamePasswordAuthenticationToken(adminDetails, adminDetails.getAuthorities());
-        AccessToken adminAuthToken = accessTokenService.createAccessToken(adminAuth);
+		AccessToken adminAuthToken = accessTokenService.createAccessToken(adminAuth);
 
-        headers.setBearerAuth(adminAuthToken.getToken());
+		headers.setBearerAuth(adminAuthToken.getToken());
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = restTemplate.exchange(DEACTIVATE_URI, HttpMethod.PUT, requestEntity,
@@ -97,19 +98,19 @@ class WebSoftwareEngineerTaskSyncApplicationTest {
 	}
 
 	@Test
-    @DirtiesContext
+	@DirtiesContext
 	void shouldRejectRequestByUserWithoutAdminRole() throws Exception {
 		UserDetails userDetails = userDetailsService.loadUserByUsername("user");
 		Authentication userAuth = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
-        AccessToken userAuthToken = accessTokenService.createAccessToken(userAuth);
+		AccessToken userAuthToken = accessTokenService.createAccessToken(userAuth);
 
-        headers.setBearerAuth(userAuthToken.getToken());
+		headers.setBearerAuth(userAuthToken.getToken());
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PUT, requestEntity,
 				String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
 	}
-	
+
 }
