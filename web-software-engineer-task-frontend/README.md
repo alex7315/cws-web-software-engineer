@@ -1,5 +1,5 @@
-# CoreWillSoft (CWS) Software Engineer Test Task Project. Frontend.  
-##Common
+# Software Engineer Test Task Project. Frontend.  
+## Common
 This project implements required user interface ( _frontend_ ) to login to the service ( _backend_ ) and to show list of GitHub users provided by  _backend_  via REST API.  
 Implementation uses React and Node.js  
 

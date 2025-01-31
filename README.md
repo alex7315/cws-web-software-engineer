@@ -1,4 +1,4 @@
-# CoreWillSoft Web Software Engineer Test Task  
+# Web Software Engineer Test Task  
 
 ## Common  
 
