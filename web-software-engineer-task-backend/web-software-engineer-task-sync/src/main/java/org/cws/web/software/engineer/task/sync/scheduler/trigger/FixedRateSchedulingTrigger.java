@@ -1,4 +1,4 @@
-package org.cws.web.software.engineer.task.sync.scheduler.manager;
+package org.cws.web.software.engineer.task.sync.scheduler.trigger;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package org.cws.web.software.engineer.task.sync.scheduler.manager;
+package org.cws.web.software.engineer.task.sync.scheduler.trigger;
 
 import static java.time.Instant.now;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import org.cws.web.software.engineer.task.sync.scheduler.trigger.FixedRateSchedulingTrigger;
 import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.support.SimpleTriggerContext;

@@ -1,7 +1,7 @@
 package org.cws.web.software.engineer.task.sync.controller;
 
 import org.cws.web.software.engineer.task.security.authority.Authority;
-import org.cws.web.software.engineer.task.sync.scheduler.manager.GithubUsersSyncJobTaskSchedulingManager;
+import org.cws.web.software.engineer.task.sync.scheduler.manager.JobTaskSchedulingManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -32,8 +32,8 @@ public class JobSchedulerController {
 	@PutMapping("/scheduler/activate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void activate() {
-		GithubUsersSyncJobTaskSchedulingManager scheduler = applicationContext
-				.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
+		JobTaskSchedulingManager scheduler = applicationContext
+				.getBean(JobTaskSchedulingManager.class);
 		scheduler.enable();
 	}
 
@@ -43,8 +43,8 @@ public class JobSchedulerController {
 	@PutMapping("/scheduler/deactivate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deactivate() {
-		GithubUsersSyncJobTaskSchedulingManager scheduler = applicationContext
-				.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
+		JobTaskSchedulingManager scheduler = applicationContext
+				.getBean(JobTaskSchedulingManager.class);
 		scheduler.disable();
 	}
 

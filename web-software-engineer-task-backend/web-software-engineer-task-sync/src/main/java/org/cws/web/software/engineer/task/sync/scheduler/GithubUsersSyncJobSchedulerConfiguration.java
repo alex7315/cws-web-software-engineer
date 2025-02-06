@@ -1,7 +1,9 @@
 package org.cws.web.software.engineer.task.sync.scheduler;
 
-import org.cws.web.software.engineer.task.sync.scheduler.manager.FixedRateSchedulingTrigger;
-import org.cws.web.software.engineer.task.sync.scheduler.manager.GithubUsersSyncJobTaskSchedulingManager;
+import org.cws.web.software.engineer.task.sync.scheduler.manager.JobTaskSchedulingManager;
+import org.cws.web.software.engineer.task.sync.scheduler.runner.GithubUsersSyncJobRunner;
+import org.cws.web.software.engineer.task.sync.scheduler.runner.JobRunner;
+import org.cws.web.software.engineer.task.sync.scheduler.trigger.FixedRateSchedulingTrigger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +24,18 @@ public class GithubUsersSyncJobSchedulerConfiguration {
 		return new FixedRateSchedulingTrigger(scheduledRate);
 	}
 
+    @Bean
+    JobRunner githubUsersSyncJobRunner(@Autowired JobLauncher jobLauncher, @Autowired @Qualifier("githubUsersSyncJob") Job githubUsersSyncJob) {
+        return new GithubUsersSyncJobRunner(jobLauncher, githubUsersSyncJob);
+    }
+
 	@Bean
 	//@formatter:off
-    GithubUsersSyncJobTaskSchedulingManager githubUsersSyncJobTaskSchedulingManager(
-            @Autowired TaskScheduler scheduler, 
-            @Autowired JobLauncher   jobLauncher, 
-            Trigger fixedRateSchedulingTrigger, 
-            @Autowired @Qualifier("githubUsersSyncJob") Job githubUsersSyncJob) {
-        return new GithubUsersSyncJobTaskSchedulingManager(scheduler, fixedRateSchedulingTrigger, jobLauncher, githubUsersSyncJob);
+    JobTaskSchedulingManager githubUsersSyncJobTaskSchedulingManager(
+            @Autowired TaskScheduler scheduler,
+            JobRunner githubUsersSyncJobRunner,
+            Trigger fixedRateSchedulingTrigger ) {
+        return new JobTaskSchedulingManager(scheduler, githubUsersSyncJobRunner, fixedRateSchedulingTrigger);
     }
     //@formatter:on
 }

@@ -30,21 +30,21 @@ import org.springframework.context.ApplicationContext;
       
 })
 //@formatter:on
-class GithubUsersSyncJobTaskSchedulingManagerTest {
+class JobTaskSchedulingManagerTest {
 
 	@Autowired
 	private ApplicationContext context;
 
 	@Test
 	void shouldStopJobWhenSchedulerDisabledAndRestartJobWhenSchedulerEnabled() throws Exception {
-		GithubUsersSyncJobTaskSchedulingManager schedulerBean = context
-				.getBean(GithubUsersSyncJobTaskSchedulingManager.class);
-		await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(3));
+		JobTaskSchedulingManager schedulerBean = context
+				.getBean(JobTaskSchedulingManager.class);
+        await().forever().until(() -> schedulerBean.getJobRunCounter(), greaterThan(3));
 		schedulerBean.disable();
-		assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(3);
+        assertThat(schedulerBean.getJobRunCounter()).isGreaterThan(3);
 
 		schedulerBean.enable();
-		await().forever().until(() -> schedulerBean.getBatchRunCounter().get(), greaterThan(6));
-		assertThat(schedulerBean.getBatchRunCounter().get()).isGreaterThan(6);
+        await().forever().until(() -> schedulerBean.getJobRunCounter(), greaterThan(6));
+        assertThat(schedulerBean.getJobRunCounter()).isGreaterThan(6);
 	}
 }
