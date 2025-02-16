@@ -34,7 +34,7 @@ jobs:
                   "cws.jpa.ddl.auto": "none"
                   "cws.service.port.exposed": "8080"
                   "cws.database.root.password": "Root.2024"
-                  "cws.github.api.authorization.token": "${{ secrets.ACCESS_TOKEN }}"
+                  "cws.github.api.authorization.token": "authorization-token"
                   "cws.github.api.base.url": "https://api.github.com"
                   "cws.github.sync.scheduled.rate": "60"
                   "cws.github.user.page.size": "100"
