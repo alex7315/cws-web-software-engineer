@@ -27,6 +27,8 @@ jobs:
                 "id": "development",
                 "name": "development profile",
                 "properties": {
+                  "sonar.token": "643ba8c60d20aa57935d5787584d091f183748b1",
+                  "sonar.host.url": "https://sonarcloud.io",
                   "cws.datasource.url": "jdbc:mysql://localhost/cws_github?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;useJDBCCompliantTimezoneeShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC",
                   "cws.datasource.username": "cws",
                   "cws.datasource.password": "Cws.2024",
