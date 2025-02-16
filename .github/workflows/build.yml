@@ -18,6 +18,42 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available.
+      - name: maven-settings-xml-action
+        uses: whelk-io/maven-settings-xml-action@v22
+        with: 
+          profiles: >
+            [
+              {
+                "id": "development"
+                "name": "development profile"
+                "properties": {
+                  "cws.datasource.url": "jdbc:mysql://localhost/cws_github?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;useJDBCCompliantTimezoneeShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"
+                  "cws.datasource.username": "cws"
+                  "cws.datasource.password": "Cws.2024"
+                  "cws.datasource.schema": "cws_github"
+                  "cws.jpa.ddl.auto": "none"
+                  "cws.service.port.exposed": "8080"
+                  "cws.database.root.password": "Root.2024"
+                  "cws.github.api.authorization.token": ${{ secrets.ACCESS_TOKEN }}
+                  "cws.github.api.base.url": "https://api.github.com"
+                  "cws.github.sync.scheduled.rate": "60"
+                  "cws.github.user.page.size": "100"
+                  "cws.github.user.count.max": "1000"
+                  "cws.sync.port.exposed": "8080"
+                  "cws.log.base.path": "/home/alexey/cws/logs</cws.log.base.path"
+                  "cws.security.jwt.secret": "e563e26acb01f761b86e3d4684b8ab5bc786da06f57ad4170bf54bdc46d2bcf98549b54a8cbdb1bad36d5b4d52687f491408eda511cfaf37bfa59f103c1245cb71e919d27c789cabc83df8c3a24dc8c312f32c11d8f5f3d395d9f21d8b41e64e23cca8e002193fc3402d3c489c5b2fdee2644219eb5d506bd0fe8cfe98c245b423e74fa91bdff75fa5a84ada3c40a2e5e5688d440adede5d9b0cc5de6f411773ddad8747a69fdac90726f074180208d6860d03cc219187a3af524b3edaf8f20288b69407deb899865c3e42e7f963d7f329eb0f3c2cb5afcbda44224cc74e36555eed6d76a584618e1ed77d35f4d0fe87573cbe7ba1a588046cd29f20ee545e0e"
+                  "cws.security.jwt.expiration.ms": "60000"
+                  "cws.security.refresh.token.expiration.ms": "360000"
+                  "cws.security.session.timeout": "300"
+                  "cws.security.ssl.enabled": "false"
+                  "cws.security.ssl.keystore.type": "PKCS12"
+                  "cws.security.ssl.keystore.location": "classpath:keystore/tomcat-smatos-acc-tech-keystore.p12"
+                  "cws.security.ssl.keystore.password": "Smatos_Acc_Tech_2021a4"
+                  "cws.security.ssl.keystore.alias": "jetty"               
+                }
+              }
+            ]
+          output_file: .m2/settings.xml
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:
@@ -34,5 +70,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=alex7315 -Dsonar.projectKey=alex7315_cws-web-software-engineer
+        run: mvn  -P development -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=alex7315 -Dsonar.projectKey=alex7315_cws-web-software-engineer
         working-directory: web-software-engineer-task-backend
