@@ -21,6 +21,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 @AutoConfigureMockRestServiceServer
 class GithubUsersServiceImplTest {
@@ -30,17 +31,17 @@ class GithubUsersServiceImplTest {
 
 	private GithubUsersServiceImpl client;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectWriter           objectWriter = new ObjectMapper().writer();
 
 	@BeforeEach
 	void init() {
-        client = new GithubUsersServiceImpl("apiVersion", "authToken", "https://api.github.com", RestClient.builder(), new ObjectMapper());
+        client = new GithubUsersServiceImpl("apiVersion", "authToken", "https://api.github.com", RestClient.builder());
 		server = MockRestServiceServer.bindTo(client.getBuilder()).build();
 	}
 
 	@Test
 	void shouldReturnUserList() throws Exception {
-		String usersString = objectMapper
+		String usersString = objectWriter
 				.writeValueAsString(Arrays.asList(new GithubUserDTO("user_1", "1"), new GithubUserDTO("user_2", "2")));
 		server.expect(requestTo("https://api.github.com/users?since=0&per_page=2"))
 				.andRespond(withSuccess(usersString, new MediaType("application", "vnd.github+json")));

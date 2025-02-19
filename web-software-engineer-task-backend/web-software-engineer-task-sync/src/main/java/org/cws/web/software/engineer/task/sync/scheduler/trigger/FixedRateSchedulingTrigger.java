@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FixedRateSchedulingTrigger implements Trigger {
 
-	private long scheduledRate;
+    private final long scheduledRate;
 
 	public FixedRateSchedulingTrigger(@Value("${cws.github.sync.scheduled.rate}") long scheduledRate) {
 		this.scheduledRate = scheduledRate;

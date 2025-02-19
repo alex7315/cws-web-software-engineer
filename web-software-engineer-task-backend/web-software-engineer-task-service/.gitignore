@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /cws.log.base.path_IS_UNDEFINED/
+/.eclipse-pmd

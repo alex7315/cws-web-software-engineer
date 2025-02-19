@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RequestMapping("/api/users")
 public class UsersController {
 
-	private UsersService userService;
+    private final UsersService userService;
 
 	public UsersController(UsersService userService) {
 		this.userService = userService;

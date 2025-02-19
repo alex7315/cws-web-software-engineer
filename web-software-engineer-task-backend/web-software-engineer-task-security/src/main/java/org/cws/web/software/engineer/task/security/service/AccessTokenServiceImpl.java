@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AccessTokenServiceImpl implements AccessTokenService {
 
-    private AccessTokenRepository accessTokenRepository;
-    private UserRepository        userRepository;
-    private JwtHandler            jwtHandler;
+    private final AccessTokenRepository accessTokenRepository;
+    private final UserRepository        userRepository;
+    private final JwtHandler            jwtHandler;
 
     public AccessTokenServiceImpl(AccessTokenRepository accessTokenRepository, UserRepository userRepository, JwtHandler jwtHandler) {
         this.accessTokenRepository = accessTokenRepository;

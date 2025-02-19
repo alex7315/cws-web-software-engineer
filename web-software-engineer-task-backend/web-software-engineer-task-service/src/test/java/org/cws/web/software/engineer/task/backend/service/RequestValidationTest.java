@@ -40,6 +40,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 //@formatter:off
 @WebMvcTest(controllers = { AuthController.class }, properties = {
@@ -92,6 +93,8 @@ class RequestValidationTest {
     @MockBean
     private RefreshTokenService   refreshTokenService;
 
+    private ObjectWriter             objectWriter        = new ObjectMapper().writer();
+
 
     @Test
     void shouldPerformCorrectAuthRequest() throws Exception {
@@ -116,10 +119,8 @@ class RequestValidationTest {
                                                                                 .token(REFRESH_TOKEN_VALUE)
                                                                                 .build());
         
-        
-        
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(LoginRequest
+
+        String requestBody = objectWriter.writeValueAsString(LoginRequest
                                                                 .builder()
                                                                 .username("testUser")
                                                                 .password("testPassword")
@@ -137,9 +138,8 @@ class RequestValidationTest {
 
     @Test
     void shouldRejectAuthRequestWithEmptyUserName() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         //@formatter:off
-        String requestBody = objectMapper.writeValueAsString(LoginRequest
+        String requestBody = objectWriter.writeValueAsString(LoginRequest
                                                                 .builder()
                                                                 .username("")
                                                                 .password("testPassword")
@@ -154,9 +154,8 @@ class RequestValidationTest {
 
     @Test
     void shouldRejectAuthRequestWithEmptyUserNameAndEmptyPassword() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         //@formatter:off
-        String requestBody = objectMapper.writeValueAsString(LoginRequest
+        String requestBody = objectWriter.writeValueAsString(LoginRequest
                                                                 .builder()
                                                                 .password("")
                                                                 .build());

@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * {@link GithubUsersService} gets GitHub users using request to GitHub REST API
@@ -40,27 +42,25 @@ public class GithubUsersServiceImpl implements GithubUsersService {
 
     private final Logger        logger                 = LoggerFactory.getLogger(GithubUsersServiceImpl.class);
 
-	private String githubApiVersion;
+    private final String        githubApiVersion;
 
-	private String githubAuthorizationToken;
+    private final String        githubAuthorizationToken;
 
-    private String             githubBaseUrl;
+    private final String        githubBaseUrl;
 
-	private ObjectMapper objectMapper;
+    private final ObjectReader       objectReader           = new ObjectMapper().reader();
 
-	private RestClient.Builder builder;
+    private final RestClient.Builder builder;
 
     //@formatter:off
 	public GithubUsersServiceImpl(@Value("${cws.github.api.version:2022-11-28}") String githubApiVersion
 			, @Value("${cws.github.api.authorization.token}") String githubAuthorizationToken
 			, @Value("${cws.github.api.base.url}") String githubBaseUrl
-			, RestClient.Builder builder
-			, ObjectMapper objectMapper) {
+			, RestClient.Builder builder) {
 		this.githubApiVersion = githubApiVersion;
 		this.githubAuthorizationToken = githubAuthorizationToken;
 		this.githubBaseUrl = githubBaseUrl;
 		this.builder = builder;
-		this.objectMapper = objectMapper;
 	}
 
 	/**
@@ -92,7 +92,8 @@ public class GithubUsersServiceImpl implements GithubUsersService {
 			ConvertibleClientHttpResponse response) throws IOException {
 		//@formatter:off
         if(response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(OK.value()))) {
-            return objectMapper.readValue(response.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, GithubUserDTO.class));
+            return objectReader.readValue(JsonFactory.builder().build().createParser(response.getBody()), objectReader.getTypeFactory().constructCollectionType(List.class, GithubUserDTO.class));
+            
         } else if(response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(UNAUTHORIZED.value()))) {
             throw new NotAuthorizedGithubRequestException(String.format("Error to get from: %s Status code: %d"
                     , githubBaseUrl

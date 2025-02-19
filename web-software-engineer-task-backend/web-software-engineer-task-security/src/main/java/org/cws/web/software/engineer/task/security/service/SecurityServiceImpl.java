@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     public SecurityServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;

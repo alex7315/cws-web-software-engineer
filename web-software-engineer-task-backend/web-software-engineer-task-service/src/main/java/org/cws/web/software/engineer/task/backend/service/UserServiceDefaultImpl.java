@@ -15,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceDefaultImpl implements UsersService {
 
-	private GithubUserRepository githubUserRepository;
+    private final GithubUserRepository githubUserRepository;
 
-	private GithubUserMapper githubUserMapper;
+    private final GithubUserMapper     githubUserMapper;
 
-	private String sortDefault;
+    private final String               sortDefault;
 
 	public UserServiceDefaultImpl(GithubUserRepository githubUserRepository, GithubUserMapper githubUserMapper,
 			@Value("${cws.user.service.sort.default}") String sortDefault) {

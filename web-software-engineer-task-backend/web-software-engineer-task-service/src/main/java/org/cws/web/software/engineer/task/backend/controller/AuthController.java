@@ -37,11 +37,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private AccessTokenService    accessTokenService;
+    private final AccessTokenService    accessTokenService;
 
-	private RefreshTokenService refreshTokenService;
+    private final RefreshTokenService   refreshTokenService;
 
     public AuthController(@Autowired AuthenticationManager authenticationManager, @Autowired AccessTokenService accessTokenService,
             @Autowired RefreshTokenService refreshTokenService) {

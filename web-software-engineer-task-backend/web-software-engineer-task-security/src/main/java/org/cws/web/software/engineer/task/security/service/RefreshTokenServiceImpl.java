@@ -17,11 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    private UserRepository         userRepository;
+    private final UserRepository         userRepository;
 
-    private int                    refreshTokenExpirationMs;
+    private final int                    refreshTokenExpirationMs;
 
     public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository,
             @Value("${cws.security.refresh.token.expiration.ms}") int refreshTokenExpirationMs) {
