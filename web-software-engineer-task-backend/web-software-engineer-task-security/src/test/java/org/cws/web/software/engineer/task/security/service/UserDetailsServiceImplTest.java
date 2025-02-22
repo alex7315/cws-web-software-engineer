@@ -8,6 +8,7 @@ import static org.cws.web.software.engineer.task.persistence.model.RoleEnum.ROLE
 import org.cws.web.software.engineer.task.security.test.configuration.DataJpaTestConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 class UserDetailsServiceImplTest {
 
 	@Autowired
+    @Qualifier("userDetailsService")
 	private UserDetailsService service;
 
 	@Test

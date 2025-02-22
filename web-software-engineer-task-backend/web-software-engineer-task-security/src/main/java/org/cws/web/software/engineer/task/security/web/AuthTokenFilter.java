@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * validate access token and authenticates user using valid access token. 
  */
 public class AuthTokenFilter extends OncePerRequestFilter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     private JwtHandler         jwtHandler;
 
@@ -58,7 +62,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            logger.error("Cannot set user authentication", e);
+            LOG.error("Cannot set user authentication", e);
         }
     }
 

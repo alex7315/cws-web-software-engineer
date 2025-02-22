@@ -19,6 +19,8 @@
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<jacoco.plugin.version>0.8.12</jacoco.plugin.version>
 		<surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
+		<byte-buddy.version>1.14.19</byte-buddy.version>
+		<mockito.version>5.11.0</mockito.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -50,8 +52,20 @@
 		</dependency>
 		
 		<dependency>
+    		<groupId>jakarta.enterprise</groupId>
+    		<artifactId>jakarta.enterprise.cdi-api</artifactId>
+    		<version>4.1.0</version>
+		</dependency>
+		
+		<dependency>
     		<groupId>com.fasterxml.jackson.core</groupId>
     		<artifactId>jackson-databind</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -85,9 +99,22 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-subclass</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+    				<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	
@@ -125,6 +152,26 @@
 				          	</systemPropertyVariables>
 				        </configuration>
 				    </plugin>
+				    
+					<plugin>
+		                <groupId>de.sormuras.junit</groupId>
+		                <artifactId>junit-platform-maven-plugin</artifactId>
+		                <version>1.1.5</version>
+		                <extensions>false</extensions>
+		                <executions>
+		                    <execution>
+		                        <id>Launch JUnit Platform</id>
+		                        <phase>test</phase>
+		                        <goals>
+		                            <goal>launch</goal>
+		                        </goals>
+		                    </execution>
+		                </executions>
+		                <configuration>
+		                    <isolation>NONE</isolation>
+		                    <executor>JAVA</executor>
+		                </configuration>
+            		</plugin>
 				      
 					<plugin> 
 					 	<groupId>org.jacoco</groupId> 
@@ -139,7 +186,7 @@
 					 			<configuration> 
 					 				<append>true</append> 
 					 				<destFile>${sonar.jacoco.reportPath}</destFile> 
-									 <!-- Sets the VM argument line used when unit tests are run. --> 
+<!--									  Sets the VM argument line used when unit tests are run.  -->
 					 				<propertyName>surefireArgLine</propertyName> 
 					 			</configuration> 
 					 		</execution> 
