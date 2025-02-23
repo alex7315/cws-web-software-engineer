@@ -15,10 +15,10 @@ module org.cws.web.software.engineer.task.security {
     requires spring.security.core;
     requires spring.security.web;
     requires spring.security.crypto;
+    requires spring.data.jpa;
+    requires org.hibernate.orm.core;
 
     requires transitive lombok;
-    requires transitive org.hibernate.orm.core;
-    requires transitive spring.data.jpa;
 
     requires org.cws.web.software.engineer.task.persistence;
     

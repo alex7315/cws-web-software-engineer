@@ -15,12 +15,13 @@
 	<properties>		
 		<io.jsonwebtoke.version>0.12.6</io.jsonwebtoke.version>
 		<web.software.engineer.task.persistence.version>0.0.2-SNAPSHOT</web.software.engineer.task.persistence.version>
+		<byte-buddy.version>1.14.19</byte-buddy.version>
 		
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 		<jacoco.plugin.version>0.8.12</jacoco.plugin.version>
 		<surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
-		<byte-buddy.version>1.14.19</byte-buddy.version>
-		<mockito.version>5.11.0</mockito.version>
+		<junit.platform.plugin>1.1.5</junit.platform.plugin>
+		
 	</properties>
 	
 	<dependencyManagement>
@@ -98,10 +99,10 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- dependency is used to avoid java-17 known issue with spring boot 3.3.1 and Mockito 5 -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-subclass</artifactId>
-			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -156,7 +157,7 @@
 					<plugin>
 		                <groupId>de.sormuras.junit</groupId>
 		                <artifactId>junit-platform-maven-plugin</artifactId>
-		                <version>1.1.5</version>
+		                <version>${junit.platform.plugin}</version>
 		                <extensions>false</extensions>
 		                <executions>
 		                    <execution>
