@@ -12,4 +12,6 @@ public interface AccessTokenService {
     void revokeAccessToken(String jwtToken);
 
     boolean validateAccessToken(String jwtToken);
+
+    String detectUserNameFromJwtToken(String token);
 }

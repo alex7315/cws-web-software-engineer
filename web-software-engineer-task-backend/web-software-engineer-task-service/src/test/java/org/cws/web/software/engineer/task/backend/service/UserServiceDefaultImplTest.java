@@ -40,7 +40,7 @@ class UserServiceDefaultImplTest {
 		//@formatter:off
 		assertThat(actualList)
 			.hasSize(5)
-			.extracting(GithubUserDto::getLogin)
+			.extracting(GithubUserDto::login)
 			.containsExactly("a-test-user-6", "c-test-user-3", "f-test-user-5", "h-test-user-8", "l-test-user-7");
 		//@formatter:on
 	}
@@ -52,7 +52,7 @@ class UserServiceDefaultImplTest {
 		//@formatter:off
 				assertThat(actualList)
 					.hasSize(10)
-					.extracting(GithubUserDto::getLogin)
+					.extracting(GithubUserDto::login)
 					.containsExactly(									
 									"x-test-user-4"
 									, "w-test-user-10"
@@ -74,7 +74,7 @@ class UserServiceDefaultImplTest {
 		//@formatter:off
 		assertThat(actualList)
 			.hasSize(3)
-			.extracting(GithubUserDto::getLogin)
+			.extracting(GithubUserDto::login)
 			.containsExactly("a-test-user-6"
 							, "c-test-user-3"
 							, "f-test-user-5");
@@ -87,7 +87,7 @@ class UserServiceDefaultImplTest {
 		//@formatter:off
 		assertThat(actualList)
 			.hasSize(5)
-			.extracting(GithubUserDto::getLogin)
+			.extracting(GithubUserDto::login)
 			.containsExactly("n-test-user-2"
 							, "r-test-user-1"
 							, "u-test-user-9"

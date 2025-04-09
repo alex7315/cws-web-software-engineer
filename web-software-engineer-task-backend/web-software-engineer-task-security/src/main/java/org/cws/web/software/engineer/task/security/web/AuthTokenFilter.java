@@ -2,7 +2,6 @@ package org.cws.web.software.engineer.task.security.web;
 
 import java.io.IOException;
 
-import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +28,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthTokenFilter.class);
 
-    private JwtHandler         jwtHandler;
-
     private UserDetailsService userDetailsService;
 
     private AccessTokenService accessTokenService;
 
-    public AuthTokenFilter(JwtHandler jwtHandler, @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            AccessTokenService accessTokenService) {
-        this.jwtHandler = jwtHandler;
+    public AuthTokenFilter(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, AccessTokenService accessTokenService) {
         this.userDetailsService = userDetailsService;
         this.accessTokenService = accessTokenService;
     }
@@ -54,7 +49,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private void authenticateUserByToken(HttpServletRequest request, String jwt) {
         try {
-            String username = jwtHandler.getUserNameFromJwtToken(jwt);
+            String username = accessTokenService.detectUserNameFromJwtToken(jwt);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

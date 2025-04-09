@@ -72,4 +72,9 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         return accessTokenRepository.save(accessToken);
     }
 
+    @Override
+    public String detectUserNameFromJwtToken(String token) {
+        return jwtHandler.getUserNameFromJwtToken(token);
+    }
+
 }

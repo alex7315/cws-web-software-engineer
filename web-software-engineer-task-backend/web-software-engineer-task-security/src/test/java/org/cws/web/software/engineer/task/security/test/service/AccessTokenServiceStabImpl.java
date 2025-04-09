@@ -50,4 +50,9 @@ public class AccessTokenServiceStabImpl implements AccessTokenService {
         return true;
     }
 
+    @Override
+    public String detectUserNameFromJwtToken(String token) {
+        return jwtHandler.getUserNameFromJwtToken(token);
+    }
+
 }

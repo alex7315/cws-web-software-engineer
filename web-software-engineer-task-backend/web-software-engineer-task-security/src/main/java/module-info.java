@@ -12,17 +12,19 @@ module org.cws.web.software.engineer.task.security {
     requires spring.tx;
     requires spring.web;
     requires spring.webmvc;
-    requires spring.security.core;
+    requires spring.aop;
+    requires transitive spring.security.core;
     requires spring.security.web;
     requires spring.security.crypto;
     requires spring.data.jpa;
+    requires spring.boot.starter.aop;
     requires org.hibernate.orm.core;
 
-    requires transitive lombok;
-
-    requires org.cws.web.software.engineer.task.persistence;
+    requires transitive org.cws.web.software.engineer.task.persistence;
     
     exports org.cws.web.software.engineer.task.security.authority;
+    exports org.cws.web.software.engineer.task.security.jwt;
     exports org.cws.web.software.engineer.task.security.service;
     exports org.cws.web.software.engineer.task.security.exception;
+    exports org.cws.web.software.engineer.task.security.web;
 }

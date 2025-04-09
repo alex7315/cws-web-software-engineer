@@ -6,6 +6,7 @@ import static org.awaitility.Awaitility.await;
 import java.util.concurrent.TimeUnit;
 
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
+import org.cws.web.software.engineer.task.test.configuration.TestServiceConfiguration;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -37,6 +39,7 @@ import com.jayway.jsonpath.JsonPath;
       "cws.security.refresh.token.expiration.ms=9000",
       "cws.security.session.timeout=60m"
 })
+@ContextConfiguration(classes = { TestServiceConfiguration.class })
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
 
@@ -67,8 +70,8 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
         ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
 
-        String refreshToken = authResponse.getBody().getRefreshToken();
-        String authToken = authResponse.getBody().getToken();
+        String refreshToken = authResponse.getBody().refreshToken();
+        String authToken = authResponse.getBody().token();
 
         headers.setBearerAuth(authToken);
         HttpEntity<Void> usersRequestEntity = new HttpEntity<>(headers);
@@ -102,7 +105,7 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
         ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
 
-        String refreshToken = authResponse.getBody().getRefreshToken();
+        String refreshToken = authResponse.getBody().refreshToken();
 
         HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}", headers);
 

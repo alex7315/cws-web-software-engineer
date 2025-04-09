@@ -60,7 +60,7 @@ public class AuthController {
 	@PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
         AccessToken accessToken = accessTokenService.createAccessToken(authentication);
@@ -78,14 +78,14 @@ public class AuthController {
         String refreshTokenValue = refreshToken.getToken();
         LoggerFactory.getLogger(this.getClass()).debug("User name: {} refresh token: {}", userName, refreshTokenValue);
         
-        return ResponseEntity.ok(JwtResponse.builder()
-                                        .token(accessToken.getToken())
-                                        .id(userDetails.getId())
-                                        .username(userName)
-                                        .email(userDetails.getEmail())
-                                        .refreshToken(refreshTokenValue)
-                                        .roles(roles)
-                                        .build());
+        return ResponseEntity.ok(new JwtResponse(accessToken.getToken(),
+                                        "",
+                                        refreshTokenValue,
+                                        userDetails.getId(),
+                                        userName,
+                                        userDetails.getEmail(),
+                                        roles, 
+                                        ""));
         //@formatter:on
 	}
 
@@ -99,7 +99,7 @@ public class AuthController {
     //@formatter:on
 	@PostMapping("/refreshtoken")
 	public ResponseEntity<TokenRefreshResponse> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
-		String requestRefreshToken = request.getRefreshToken();
+        String requestRefreshToken = request.refreshToken();
 
 		//@formatter:off
         return refreshTokenService.findByToken(requestRefreshToken)
@@ -107,10 +107,7 @@ public class AuthController {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                                 AccessToken accessToken = accessTokenService.createAccessToken(user.getUsername());
-                                return ResponseEntity.ok(TokenRefreshResponse.builder()
-                                                                .token(accessToken.getToken())
-                                                                .refreshToken(requestRefreshToken)
-                                                                .build());
+                                return ResponseEntity.ok(new TokenRefreshResponse(accessToken.getToken(), "", requestRefreshToken, ""));
                             }).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
         //@formatter:on
 	}

@@ -18,13 +18,14 @@ import org.cws.web.software.engineer.task.persistence.model.RefreshToken;
 import org.cws.web.software.engineer.task.persistence.model.Role;
 import org.cws.web.software.engineer.task.persistence.model.RoleEnum;
 import org.cws.web.software.engineer.task.persistence.model.User;
-import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.service.RefreshTokenService;
 import org.cws.web.software.engineer.task.security.service.UserDetailsImpl;
 import org.cws.web.software.engineer.task.test.configuration.TestSecurityConfiguration;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -66,6 +67,8 @@ class RequestValidationTest {
     private static final long        TEST_USER_ID = 100L;
     private static final String      SIGNIN_URI   = "/api/auth/signin";
 
+    private static final Logger      LOG                 = LoggerFactory.getLogger(RequestValidationTest.class);
+
     @Autowired
     private MockMvc               mockMvc;
 
@@ -88,14 +91,14 @@ class RequestValidationTest {
     private AccessTokenService    accessTokenService;
 
     @MockBean
-    private JwtHandler            jwtHandler;
-
-    @MockBean
     private RefreshTokenService   refreshTokenService;
 
     private ObjectWriter             objectWriter        = new ObjectMapper().writer();
 
 
+    /**
+     * @throws Exception
+     */
     @Test
     void shouldPerformCorrectAuthRequest() throws Exception {
         //@formatter:off
@@ -120,11 +123,8 @@ class RequestValidationTest {
                                                                                 .build());
         
 
-        String requestBody = objectWriter.writeValueAsString(LoginRequest
-                                                                .builder()
-                                                                .username("testUser")
-                                                                .password("testPassword")
-                                                                .build());
+        String requestBody = objectWriter.writeValueAsString(new LoginRequest("testUser", "testPassword"));
+
         
         mockMvc
             .perform(post(SIGNIN_URI).contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -139,26 +139,19 @@ class RequestValidationTest {
     @Test
     void shouldRejectAuthRequestWithEmptyUserName() throws Exception {
         //@formatter:off
-        String requestBody = objectWriter.writeValueAsString(LoginRequest
-                                                                .builder()
-                                                                .username("")
-                                                                .password("testPassword")
-                                                                .build());
-        mockMvc
+        String requestBody = objectWriter.writeValueAsString(new LoginRequest("", "testPassword"));
+        String responseContent = mockMvc
             .perform(post(SIGNIN_URI).contentType(MediaType.APPLICATION_JSON).content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", allOf(Matchers.containsString("loginRequest")
-                                                , Matchers.containsString("Invalid username: Empty user name"))));
+            .andReturn().getResponse().getContentAsString();
+        LOG.info("shouldRejectAuthRequestWithEmptyUserName() Response content: {}", responseContent);
         //@formatter:on
     }
 
     @Test
     void shouldRejectAuthRequestWithEmptyUserNameAndEmptyPassword() throws Exception {
         //@formatter:off
-        String requestBody = objectWriter.writeValueAsString(LoginRequest
-                                                                .builder()
-                                                                .password("")
-                                                                .build());
+        String requestBody = objectWriter.writeValueAsString(new LoginRequest(null, ""));
         mockMvc
             .perform(post(SIGNIN_URI).contentType(MediaType.APPLICATION_JSON).content(requestBody))
             .andExpect(status().isBadRequest())

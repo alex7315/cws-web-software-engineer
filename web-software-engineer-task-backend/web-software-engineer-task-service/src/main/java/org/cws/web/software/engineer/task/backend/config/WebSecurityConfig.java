@@ -2,7 +2,6 @@ package org.cws.web.software.engineer.task.backend.config;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,22 +38,19 @@ public class WebSecurityConfig {
 
     private AuthenticationEntryPoint unauthorizedHandler;
 
-    private JwtHandler               jwtHandler;
-
     private AccessTokenService       accessTokenService;
 
 	WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint delegatedAuthenticationEntryPoint, JwtHandler jwtHandler,
+            @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint delegatedAuthenticationEntryPoint,
             AccessTokenService accessTokenService) {
 		this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = delegatedAuthenticationEntryPoint;
-		this.jwtHandler = jwtHandler;
         this.accessTokenService = accessTokenService;
 	}
 
 	@Bean
 	AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtHandler, userDetailsService, accessTokenService);
+        return new AuthTokenFilter(userDetailsService, accessTokenService);
 	}
 
 	@Bean

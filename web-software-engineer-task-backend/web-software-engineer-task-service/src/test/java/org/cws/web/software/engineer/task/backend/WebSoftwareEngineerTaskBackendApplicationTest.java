@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
+import org.cws.web.software.engineer.task.test.configuration.TestServiceConfiguration;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -37,6 +39,7 @@ import net.minidev.json.JSONArray;
 		"cws.security.refresh.token.expiration.ms=6000000",
 	    "cws.security.session.timeout=60m"
 })
+@ContextConfiguration(classes = { TestServiceConfiguration.class })
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationTest {
 
@@ -105,7 +108,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
     void shouldRejectResourceAccessWithWrongAccessToken() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
         ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().getToken();
+        String authToken = authResponse.getBody().token();
         headers.setBearerAuth("wrong" + authToken + "wrong");
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -146,7 +149,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnUsersPageUsesDefaultParameters() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-		String authToken = authResponse.getBody().getToken();
+        String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -170,7 +173,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnDescSortedPageOfUsers() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-		String authToken = authResponse.getBody().getToken();
+        String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -191,7 +194,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnDefaultSortedPageOfUsersWithWrongPageParameterValues() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-		String authToken = authResponse.getBody().getToken();
+        String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -213,7 +216,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnRequestErrorByWrongSortParameterValue() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-		String authToken = authResponse.getBody().getToken();
+        String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -228,7 +231,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
     void schouldRevokeAccessTokenByUserLogout() {
         HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
         ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().getToken();
+        String authToken = authResponse.getBody().token();
 
         headers.setBearerAuth(authToken);
 

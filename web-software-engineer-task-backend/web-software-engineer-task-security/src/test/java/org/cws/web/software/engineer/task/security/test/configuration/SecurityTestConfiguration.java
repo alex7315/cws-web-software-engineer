@@ -74,7 +74,7 @@ public class SecurityTestConfiguration {
 
     @Bean
     AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtHandler(), userDetailsService(), accessTokenService());
+        return new AuthTokenFilter(userDetailsService(), accessTokenService());
     }
 
     @Bean
