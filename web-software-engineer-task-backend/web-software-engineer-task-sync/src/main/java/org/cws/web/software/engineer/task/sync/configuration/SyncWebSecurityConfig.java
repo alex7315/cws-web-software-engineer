@@ -1,6 +1,5 @@
 package org.cws.web.software.engineer.task.sync.configuration;
 
-import org.cws.web.software.engineer.task.security.jwt.JwtHandler;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
 import org.cws.web.software.engineer.task.security.web.DelegatedAuthenticationEntryPoint;
@@ -36,22 +35,19 @@ public class SyncWebSecurityConfig {
 
     private DelegatedAuthenticationEntryPoint unauthorizedHandler;
 
-	private JwtHandler jwtHandler;
-
     private AccessTokenService                accessTokenService;
 
 	SyncWebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            @Qualifier("delegatedAuthenticationEntryPoint") DelegatedAuthenticationEntryPoint unauthorizedHandler, JwtHandler jwtHandler,
+            @Qualifier("delegatedAuthenticationEntryPoint") DelegatedAuthenticationEntryPoint unauthorizedHandler,
             AccessTokenService accessTokenService) {
 		this.userDetailsService = userDetailsService;
 		this.unauthorizedHandler = unauthorizedHandler;
-		this.jwtHandler = jwtHandler;
         this.accessTokenService = accessTokenService;
 	}
 
 	@Bean
 	AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtHandler, userDetailsService, accessTokenService);
+        return new AuthTokenFilter(userDetailsService, accessTokenService);
 	}
 
 	@Bean

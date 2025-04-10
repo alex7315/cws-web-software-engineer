@@ -8,6 +8,7 @@ server:
     key-store: ${cws.security.ssl.keystore.location}
     key-store-password: ${cws.security.ssl.keystore.password}
     key-alias: ${cws.security.ssl.keystore.alias}
+    
 spring:
   application:
     name: web-software-engineer-task-sync
