@@ -105,7 +105,7 @@ Example of  _settings.xml_
 					<cws.datasource.password>password</cws.datasource.password>
 					<cws.datasource.schema>cws_github</cws.datasource.schema>
 					<cws.jpa.ddl.auto>none</cws.jpa.ddl.auto>
-					<cws.service.port.exposed>8080</cws.service.port.exposed>
+					<cws.service.port.exposed>443</cws.service.port.exposed>
 					<cws.database.root.password>database root password</cws.database.root.password>
 					<cws.github.api.authorization.token>github token</cws.github.api.authorization.token>
 					<cws.github.api.base.url>https://api.github.com</cws.github.api.base.url>
@@ -132,9 +132,10 @@ Example of  _settings.xml_
 				<cws.security.ssl.keystore.location>/cws/ssl</cws.security.ssl.keystore.location>
 				<cws.security.ssl.keystore.password><keystore password></cws.security.ssl.keystore.password>
 				<cws.security.ssl.keystore.alias>cws</cws.security.ssl.keystore.alias>
+				<cws.security.ssl.keystore.base.path><path to keystore></cws.security.ssl.keystore.base.path>
 				</properties>
 		 
-			<profile>
+			</profile>
 		
 			<profile>
 				<id>development</id>
