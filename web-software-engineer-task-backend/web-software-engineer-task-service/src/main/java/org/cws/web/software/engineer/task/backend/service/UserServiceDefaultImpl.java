@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.core.annotation.Timed;
+
 @Service
 public class UserServiceDefaultImpl implements UsersService {
 
@@ -30,13 +32,14 @@ public class UserServiceDefaultImpl implements UsersService {
 
 	@Override
 	@Transactional(readOnly = true)
+    @Timed
 	public List<GithubUserDto> getUsers(Pageable pageable) {
 		//@formatter:off
 		return githubUserRepository
 					.findAll(PageRequest.of(pageable.getPageNumber()
 										, pageable.getPageSize()
 										, pageable.getSortOr(Sort.by(Sort.Direction.ASC, sortDefault))))
-					.map(ghu -> githubUserMapper.toDto(ghu))
+					.map(githubUserMapper::toDto)
 					.toList();
 		//@formatter:on
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -27,7 +28,7 @@ public class UsersController {
 
     private final UsersService userService;
 
-	public UsersController(UsersService userService) {
+    public UsersController(UsersService userService) {
 		this.userService = userService;
 	}
 
@@ -45,11 +46,14 @@ public class UsersController {
 			@ApiResponse(responseCode = "400", description = "Bad pagination parameters, e.g. unknown sorting attribute",
 							content = @Content),
 	})
-	//@formatter:on
+	
     @PreAuthorize(Authority.USER_OR_ADMIN)
 	@GetMapping
+    @Timed(value = "users.get.all"
+            , description = "indicates timer of get all user REST request")
+	//@formatter:on
 	public ResponseEntity<List<GithubUserDto>> getAll(Pageable pageable) {
-		return ResponseEntity.ok(userService.getUsers(pageable));
+        return ResponseEntity.ok(userService.getUsers(pageable));
 	}
 
 }

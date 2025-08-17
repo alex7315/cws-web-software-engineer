@@ -19,6 +19,18 @@ spring:
     password: ${cws.datasource.password}
   jpa:
     open-in-view: false
+  jmx: 
+    enabled: true
+    
+management: 
+  endpoints: 
+    web: 
+      exposure:
+        include: auditevents, beans, caches, configprops, env, flyway, health, info, loggers, metrics, mappings, sessions, scheduledtasks, threaddump
+  endpoint: 
+    health: 
+      show-details: always
+      
 cws:
   user:
     service:
