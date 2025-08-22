@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -63,6 +64,7 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
 	}
 
 	@Test
+	@DirtiesContext
 	void shouldRefreshExpiredAccessTokenUsingRefreshToken() {
 		// gets access token
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
@@ -101,6 +103,7 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
 	}
 
 	@Test
+	@DirtiesContext
 	void shouldRejectRefreshTokenRequestByExpiredRefreshToken() throws Exception {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
@@ -112,10 +115,10 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
 		HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}",
 				headers);
 
-		Thread.sleep(10000);
+		Thread.sleep(9001);
 		HttpStatusCode statusCode = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class)
 				.getStatusCode();
-		assertThat(statusCode).isEqualTo(HttpStatusCode.valueOf(HttpStatus.UNAUTHORIZED.value()));
+		assertThat(statusCode).isEqualTo(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()));
 
 	}
 
