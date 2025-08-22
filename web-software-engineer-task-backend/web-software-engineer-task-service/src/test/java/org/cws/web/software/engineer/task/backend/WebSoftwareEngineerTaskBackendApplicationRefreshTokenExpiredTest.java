@@ -115,10 +115,13 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
 		HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}",
 				headers);
 
-		Thread.sleep(9001);
-		HttpStatusCode statusCode = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class)
-				.getStatusCode();
-		assertThat(statusCode).isEqualTo(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()));
+		//@formatter:off
+        await().atLeast(9, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS)
+                .until(() -> restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class)
+                .getStatusCode()
+                .isSameCodeAs(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()))
+                );
+        //@formatter:on
 
 	}
 
