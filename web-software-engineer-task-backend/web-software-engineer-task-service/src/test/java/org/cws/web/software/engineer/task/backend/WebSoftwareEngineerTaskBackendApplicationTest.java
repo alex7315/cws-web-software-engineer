@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
-import org.cws.web.software.engineer.task.test.configuration.TestServiceConfiguration;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -39,7 +37,6 @@ import net.minidev.json.JSONArray;
 		"cws.security.refresh.token.expiration.ms=6000000",
 	    "cws.security.session.timeout=60m"
 })
-@ContextConfiguration(classes = { TestServiceConfiguration.class })
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationTest {
 
@@ -47,13 +44,13 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	private static final String REFRESHTOKEN_URI = "/api/auth/refreshtoken";
 
-    private static final String LOGOUT_URI       = "/api/auth/logout";
+	private static final String LOGOUT_URI = "/api/auth/logout";
 
 	@Autowired
 	TestRestTemplate restTemplate;
 
-    @Autowired
-    AccessTokenService          accessTokenService;
+	@Autowired
+	AccessTokenService accessTokenService;
 
 	private HttpHeaders headers;
 
@@ -76,9 +73,9 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, String.class);
 		DocumentContext authResponseContext = JsonPath.parse(authResponse.getBody());
 		String refreshToken = authResponseContext.read("$.refreshToken");
-        String accessToken = authResponseContext.read("$.token");
+		String accessToken = authResponseContext.read("$.token");
 
-        accessTokenService.revokeAccessToken(accessToken);
+		accessTokenService.revokeAccessToken(accessToken);
 		HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}",
 				headers);
 		ResponseEntity<String> refreshTokenResponse = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest,
@@ -103,20 +100,21 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-    @Test
-    @DirtiesContext
-    void shouldRejectResourceAccessWithWrongAccessToken() {
-        HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().token();
-        headers.setBearerAuth("wrong" + authToken + "wrong");
+	@Test
+	@DirtiesContext
+	void shouldRejectResourceAccessWithWrongAccessToken() {
+		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
+		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
+		String authToken = authResponse.getBody().token();
+		headers.setBearerAuth("wrong" + authToken + "wrong");
 
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity, String.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity,
+				String.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
-    }
+	}
 
 	@Test
 	void shouldRejectUnknownUser() throws Exception {
@@ -128,7 +126,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
 
 		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(authResponse.getBody()).contains("Authentication failed");
+		assertThat(authResponse.getBody()).contains("Authentication failed");
 	}
 
 	@Test
@@ -141,7 +139,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 		ResponseEntity<String> authResponse = restTemplate.postForEntity(SIGNIN_URI, authRequest, String.class);
 
 		assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(authResponse.getBody()).contains("Authentication failed");
+		assertThat(authResponse.getBody()).contains("Authentication failed");
 	}
 
 	@Test
@@ -149,7 +147,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnUsersPageUsesDefaultParameters() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().token();
+		String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -173,7 +171,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnDescSortedPageOfUsers() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().token();
+		String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -194,7 +192,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnDefaultSortedPageOfUsersWithWrongPageParameterValues() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().token();
+		String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -216,7 +214,7 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 	void shouldReturnRequestErrorByWrongSortParameterValue() {
 		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
 		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().token();
+		String authToken = authResponse.getBody().token();
 		headers.setBearerAuth(authToken);
 
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
@@ -226,25 +224,27 @@ class WebSoftwareEngineerTaskBackendApplicationTest {
 
 	}
 
-    @Test
-    @DirtiesContext
-    void schouldRevokeAccessTokenByUserLogout() {
-        HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
-        String authToken = authResponse.getBody().token();
+	@Test
+	@DirtiesContext
+	void schouldRevokeAccessTokenByUserLogout() {
+		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
+		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
+		String authToken = authResponse.getBody().token();
 
-        headers.setBearerAuth(authToken);
+		headers.setBearerAuth(authToken);
 
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        HttpEntity<String> logoutRequest = new HttpEntity<>("", headers);
-        ResponseEntity<String> logoutResponse = restTemplate.postForEntity(LOGOUT_URI, logoutRequest, String.class);
-        assertThat(logoutResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpEntity<String> logoutRequest = new HttpEntity<>("", headers);
+		ResponseEntity<String> logoutResponse = restTemplate.postForEntity(LOGOUT_URI, logoutRequest, String.class);
+		assertThat(logoutResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        ResponseEntity<String> responseAfterLogout = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity, String.class);
-        assertThat(responseAfterLogout.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
+		ResponseEntity<String> responseAfterLogout = restTemplate.exchange("/api/users", HttpMethod.GET, requestEntity,
+				String.class);
+		assertThat(responseAfterLogout.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+	}
 
 }

@@ -6,10 +6,10 @@ import static org.awaitility.Awaitility.await;
 import java.util.concurrent.TimeUnit;
 
 import org.cws.web.software.engineer.task.backend.dto.response.JwtResponse;
-import org.cws.web.software.engineer.task.test.configuration.TestServiceConfiguration;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -39,44 +38,43 @@ import com.jayway.jsonpath.JsonPath;
       "cws.security.refresh.token.expiration.ms=9000",
       "cws.security.session.timeout=60m"
 })
-@ContextConfiguration(classes = { TestServiceConfiguration.class })
 //@formatter:on
 class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
 
-    private static final String SIGNIN_URI       = "/api/auth/signin";
+	private static final String SIGNIN_URI = "/api/auth/signin";
 
-    private static final String REFRESHTOKEN_URI = "/api/auth/refreshtoken";
+	private static final String REFRESHTOKEN_URI = "/api/auth/refreshtoken";
 
-    @Autowired
-    TestRestTemplate            restTemplate;
+	@Autowired
+	TestRestTemplate restTemplate;
 
-    private HttpHeaders         headers;
+	private HttpHeaders headers;
 
-    private JSONObject          authJsonObject;
+	private JSONObject authJsonObject;
 
-    @BeforeEach
-    void init() throws Exception {
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+	@BeforeEach
+	void init() throws Exception {
+		headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-        authJsonObject = new JSONObject();
-        authJsonObject.put("username", "user2");
-        authJsonObject.put("password", "12345678");
-    }
+		authJsonObject = new JSONObject();
+		authJsonObject.put("username", "user2");
+		authJsonObject.put("password", "12345678");
+	}
 
-    @Test
-    void shouldRefreshExpiredAccessTokenUsingRefreshToken() {
-        //gets access token
-        HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
+	@Test
+	void shouldRefreshExpiredAccessTokenUsingRefreshToken() {
+		// gets access token
+		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
+		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
 
-        String refreshToken = authResponse.getBody().refreshToken();
-        String authToken = authResponse.getBody().token();
+		String refreshToken = authResponse.getBody().refreshToken();
+		String authToken = authResponse.getBody().token();
 
-        headers.setBearerAuth(authToken);
-        HttpEntity<Void> usersRequestEntity = new HttpEntity<>(headers);
+		headers.setBearerAuth(authToken);
+		HttpEntity<Void> usersRequestEntity = new HttpEntity<>(headers);
 
-        //@formatter:off
+		//@formatter:off
         await().atMost(4, TimeUnit.SECONDS)
                 .until(() -> restTemplate
                                 .exchange("/api/users", HttpMethod.GET, usersRequestEntity, String.class)
@@ -86,36 +84,39 @@ class WebSoftwareEngineerTaskBackendApplicationRefreshTokenExpiredTest {
         
         //@formatter:on
 
-        HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}", headers);
-        ResponseEntity<String> refreshTokenResponse = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class);
+		HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}",
+				headers);
+		ResponseEntity<String> refreshTokenResponse = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest,
+				String.class);
 
-        assertThat(refreshTokenResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DocumentContext documentContext = JsonPath.parse(refreshTokenResponse.getBody());
+		assertThat(refreshTokenResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		DocumentContext documentContext = JsonPath.parse(refreshTokenResponse.getBody());
 
-        String actualRefreshToken = documentContext.read("$.refreshToken");
-        assertThat(actualRefreshToken).isEqualTo(refreshToken);
+		String actualRefreshToken = documentContext.read("$.refreshToken");
+		assertThat(actualRefreshToken).isEqualTo(refreshToken);
 
-        String actualToken = documentContext.read("$.token");
-        assertThat(actualToken).isNotNull();
+		String actualToken = documentContext.read("$.token");
+		assertThat(actualToken).isNotNull();
 
-    }
+	}
 
-    @Test
-    void shouldRejectRefreshTokenRequestByExpiredRefreshToken() {
-        HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
-        ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
+	@Test
+	void shouldRejectRefreshTokenRequestByExpiredRefreshToken() throws Exception {
+		HttpEntity<String> request = new HttpEntity<>(authJsonObject.toString(), headers);
+		ResponseEntity<JwtResponse> authResponse = restTemplate.postForEntity(SIGNIN_URI, request, JwtResponse.class);
 
-        String refreshToken = authResponse.getBody().refreshToken();
+		String refreshToken = authResponse.getBody().refreshToken();
+		LoggerFactory.getLogger(this.getClass()).info("Auth request URI: {} refresh token: {}", SIGNIN_URI,
+				refreshToken);
 
-        HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}", headers);
+		HttpEntity<String> refreshTokenRequest = new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}",
+				headers);
 
-        //@formatter:off
-        await().atMost(9, TimeUnit.SECONDS)
-                .until(() -> restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class)
-                .getStatusCode()
-                .isSameCodeAs(HttpStatusCode.valueOf(403))
-                );
-        //@formatter:on
+		Thread.sleep(10000);
+		HttpStatusCode statusCode = restTemplate.postForEntity(REFRESHTOKEN_URI, refreshTokenRequest, String.class)
+				.getStatusCode();
+		assertThat(statusCode).isEqualTo(HttpStatusCode.valueOf(HttpStatus.UNAUTHORIZED.value()));
 
-    }
+	}
+
 }
