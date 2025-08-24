@@ -162,7 +162,7 @@ __mvn -Pdocker clean package__
 
 __mvn -Pdevelopment verify sonar:sonar__  
 
-  [Code analysis overview](https://sonarcloud.io/project/overview?id=alex7315_cws-web-software-engineer)  
+  [Code analysis overview](https://sonarcloud.io/project/overview?id=software-engineer-task-token)  
   
 
 ## Deployment  
