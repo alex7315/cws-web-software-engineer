@@ -105,6 +105,8 @@ const Users = () => {
     // window.location.reload()
   }
 
+  const handleSort = (columnName: string) => {}
+
   useEffect(() => {
     const getData = async () => {
       await axiosInstance
@@ -175,6 +177,7 @@ const Users = () => {
                 style={{ backgroundColor: 'black', color: 'white' }}
                 key={column.id}
               >
+                <div onClick={() => handleSort(column.prop)}></div>
                 {column.name}
               </TableCell>
             ))}

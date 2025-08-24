@@ -6,5 +6,6 @@ public final class Authority {
     }
 
     public static final String ADMIN         = "hasRole('ADMIN')";
+    public static final String ACTUATOR      = "hasRole('ACTUATOR')";
 	public static final String USER_OR_ADMIN = "hasRole('USER') or hasRole('ADMIN')";
 }

@@ -19,6 +19,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
@@ -48,7 +49,11 @@ public class GithubUsersServiceImpl implements GithubUsersService {
 
     private final String        githubBaseUrl;
 
-    private final ObjectReader       objectReader           = new ObjectMapper().reader();
+    //@formatter:off
+    private final ObjectReader       objectReader           = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .reader();
+    //@formatter:on
 
     private final RestClient.Builder builder;
 

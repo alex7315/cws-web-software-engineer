@@ -5,6 +5,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 import org.cws.web.software.engineer.task.security.service.AccessTokenService;
 import org.cws.web.software.engineer.task.security.web.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -97,7 +99,9 @@ public class WebSecurityConfig {
                         .requestMatchers("/v3/api-docs*/**").permitAll()
                         /*pre-flight requests (OPTIONS) have not be authenticated 
                          * (avoids Firefox problem with Authorization header of OPTIONS request) */
-                        .requestMatchers(HttpMethod.OPTIONS).permitAll() 
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                        .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ACTUATOR")
                         .anyRequest().authenticated());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

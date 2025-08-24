@@ -37,14 +37,13 @@ class JobTaskSchedulingManagerTest {
 
 	@Test
 	void shouldStopJobWhenSchedulerDisabledAndRestartJobWhenSchedulerEnabled() throws Exception {
-		JobTaskSchedulingManager schedulerBean = context
-				.getBean(JobTaskSchedulingManager.class);
-        await().forever().until(() -> schedulerBean.getJobRunCounter(), greaterThan(3));
+		JobTaskSchedulingManager schedulerBean = context.getBean(JobTaskSchedulingManager.class);
+		await().forever().until(schedulerBean::getJobRunCounter, greaterThan(3));
 		schedulerBean.disable();
-        assertThat(schedulerBean.getJobRunCounter()).isGreaterThan(3);
+		assertThat(schedulerBean.getJobRunCounter()).isGreaterThan(3);
 
 		schedulerBean.enable();
-        await().forever().until(() -> schedulerBean.getJobRunCounter(), greaterThan(6));
-        assertThat(schedulerBean.getJobRunCounter()).isGreaterThan(6);
+		await().forever().until(schedulerBean::getJobRunCounter, greaterThan(6));
+		assertThat(schedulerBean.getJobRunCounter()).isGreaterThan(6);
 	}
 }
