@@ -32,6 +32,16 @@ spring:
         max-size: 20
         queue-capacity: 20
         queue-max-wait: 10000
+        
+management: 
+  endpoints: 
+    web: 
+      exposure:
+        include: auditevents, beans, caches, configprops, env, flyway, health, info, loggers, metrics, mappings, sessions, scheduledtasks, threaddump
+  endpoint: 
+    health: 
+      show-details: always
+
 cws:
   github:
     api:
