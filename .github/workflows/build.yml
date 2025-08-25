@@ -32,7 +32,7 @@ jobs:
       - name: Maven settings
         uses: s4u/maven-settings-action@v3.1.0
         with: 
-          properties: '[{"sonar.token": "643ba8c60d20aa57935d5787584d091f183748b1"},
+          properties: '[{"sonar.token": "5039dc5c43315e9c169e84647f14ca76526bda9f"},
                   {"sonar.host.url": "https://sonarcloud.io"},
                   {"cws.datasource.url": "jdbc:mysql://localhost/cws_github?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;useJDBCCompliantTimezoneeShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"},
                   {"cws.datasource.username": "cws"},
@@ -46,7 +46,7 @@ jobs:
                   {"cws.github.user.page.size": "100"},
                   {"cws.github.user.count.max": "1000"},
                   {"cws.sync.port.exposed": "8080"},
-                  {"cws.log.base.path": "/home/alexey/cws/logs"},
+                  {"cws.log.base.path": "target"},
                   {"cws.security.jwt.secret": "e563e26acb01f761b86e3d4684b8ab5bc786da06f57ad4170bf54bdc46d2bcf98549b54a8cbdb1bad36d5b4d52687f491408eda511cfaf37bfa59f103c1245cb71e919d27c789cabc83df8c3a24dc8c312f32c11d8f5f3d395d9f21d8b41e64e23cca8e002193fc3402d3c489c5b2fdee2644219eb5d506bd0fe8cfe98c245b423e74fa91bdff75fa5a84ada3c40a2e5e5688d440adede5d9b0cc5de6f411773ddad8747a69fdac90726f074180208d6860d03cc219187a3af524b3edaf8f20288b69407deb899865c3e42e7f963d7f329eb0f3c2cb5afcbda44224cc74e36555eed6d76a584618e1ed77d35f4d0fe87573cbe7ba1a588046cd29f20ee545e0e"},
                   {"cws.security.jwt.expiration.ms": "60000"},
                   {"cws.security.refresh.token.expiration.ms": "360000"},
@@ -60,5 +60,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -Pdevelopment -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=alex7315 -Dsonar.projectKey=alex7315_cws-web-software-engineer -Dsonar.token=$SONAR_TOKEN -Dsonar.host.url=https://sonarcloud.io -Dcws.github.api.authorization.token=$GITHUB_TOKEN
+        run: mvn -Pdevelopment -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=alex7315 -Dsonar.projectKey=software-engineer-task-token -Dsonar.token=$SONAR_TOKEN -Dsonar.host.url=https://sonarcloud.io -Dcws.github.api.authorization.token=$GITHUB_TOKEN
         working-directory: web-software-engineer-task-backend
